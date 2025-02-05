@@ -29,10 +29,10 @@ spring:
     show-sql: false  # 운영 환경에서는 SQL 로그 출력 X
 
   # Redis 설정
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: 6379
+#  data:
+#    redis:
+#      host: ${REDIS_HOST}
+#      port: 6379
 
 aws:
   s3:

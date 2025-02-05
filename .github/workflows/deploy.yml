@@ -39,7 +39,8 @@ jobs:
       # 5. JAR 파일을 S3에 업로드하고 Elastic Beanstalk에 배포
       - name: Deploy to Elastic Beanstalk
         run: |
-          VERSION_LABEL="v-${{ github.run_id }}"  # 자동으로 버전 라벨 생성
+          # github.run_id와 빌드 완료 시간(KST) 결합한 버전 라벨 생성
+          VERSION_LABEL="v-${{ github.run_id }}-$(TZ="Asia/Seoul" date +'%Y%m%d-%H%M%S')"  # 예: v-12345-20250205-143200
 
           # S3에 JAR 파일 업로드
           aws s3 cp build/libs/thisvsthat-0.0.1-SNAPSHOT.jar s3://this-vs-that-bucket/deployments/this-vs-that-${VERSION_LABEL}.jar
@@ -58,6 +59,6 @@ jobs:
       # 6. 빌드 완료 시간 출력
       - name: Get build completion time
         run: |
-          BUILD_TIME=$(date +"%Y-%m-%d %H:%M:%S")  # 빌드 완료 시간 포맷
+          BUILD_TIME=$(TZ="Asia/Seoul" date +"%Y-%m-%d %H:%M:%S")  # 빌드 완료 시간 포맷 (KST)
           echo "Build completed at $BUILD_TIME"   # 빌드 완료 시간 출력
         shell: bash
