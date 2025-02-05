@@ -1,0 +1,48 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: utf-8
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${RDS_HOSTNAME}:${RDS_PORT}/${RDS_DB_NAME}
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    hikari:
+      maximum-pool-size: 20         # 최대 커넥션 풀 크기 (DB 트래픽 고려)
+      minimum-idle: 5               # 최소 유지할 유휴 연결 수
+      connection-timeout: 30000     # 연결 시도 제한 시간 (밀리초 / 30초)
+      idle-timeout: 600000          # 유휴 연결 종료 시간 (밀리초 / 10분 동안 유휴 상태면 커넥션 반환)
+      max-lifetime: 1800000         # 커넥션 최대 유지 시간 (밀리초 / 30분마다 커넥션 갱신
+
+  # JPA 설정
+  jpa:
+    hibernate:
+      ddl-auto: validate  # 운영 환경에서는 validate 또는 none 사용 (update 사용 금지)
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_batch_fetch_size: 100  # N+1 문제 방지
+    show-sql: false  # 운영 환경에서는 SQL 로그 출력 X
+
+  # Redis 설정
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+
+aws:
+  s3:
+    bucket: ${S3_BUCKET_NAME}
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ap-northeast-2
+
+logging:
+  level:
+    org:
+      springframework:
+        security: WARN  # 운영 환경에서는 보안 관련 로그 최소화

@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: utf-8
+
+spring:
+  # 데이터베이스
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://this-vs-that-db.c9kaq20smgva.ap-northeast-2.rds.amazonaws.com:5432/thisvsthatDB
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10          # 최대 연결 풀 크기
+      minimum-idle: 5               # 최소 유지할 유휴 연결 수
+      connection-timeout: 30000     # 연결 시도 제한 시간 (밀리초)
+      idle-timeout: 600000          # 유휴 연결 종료 시간 (밀리초)
+      max-lifetime: 1800000         # 연결 최대 유지 시간 (밀리초)
+
+  # JPA 설정
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update  # 개발 환경: update / 운영 환경: validate or none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_batch_fetch_size: 100  # N+1 문제 방지
+    show-sql: true  # SQL 로그 출력
+
+  # Redis 설정
+  data:
+    redis:
+      host: your-redis-hostname
+      port: 6379
+
+  # AWS S3 설정
+aws:
+  s3:
+    bucket: this-vs-that-bucket
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ap-northeast-2
+
+  # GitHub Actions & 배포 시 프로파일 설정
+#  config:
+#    import: optional:classpath:/application-${spring.profiles.active}.yml
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

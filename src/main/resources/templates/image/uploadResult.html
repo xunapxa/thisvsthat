@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>업로드 결과</title>
+</head>
+<body>
+<h2>업로드 결과</h2>
+<p th:text="${message}"></p>
+<div th:if="${imageUrl}">
+  <p>업로드된 이미지:</p>
+  <img th:src="${imageUrl}" alt="Uploaded Image">
+</div>
+</body>
+</html>
