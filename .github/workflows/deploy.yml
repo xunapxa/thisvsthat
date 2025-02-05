@@ -48,7 +48,7 @@ jobs:
           aws elasticbeanstalk create-application-version \
             --application-name "this-vs-that" \
             --version-label "${VERSION_LABEL}" \
-            --source-bundle S3Bucket="this-vs-that-bucket",S3Key="deployments/this-vs-that-${VERSION_LABEL}.jar"
+            aws s3 cp build/libs/thisvsthat-0.0.1-SNAPSHOT.jar s3://this-vs-that-bucket/deployments/this-vs-that-${VERSION_LABEL}.jar
 
           # Elastic Beanstalk 환경 업데이트
           aws elasticbeanstalk update-environment \
