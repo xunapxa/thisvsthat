@@ -1,1 +1,55 @@
-spring.application.name=thisvsthat
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: utf-8
+
+spring:
+  # ??????
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://this-vs-that-db.c9kaq20smgva.ap-northeast-2.rds.amazonaws.com:5432/thisvsthatDB
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10          # ?? ?? ? ??
+      minimum-idle: 5               # ?? ??? ?? ?? ?
+      connection-timeout: 30000     # ?? ?? ?? ?? (???)
+      idle-timeout: 600000          # ?? ?? ?? ?? (???)
+      max-lifetime: 1800000         # ?? ?? ?? ?? (???)
+
+  # JPA ??
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: update  # ?? ??: update / ?? ??: validate or none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        default_batch_fetch_size: 100  # N+1 ?? ??
+    show-sql: true  # SQL ?? ??
+
+  # Redis ??
+  data:
+    redis:
+      host: your-redis-hostname
+      port: 6379
+
+  # AWS S3 ??
+aws:
+  s3:
+    bucket: this-vs-that-bucket
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ap-northeast-2
+
+  # GitHub Actions & ?? ? ???? ??
+#  config:
+#    import: optional:classpath:/application-${spring.profiles.active}.yml
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
