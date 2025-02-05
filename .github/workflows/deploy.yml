@@ -26,7 +26,7 @@ jobs:
       - name: Build JAR file
         run: |
           chmod +x ./gradlew
-          SPRING_PROFILES_ACTIVE=prod ./gradlew build -x test
+          ./gradlew build -x test -Dspring.profiles.active=prod
 
       # 4. AWS CLI 설정
       - name: Configure AWS credentials
@@ -54,12 +54,31 @@ jobs:
           # Elastic Beanstalk 환경 업데이트
           aws elasticbeanstalk update-environment \
             --environment-name "this-vs-that-eng" \
-            --version-label "${VERSION_LABEL}"
-            --option-settings file://eb-env-options.json
+            --version-label "${VERSION_LABEL}" \
+            --option-settings Namespace=aws:elasticbeanstalk:application:environment,OptionName=SPRING_PROFILES_ACTIVE,Value=prod
 
-      # 6. 빌드 완료 시간 출력
+      # 6. Elastic Beanstalk 배포 후 대기
+      - name: Wait for Elastic Beanstalk deployment
+        run: |
+          echo "Waiting for Elastic Beanstalk deployment to complete..."
+          aws elasticbeanstalk wait environment-updated --environment-name "this-vs-that-eng"
+
+      # 7. 배포 후 애플리케이션 헬스 체크
+      - name: Check application health
+        run: |
+          echo "Checking application health..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://this-vs-that.ap-northeast-2.elasticbeanstalk.com/actuator/health)
+          
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "Application is healthy! (HTTP 200)"
+          else
+            echo "Application health check failed! (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
+
+      # 8. 빌드 완료 시간 출력
       - name: Get build completion time
         run: |
-          BUILD_TIME=$(TZ="Asia/Seoul" date +"%Y-%m-%d %H:%M:%S")  # 빌드 완료 시간 포맷 (KST)
-          echo "Build completed at $BUILD_TIME"   # 빌드 완료 시간 출력
+          BUILD_TIME=$(TZ="Asia/Seoul" date +"%Y-%m-%d %H:%M:%S")
+          echo "Build completed at $BUILD_TIME"
         shell: bash
