@@ -31,10 +31,10 @@ spring:
     show-sql: true  # SQL 로그 출력
 
   # Redis 설정
-  data:
-    redis:
-      host: your-redis-hostname
-      port: 6379
+#  data:
+#    redis:
+#      host: your-redis-hostname
+#      port: 6379
 
   # AWS S3 설정
 aws:
@@ -53,3 +53,13 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+# Spring Actuator 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health  # health 엔드포인트만 노출
+  endpoint:
+    health:
+      show-details: always  # 상세한 헬스 체크 정보 제공

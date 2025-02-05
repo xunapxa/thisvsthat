@@ -1,0 +1,7 @@
+[
+  {
+    "Namespace": "aws:elasticbeanstalk:application:environment",
+    "OptionName": "SPRING_PROFILES_ACTIVE",
+    "Value": "prod"
+  }
+]
