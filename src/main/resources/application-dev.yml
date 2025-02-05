@@ -44,10 +44,6 @@ aws:
     secret-key: ${AWS_SECRET_KEY}
     region: ap-northeast-2
 
-  # GitHub Actions & 배포 시 프로파일 설정
-#  config:
-#    import: optional:classpath:/application-${spring.profiles.active}.yml
-
 logging:
   level:
     org:
