@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -29,7 +30,7 @@ public class User {
     @Column(nullable = false, length = 16)
     private String nickname;
 
-    @Column(length = 1000)
+    @Column(length = 255)
     private String profileImageUrl;
 
     @Column(nullable = false)
@@ -62,4 +63,13 @@ public class User {
     @UpdateTimestamp
     @Column(insertable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Post> posts;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Vote> votes;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<ChatLog> chatLogs;
 }

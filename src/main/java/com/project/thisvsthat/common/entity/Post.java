@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "posts")
@@ -43,24 +44,24 @@ public class Post {
     @Column(columnDefinition = "TEXT")
     private String hashtags;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, name = "option_1")
     private String option1;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 255, name = "option_2")
     private String option2;
 
-    @Column(length = 1000)
+    @Column(length = 255, name = "option_1_image_url")
     private String option1ImageUrl;
 
-    @Column(length = 1000)
+    @Column(length = 255, name = "option_2_image_url")
     private String option2ImageUrl;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, name = "option_1_count")
     private Integer option1Count = 0;
 
     @Builder.Default
-    @Column(nullable = false)
+    @Column(nullable = false, name = "option_2_count")
     private Integer option2Count = 0;
 
     @Builder.Default
@@ -84,4 +85,10 @@ public class Post {
     @UpdateTimestamp
     @Column(insertable = false)
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private List<Vote> votes;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    private List<ChatRoom> chatRooms;
 }
