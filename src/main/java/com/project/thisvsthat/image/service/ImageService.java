@@ -17,7 +17,7 @@ public class ImageService {
 
     // 이미지 업로드 및 DB 저장 처리
     public String uploadImage(MultipartFile imageFile) throws Exception {
-        // S3에 이미지 업로드
+        // S3에 이미지 업로드 후 URL 받기
         String imageUrl = s3Service.uploadFile(imageFile);
 
         // 이미지 URL을 DB에 저장

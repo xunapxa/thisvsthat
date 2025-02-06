@@ -3,6 +3,7 @@ package com.project.thisvsthat.image.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.project.thisvsthat.image.util.FileNameGenerator;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,11 @@ public class S3Service {
     }
 
     public String uploadFile(MultipartFile file) throws IOException {
+        // 파일 확장자 추출
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+
         // Base64 UUID 기반 파일명 생성
-        String fileName = FileNameGenerator.generateBase64UUIDFileName();
+        String fileName = FileNameGenerator.generateBase64UUIDFileName(extension);
 
         // MultipartFile을 InputStream으로 변환
         InputStream inputStream = file.getInputStream();

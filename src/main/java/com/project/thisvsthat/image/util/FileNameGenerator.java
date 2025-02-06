@@ -11,13 +11,16 @@ public class FileNameGenerator {
 
     /**
      * Base64 URL Safe UUID 기반 파일명 생성
-     * @return 22자 길이의 Base64 인코딩된 UUID 문자열
+     * @param extension 원본 파일 확장자
+     * @return 확장자가 포함된 파일명 (예: abcdef123456.png)
      */
-    public static String generateBase64UUIDFileName() {
+    public static String generateBase64UUIDFileName(String extension) {
         UUID uuid = UUID.randomUUID();
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[16]);
         byteBuffer.putLong(uuid.getMostSignificantBits());
         byteBuffer.putLong(uuid.getLeastSignificantBits());
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(byteBuffer.array());
+        String base64UUID = Base64.getUrlEncoder().withoutPadding().encodeToString(byteBuffer.array());
+
+        return (extension != null && !extension.isEmpty()) ? base64UUID + "." + extension : base64UUID;
     }
 }
