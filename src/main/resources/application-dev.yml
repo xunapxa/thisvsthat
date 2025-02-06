@@ -22,7 +22,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update  # 개발 환경: update / 운영 환경: validate or none
+      ddl-auto: validate  # 엔티티와 테이블 구조가 일치하는지 검증만 수행
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
