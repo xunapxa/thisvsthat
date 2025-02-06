@@ -16,7 +16,7 @@ public class ImageController {
     // 이미지 업로드 페이지
     @GetMapping("/upload")
     public String showUploadForm() {
-        return "image/uploadForm";  // 업로드 페이지
+        return "image/upload-form";  // 업로드 페이지
     }
 
     // 이미지 업로드 처리
@@ -31,6 +31,6 @@ public class ImageController {
         } catch (Exception e) {
             model.addAttribute("message", "이미지 업로드 실패: " + e.getMessage());
         }
-        return "image/uploadResult";  // 업로드 후 결과 페이지
+        return "image/upload-result";  // 업로드 후 결과 페이지
     }
 }
