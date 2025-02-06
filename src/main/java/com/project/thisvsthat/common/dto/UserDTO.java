@@ -23,7 +23,6 @@ public class UserDTO {
     private Gender gender;
     private SocialType socialType;
     private String socialId;
-    private Integer reportCount;
     private UserStatus userStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -38,7 +37,6 @@ public class UserDTO {
                 user.getGender(),
                 user.getSocialType(),
                 user.getSocialId(),
-                user.getReportCount(),
                 user.getUserStatus(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()

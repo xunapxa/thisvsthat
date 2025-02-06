@@ -48,10 +48,6 @@ public class User {
     private String socialId;
 
     @Builder.Default
-    @Column
-    private Integer reportCount = 0;
-
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private UserStatus userStatus = UserStatus.ACTIVE;
