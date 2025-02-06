@@ -1,8 +1,6 @@
 package com.project.thisvsthat.image.controller;
 
-import com.project.thisvsthat.image.service.S3Service;
-import com.project.thisvsthat.common.entity.ImageEntity;
-import com.project.thisvsthat.common.repository.ImageRepository;
+import com.project.thisvsthat.image.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,28 +11,20 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageController {
 
     @Autowired
-    private S3Service s3Service;
+    private ImageService imageService;
 
-    @Autowired
-    private ImageRepository imageRepository;
-
-    // 이미지 업로드 폼
+    // 이미지 업로드 페이지
     @GetMapping("/upload")
     public String showUploadForm() {
-        return "image/uploadForm";  // 업로드 폼 HTML 페이지
+        return "image/uploadForm";  // 업로드 페이지
     }
 
     // 이미지 업로드 처리
     @PostMapping("/upload")
     public String handleImageUpload(@RequestParam("imageFile") MultipartFile imageFile, Model model) {
         try {
-            // S3에 이미지 업로드
-            String imageUrl = s3Service.uploadFile(imageFile);
-
-            // 이미지 URL을 DB에 저장
-            ImageEntity imageEntity = new ImageEntity();
-            imageEntity.setImageUrl(imageUrl);
-            imageRepository.save(imageEntity);
+            // 이미지 업로드 및 DB 저장
+            String imageUrl = imageService.uploadImage(imageFile);
 
             model.addAttribute("message", "이미지가 성공적으로 업로드되었습니다.");
             model.addAttribute("imageUrl", imageUrl);  // 업로드된 이미지 URL 반환
