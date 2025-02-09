@@ -59,7 +59,7 @@ a {
 }
 
 /* 공통 부분 - 헤더 */
-.header {
+header {
     position: fixed;
     top: 0;
     left: 0;
@@ -74,19 +74,19 @@ a {
     box-sizing: border-box;
 }
 
-.header p.logo {
+header p.logo {
     width: 40px;
     height: 40px;
     line-height: 40px;
     font-size: 30px;
 }
 
-.header a i {
+header a i {
     color: var(--font-color-basic);
 }
 
 /* 공통 부분 - 콘텐츠 레이아웃 */
-.article {
+article {
     margin-top: var(--height-header);
     padding: 20px var(--space-medium);
     width: 100%;
@@ -95,7 +95,7 @@ a {
     box-sizing: border-box;
 }
 
-.article > .section {
+article > section {
     margin-bottom: 20px;
 }
 

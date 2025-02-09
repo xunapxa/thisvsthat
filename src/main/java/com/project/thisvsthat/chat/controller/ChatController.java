@@ -10,6 +10,6 @@ public class ChatController {
 
     @GetMapping("")
     public String testView(){
-        return "test";
+        return "fragments/components";
     }
 }
