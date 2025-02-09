@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>이거?저거?</title>
 </head>
 <body>
+<!-- 작업할 공간 -->
+<div layout:fragment="content">
     <h1>Welcome to This vs That!🔥</h1>
     <h1>S e t t i n g s</h1>
+</div>
 </body>
 </html>
