@@ -28,6 +28,7 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 .inter_bold {
@@ -71,7 +72,6 @@ header {
     height: var(--height-header);
     background-color: var(--color-white);
     border-bottom: 1px solid #EFEFF0;
-    box-sizing: border-box;
 }
 
 header p.logo {
@@ -92,7 +92,6 @@ article {
     width: 100%;
     height: auto;
     min-height: calc(100vh - 40px);
-    box-sizing: border-box;
 }
 
 article > section {
@@ -164,6 +163,7 @@ span {
 /* input */
 input {
     height: var(--height-large);
+    border: 1px solid #555;
     border-radius: var(--border-radius);
 }
 
@@ -173,7 +173,6 @@ input {
     width: 100%;
     height: 200px;
     border-radius: var(--border-radius);
-    box-sizing: border-box;
 }
 
 /* radio button*/
@@ -313,7 +312,6 @@ label span {
     min-height: 300px;
     background-color: var(--color-white);
     border-radius: var(--border-radius-popup);
-    box-sizing: border-box;
     z-index: 999;
 }
 
@@ -378,6 +376,14 @@ label span {
 
 
 /* admin - 장혜림 시작 */
+.admin_header {
+    position: inherit;
+}
+
+.admin_header + article {
+    margin-top: 0;
+}
+
 .this_vs_that {
     width: 100%;
     text-align: center;
@@ -389,17 +395,72 @@ label span {
     background-clip: text;
     text-fill-color: transparent;
     animation: animatedTextGradient 3s linear infinite;
-  }
+}
+
+.admin_section {
+    margin-bottom: 80px;
+}
   
 .admin_top_box {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.admin_top_box div {
+    display: flex;
+}
+
+article .admin_section:not(:first-child) .admin_bottom_box, .keyword_box {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: start;
+    padding: var(--space-medium);
+    width: 100%;
+    height: 300px;
+    border: 1px solid #333;
+    border-radius: var(--border-radius);
+    overflow-y: auto;
+}
+
+.keyword_box {
+    height: 200px;
+}
+
+.keyword, .bastard_user {
+    margin-right: var(--space-medium);
+    margin-bottom: var(--space-medium);
+    width: auto;
+    height: 20px;
+    line-height: 20px;
+    padding: 9px 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    box-sizing: content-box;
+    transition: all 0.25s ease-in-out;
+    cursor: pointer;
+}
+
+:is(.admin_selected, .keyword:hover, .bastard_user:hover) {
+    border: 1px solid var(--main-color-orange);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.19), 0 5px 5px rgba(0, 0, 0, 0.23);
+}
+
+.admin_add_box {
+        display: flex;
+        justify-content: end;
+        margin-top: 10px;
+}
+
+.admin_add_box input {
+    margin-right: var(--space-medium);
 }
 
 
-
-
-
+.admin_bottom_box .choose_section {
+    margin: 0 var(--space-medium) var(--space-medium) 0;
+}
 
   @keyframes animatedTextGradient {
     to {
