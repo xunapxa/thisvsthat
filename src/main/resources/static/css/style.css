@@ -1,0 +1,413 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --height-large: 38px;
+    --height-medium: 36px;
+    --height-small: 24px;
+    --main-color-blue: #91C1F0;
+    --main-color-orange: #F0C091;
+    --main-color-pink: #F38688;
+    --main-color-gray: #AFB1B6;
+    --main-color-gray-light: #EFEFF0;
+    --main-color-brown: #827467;
+    --color-white: white;
+    --font-color-basic: #19191B;
+    --font-color-gray: #858585;
+    --font-size: 14px;
+    --font-size-large: 16px;
+    --border-radius: 8px;
+    --border-radius-popup: 16px;
+    --dim-color: #808080;
+    --opacity: 0.5;
+    --radio-or-check: 24px;
+    --space-small: 5px;
+    --space-medium: 10px;
+    --height-header: 50px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.inter_bold {
+    font-family: "Inter Tight", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+}
+
+button, img {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    line-height: 80px;
+    text-align: center;
+    font-size: 50px;
+    font-weight: bold;
+    color: var(--color-white);
+    background-image: linear-gradient(130deg, rgba(145, 193, 240, 1) 20%, rgba(240, 192, 145, 1) 80%);
+    border-radius: 50%;
+    border-bottom-right-radius: 0;
+}
+
+/* 공통 부분 - 헤더 */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--space-medium);
+    width: 100%;
+    height: var(--height-header);
+    background-color: var(--color-white);
+    border-bottom: 1px solid #EFEFF0;
+    box-sizing: border-box;
+}
+
+.header p.logo {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 30px;
+}
+
+.header a i {
+    color: var(--font-color-basic);
+}
+
+/* 공통 부분 - 콘텐츠 레이아웃 */
+.article {
+    margin-top: var(--height-header);
+    padding: 20px var(--space-medium);
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 40px);
+    box-sizing: border-box;
+}
+
+.article > .section {
+    margin-bottom: 20px;
+}
+
+
+/* 말줄임 css */
+.shorten {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 버튼 */
+[class^=btn_] {
+    margin: 0;
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--border-radius);
+}
+
+.btn_large {
+    padding: 0 17px;
+    width: auto;
+    height: var(--height-large);
+}
+
+.btn_medium {
+    padding: 0 var(--space-medium);
+    height: var(--height-medium);
+}
+
+/* 버튼 2개 있을 때 */
+[class^=btn_]:not(:only-child):first-child {
+    margin-right: var(--space-small);
+}
+
+span {
+    font-size: var(--font-size);
+    color: var(--color-white);
+}
+
+/* 백그라운드 컬러 */
+.bg_blue {
+    background-color: var(--main-color-blue);
+}
+
+.bg_orange {
+    background-color: var(--main-color-orange);
+}
+
+.bg_pink {
+    background-color: var(--main-color-pink);
+}
+
+.bg_gray {
+    background-color: var(--main-color-gray);
+}
+
+.bg_gray_light {
+    background-color: var(--main-color-gray-light);
+}
+
+.bg_brown {
+    background-color: var(--main-color-brown);
+}
+
+/* input */
+input {
+    height: var(--height-large);
+    border-radius: var(--border-radius);
+}
+
+/* textarea */
+.textarea {
+    padding: var(--space-medium);
+    width: 100%;
+    height: 200px;
+    border-radius: var(--border-radius);
+    box-sizing: border-box;
+}
+
+/* radio button*/
+fieldset {
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+fieldset label {
+    display: flex;
+    align-items: center;
+    margin-right: var(--space-medium);
+    height: var(--height-large);
+}
+
+fieldset:has(label:nth-child(3)) {
+    justify-content: center;
+}
+
+fieldset label input[type='radio'] {
+    margin-right: var(--space-small);
+    width: var(--radio-or-check);
+    height: var(--radio-or-check);
+    border: 2px solid var(--main-color-blue);
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+}
+
+fieldset label input[type='radio']:checked {
+background-color: var(--main-color-blue);
+border: 3px solid white;
+box-shadow: 0 0 0 1.6px var(--main-color-blue);
+}
+
+fieldset label:nth-child(2) [type='radio'] {
+    border: 2px solid var(--main-color-gray);
+}
+
+fieldset label:nth-child(2) [type='radio']:checked {
+    background-color: var(--main-color-gray);
+    box-shadow: 0 0 0 1.6px var(--main-color-gray);
+}
+
+fieldset label:last-child [type='radio'] {
+    border: 2px solid var(--main-color-orange);
+}
+fieldset label:last-child [type='radio']:checked {
+    background-color: var(--main-color-orange);
+    box-shadow: 0 0 0 1.6px var(--main-color-orange);
+}
+
+label span {
+    color: var(--font-color-basic);
+}
+
+/* 양자택일 ui */
+.choose_section {
+    padding: var(--space-small);
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+}
+
+.choose_top_box {
+    display: flex;
+    margin-bottom: var(--space-medium);
+}
+
+.choose_top_box:has(a) {
+    margin-bottom: var(--space-small);
+}
+
+.choose_top_box img {
+    border-radius: var(--border-radius);
+}
+
+.choose_top_box a, .choose_total img {
+    width: calc(50% - 2.5px);
+}
+
+.choose_top_box a img {
+    width: 100%;
+}
+
+:is(.choose_top_box img, .choose_top_box a, .btn_box):not(:last-child) {
+    margin-right: var(--space-small);
+}
+
+.choose_bottom_box p {
+    margin-bottom: var(--space-small);
+    font-size: var(--font-size-large);
+    color: var(--font-color-basic);
+}
+
+.choose_bottom_box p:last-child {
+    margin-bottom: 0;
+}
+
+.choose_bottom_box p:nth-child(2) {
+    text-align: center;
+    color: var(--font-color-gray);
+    font-size: var(--font-size-large);
+}
+
+.choose_bottom_box fieldset label {
+    justify-content: center;
+    width: calc(50% - 2.5px);
+}
+
+.btn_box {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-small);
+}
+
+/* 딤 bg */
+.popup_section {
+    display: none;
+}
+
+.dim_box {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--dim-color);
+    opacity: var(--opacity);
+    z-index: 10;
+}
+
+[class$=popup_box] {
+    padding: var(--space-medium);
+    height: auto;
+    min-height: 300px;
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-popup);
+    box-sizing: border-box;
+    z-index: 999;
+}
+
+.popup_box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 80%;
+    transform: translate(-50%, -50%);
+}
+
+.toast_popup_box {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.popup_top {
+    position: relative;
+    height: 50px;
+}
+
+.popup_top h2 {
+    width: 100%;
+    text-align: left;
+}
+
+.toast_popup_box .popup_top h2 {
+    text-align: center;
+}
+
+.popup_top a {
+    position: absolute;
+    top: var(--space-medium);
+    right: var(--space-medium);
+}
+
+/* 게시물 상단/하단 버튼 정렬 */
+[class^=post_section_] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.post_section_top div:not(:only-child):last-child {
+    width: 35px;
+    height: 35px;
+    background-color: var(--main-color-gray-light);
+    border-radius: 50%;
+}
+
+.post_section_bottom div {
+    display: flex;
+}
+
+.post_section_bottom div:first-child span {
+    color: var(--font-color-basic);
+}
+
+
+/* admin - 장혜림 시작 */
+.this_vs_that {
+    width: 100%;
+    text-align: center;
+    color: #000;
+    font-size: 30px;
+    font-weight: 600;
+    background: radial-gradient(circle, #91c1f0, #c8b7ed, #f2afd1, #ffb2ac, #f0c091);
+    background-size: 200% auto;
+    background-clip: text;
+    text-fill-color: transparent;
+    animation: animatedTextGradient 3s linear infinite;
+  }
+  
+.admin_top_box {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+
+
+
+
+  @keyframes animatedTextGradient {
+    to {
+      background-position: 200% center;
+    }
+  }
+/* admin - 장혜림 끝 */
+
+/* chat - 큰선아 시작 */
+
+/* chat - 큰선아 끝 */
