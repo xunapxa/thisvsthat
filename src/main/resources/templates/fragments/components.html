@@ -1,70 +1,116 @@
-    <!DOCTYPE html>
-    <html lang="ko">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@4.0.1/reset.min.css"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" integrity="sha512-oHDEc8Xed4hiW6CxD7qjbnI+B07vDdX7hEPTvn9pSZO1bcRqHp8mj9pyr+8RVC2GmtEfI2Bi9Ke9Ass0as+zpg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link rel="stylesheet" href="/css/style.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-        <script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
-        <script src="prefixfree.min.js"></script>
-        <style>
-            body {
-                margin-top: 50px;
-            }
-            h2 {
-                font-size: 25px;
-                margin-bottom: 15px;
-            }
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@4.0.1/reset.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" integrity="sha512-oHDEc8Xed4hiW6CxD7qjbnI+B07vDdX7hEPTvn9pSZO1bcRqHp8mj9pyr+8RVC2GmtEfI2Bi9Ke9Ass0as+zpg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
+    <script src="prefixfree.min.js"></script>
+    <style>
+        body {
+			margin-top: 50px;
+		}
+		h2 {
+			font-size: 25px;
+			margin-bottom: 15px;
+		}
 
-            .dont_copy {
-                margin-bottom: 15px;
-                padding: 10px;
-                border: 1px solid green;
-            }
+		.dont_copy {
+			margin-bottom: 15px;
+			padding: 10px;
+			border: 1px solid green;
+		}
 
-        </style>
-        <title>Document</title>
-    </head>
-    <body>
+    </style>
+    <title>Document</title>
+</head>
+<body>
 
+<p class="logo inter_bold">?</p>
+
+
+<h2>header</h2>
+<div class="dont_copy">
+    <header>
         <p class="logo inter_bold">?</p>
+        <a href="#1"><i class="fa-regular fa-user"></i></a>
+    </header>
+</div>
 
-        
-        <h2>header</h2>
-        <div class="dont_copy">
-            <header>
-                <p class="logo inter_bold">?</p>
-                <a href="#1"><i class="fa-regular fa-user"></i></a>
-            </header>
+<h2>button</h2>
+<div class="dont_copy">
+    <button class="btn_large bg_blue"><span>확인</span></button>
+    <button class="btn_large bg_gray"><span>취소</span></button>
+    <button class="btn_large bg_brown"><span>투표하기</span></button>
+    <button class="btn_large bg_pink"><span>채팅</span></button>
+    <button class="btn_medium bg_orange"><span>완료</span></button>
+    <button class="btn_medium bg_gray"><span>삭제</span></button>
+</div>
+
+<h2>a태그</h2>
+<!-- div.a_box로 감싸야 가로 auto 값이 적용 됩니다. -->
+<!-- a태그 안에 span 넣어도 되고 안넣어도 됩니다. 클래스만 맞게 넣어주세요. -->
+<div class="dont_copy">
+    <div class="a_box">
+        <a href="#1" class="btn_large bg_blue">확인</a>
+        <a href="#1" class="btn_medium bg_orange"><span>완료</span></a>
+    </div>
+</div>
+<h2>input</h2>
+<div class="dont_copy">
+    <input type="text" />
+</div>
+
+<h2>textarea</h2>
+<div class="dont_copy">
+    <textarea name="" id="" class="textarea"></textarea>
+</div>
+
+<h2>radio</h2>
+<div class="dont_copy">
+    <!-- 버튼 2개 필요하면 label 2개만 만들면 됩니다 :) -->
+    <fieldset>
+        <label>
+            <input type="radio" name="selectOne" value="customization" />
+            <span>사용자지정1</span>
+        </label>
+        <label>
+            <input type="radio" name="selectOne" value="customization" />
+            <span>사용자지정2</span>
+        </label>
+        <label>
+            <input type="radio" name="selectOne" value="customization" />
+            <span>사용자지정3</span>
+        </label>
+    </fieldset>
+</div>
+
+<h2>이미지+텍스트+버튼</h2>
+<div class="dont_copy" style="max-width: 400px;">
+    <section class="choose_section">
+        <a href="#1" class="choose_total">
+            <div class="choose_top_box">
+                <img src="https://placehold.co/150X150" alt=""/>
+                <img src="https://placehold.co/150X150" alt=""/>
+            </div>
+            <div class="choose_bottom_box">
+                <p class="shorten">제목이 들어갈 공간 입니다.</p>
+                <p>투표종료or투표중</p>
+            </div>
+        </a>
+    </section>
+
+    <section class="choose_section">
+        <div class="choose_top_box">
+            <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+            <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
         </div>
-
-        <h2>button</h2>
-        <div class="dont_copy">
-            <button class="btn_large bg_blue"><span>확인</span></button>
-            <button class="btn_large bg_gray"><span>취소</span></button>
-            <button class="btn_large bg_brown"><span>투표하기</span></button>
-            <button class="btn_large bg_pink"><span>채팅</span></button>
-            <button class="btn_medium bg_orange"><span>완료</span></button>
-            <button class="btn_medium bg_gray"><span>삭제</span></button>
-        </div>
-
-        <h2>input</h2>
-        <div class="dont_copy">
-            <input type="text" />
-        </div>
-
-        <h2>textarea</h2>
-        <div class="dont_copy">
-            <textarea name="" id="" class="textarea"></textarea>
-        </div>
-
-        <h2>radio</h2>
-        <div class="dont_copy">
-            <!-- 버튼 2개 필요하면 label 2개만 만들면 됩니다 :) -->
+        <div class="choose_bottom_box">
             <fieldset>
                 <label>
                     <input type="radio" name="selectOne" value="customization" />
@@ -74,96 +120,59 @@
                     <input type="radio" name="selectOne" value="customization" />
                     <span>사용자지정2</span>
                 </label>
-                <label>
-                    <input type="radio" name="selectOne" value="customization" />
-                    <span>사용자지정3</span>
-                </label>
             </fieldset>
         </div>
+        <div class="btn_box">
+            <button class="btn_large bg_brown"><span>투표하기</span></button>
+        </div>
+    </section>
+</div>
 
-        <h2>이미지+텍스트+버튼</h2>
-        <div class="dont_copy" style="max-width: 400px;">
-            <section class="choose_section">
-                <a href="#1" class="choose_total">
-                    <div class="choose_top_box">
-                        <img src="https://placehold.co/150X150" alt=""/>
-                        <img src="https://placehold.co/150X150" alt=""/>
-                    </div>
-                    <div class="choose_bottom_box">
-                        <p class="shorten">제목이 들어갈 공간 입니다.</p>
-                        <p>투표종료or투표중</p>
-                    </div>
-                </a>
-            </section>
-            
-            <section class="choose_section">
-                <div class="choose_top_box">
-                    <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
-                    <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
-                </div>
-                <div class="choose_bottom_box">
-                    <fieldset>
-                        <label>
-                            <input type="radio" name="selectOne" value="customization" />
-                            <span>사용자지정1</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="selectOne" value="customization" />
-                            <span>사용자지정2</span>
-                        </label>
-                    </fieldset>
-                </div>
-                <div class="btn_box">
-                    <button class="btn_large bg_brown"><span>투표하기</span></button>
-                </div>
-            </section>
+<h2>dim (popup_section - display:none/block) </h2>
+<div class="dont_copy">
+    <section class="popup_section">
+        <div class="dim_box"></div>
+
+        <div class="popup_box">
+            <div class="popup_top">
+                <h2>팝업 타이틀 영역 입니다.</h2>
+                <a href="#1"><i class="fa-solid fa-xmark"></i></a>
+            </div>
         </div>
 
-        <h2>dim (popup_section - display:none/block) </h2>
-        <div class="dont_copy">
-            <section class="popup_section">
-                <div class="dim_box"></div>
-                
-                <div class="popup_box">
-                    <div class="popup_top">
-                        <h2>팝업 타이틀 영역 입니다.</h2>
-                        <a href="#1"><i class="fa-solid fa-xmark"></i></a>
-                    </div>    
-                </div>
-
-                <div class="toast_popup_box">
-                    <div class="popup_top">
-                        <h2>팝업 타이틀 영역 입니다.</h2>
-                        <a href="#1"><i class="fa-solid fa-xmark"></i></a>
-                    </div>
-                </div>
-            </section>
+        <div class="toast_popup_box">
+            <div class="popup_top">
+                <h2>팝업 타이틀 영역 입니다.</h2>
+                <a href="#1"><i class="fa-solid fa-xmark"></i></a>
+            </div>
         </div>
+    </section>
+</div>
 
-        <h2>게시물 상단 정렬</h2>
-        <div class="dont_copy">
-            <section class="post_section_top">
-                <div><i class="fa-solid fa-chevron-left"></i></div>
-                <div><i></i></div>
-            </section>
-            
-        </div>
+<h2>게시물 상단 정렬</h2>
+<div class="dont_copy">
+    <section class="post_section_top">
+        <div><i class="fa-solid fa-chevron-left"></i></div>
+        <div><i></i></div>
+    </section>
 
-        <h2>게시물 하단 버튼 정렬</h2>
-        <div class="dont_copy">
-            <section class="post_section_bottom">
-                <div>
-                    <button class="btn_large bg_gray_light"><span>수정</span></button>
-                    <button class="btn_large bg_gray_light"><span>삭제</span></button>
-                </div>
-                <div>
-                    <button class="btn_large bg_pink"><span>채팅</span></button>
-                </div>
-            </section>
-        </div>
+</div>
 
-        <h2>empty</h2>
-        <div class="dont_copy">
+<h2>게시물 하단 버튼 정렬</h2>
+<div class="dont_copy">
+    <section class="post_section_bottom">
+        <div>
+            <button class="btn_large bg_gray_light"><span>수정</span></button>
+            <button class="btn_large bg_gray_light"><span>삭제</span></button>
         </div>
-    </body>
-    </html>
+        <div>
+            <button class="btn_large bg_pink"><span>채팅</span></button>
+        </div>
+    </section>
+</div>
+
+<h2>empty</h2>
+<div class="dont_copy">
+</div>
+</body>
+</html>
