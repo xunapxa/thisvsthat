@@ -18,15 +18,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // 블라인드 상태 글 조회
     List<Post> findByPostStatus(PostStatus postStatus);
 
-    // 신고글 수정 기능
+    // 여러 개의 게시글을 ACTIVE 상태로 변경 (복구)
     @Transactional
     @Modifying
-    @Query("UPDATE Post p SET p.postStatus = 'ACTIVE', p.reportCount = 0 WHERE p.postId = :postId AND p.postStatus = 'BLINDED'")
-    int restorePost(@Param("postId") Long postId);
+    @Query("UPDATE Post p SET p.postStatus = 'ACTIVE', p.reportCount = 0 WHERE p.postId IN :postIds AND p.postStatus = 'BLINDED'")
+    int restoreMultiplePosts(@Param("postIds") List<Long> postIds);
 
-    // 신고 글 삭제 기능(상태 변경)
+    // 여러 개의 게시글을 DELETED 상태로 변경 (삭제)
     @Transactional
     @Modifying
-    @Query("UPDATE Post p SET p.postStatus = 'DELETED' WHERE p.postId = :postId AND p.postStatus = 'BLINDED'")
-    int deletePost(@Param("postId") Long postId);
+    @Query("UPDATE Post p SET p.postStatus = 'DELETED' WHERE p.postId IN :postIds AND p.postStatus = 'BLINDED'")
+    int deleteMultiplePosts(@Param("postIds") List<Long> postIds);
 }
