@@ -32,17 +32,15 @@ public class AdminController {
         return "admin/admin";
     }
 
-    // 신고 글 복구
-    @PostMapping("/restore")
-    public String restorePost(@RequestParam Long postId) {
-        adminService.restorePost(postId);
-        return "redirect:admin/";
+    // 선택된 게시글을 일괄 복구 또는 삭제
+    @PostMapping("/updateMultiplePostStatus")
+    public String updateMultiplePostStatus(@RequestParam(value = "postIds") List<Long> postIds, @RequestParam(value = "actionType") String actionType) {
+        if ("restore".equals(actionType)) {
+            adminService.restorePosts(postIds);
+        } else if ("delete".equals(actionType)) {
+            adminService.deletePosts(postIds);
+        }
+        return "redirect:/admin/";  // 변경 후 새로고침
     }
 
-    //신고 글 삭제
-    @PostMapping("/delete")
-    public String deletePost(@RequestParam Long postId) {
-        adminService.deletePost(postId);
-        return  "redirect:admin/";
-    }
 }

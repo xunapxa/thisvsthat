@@ -30,15 +30,15 @@ public class AdminService {
         return postRepository.findByPostStatus(PostStatus.BLINDED);
     }
 
-    // 신고 글 복구
+    // 선택된 게시글 일괄 복구
     @Transactional
-    public void restorePost(Long postId) {
-        postRepository.restorePost(postId);
+    public void restorePosts(List<Long> postIds) {
+        postRepository.restoreMultiplePosts(postIds);
     }
 
-    // 신고 글 삭제
+    // 선택된 게시글 일괄 삭제
     @Transactional
-    public void deletePost(Long postId) {
-        postRepository.deletePost(postId);
+    public void deletePosts(List<Long> postIds) {
+        postRepository.deleteMultiplePosts(postIds);
     }
 }
