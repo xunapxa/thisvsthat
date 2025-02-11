@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@4.0.1/reset.min.css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" integrity="sha512-oHDEc8Xed4hiW6CxD7qjbnI+B07vDdX7hEPTvn9pSZO1bcRqHp8mj9pyr+8RVC2GmtEfI2Bi9Ke9Ass0as+zpg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" th:href="@{/css/style.css}">
+	<link rel="stylesheet" th:href="@{/css/admin.css}">
+	<script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
+	<script th:src="@{/js/prefixfree.min.js}"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	<script th:src="@{/js/admin.js}"></script>
+	<title>관리자 페이지</title>
+</head>
+<body>
+<header class="admin_header">
+	<p class="this_vs_that">This vs That</p>
+</header>
+<article>
+	<section class="admin_section">
+		<div class="admin_top_box">
+			<h2>금지키워드</h2>
+			<button class="btn_large bg_gray"><span>삭제</span></button>
+		</div>
+		<div class="admin_bottom_box">
+			<div class="keyword_box">
+				<div class="keyword admin_selected">금지키워드</div>
+				<div class="keyword">나쁜</div>
+			</div>
+			<div class="admin_add_box">
+				<input type="text" />
+				<button class="btn_large bg_pink"><span>추가</span></button>
+			</div>
+		</div>
+	</section>
+
+	<section class="admin_section">
+		<div class="admin_top_box">
+			<h2>신고 글 관리</h2>
+			<div>
+				<form id="postForm" th:action="@{/admin/updateMultiplePostStatus}" method="post">
+					<div id="postIdsContainer"></div>
+					<input type="hidden" id="actionTypeInput" name="actionType">
+					<button class="btn_large bg_blue" type="button" onclick="submitForm('restore')"><span>복구</span></button>
+					<button class="btn_large bg_orange" type="button" onclick="submitForm('delete')"><span>삭제</span></button>
+				</form>
+			</div>
+		</div>
+		<div class="admin_bottom_box">
+			<section class="choose_section" th:each="post : ${posts}" th:attr="data-post-id=${post.postId}" onclick="toggleSelection(this)">
+				<a href="#1" class="choose_total">
+					<div class="choose_top_box">
+						<img src="https://placehold.co/150X150" th:text="${post.option1ImageUrl}" alt=""/>
+						<img src="https://placehold.co/150X150" th:text="${post.option2ImageUrl}" alt=""/>
+					</div>
+					<div class="choose_bottom_box">
+						<p class="shorten" th:text="${post.title}">제목이 들어갈 공간 입니다.</p>
+						<p class="shorten" th:text="${post.content}">내용이 들어갈 공간 입니다.</p>
+						<div>신고 수 : <p class="shorten" th:text="${post.reportCount}"></p></div>
+					</div>
+				</a>
+			</section>
+		</div>
+	</section>
+
+	<section class="admin_section">
+		<div class="admin_top_box">
+			<h2>회원 관리</h2>
+			<div>
+				<button class="btn_large bg_blue"><span>복구</span></button>
+				<button class="btn_large bg_orange"><span>차단</span></button>
+			</div>
+		</div>
+		<div class="admin_bottom_box">
+			<section class="choose_section bastard_user" th:each="user : ${users}">유저 닉네임:
+				<p th:text="${user.nickname}"></p>
+				<p th:text="${user.userId}"></p>
+			</section>
+		</div>
+	</section>
+</article>
+</body>
+</html>

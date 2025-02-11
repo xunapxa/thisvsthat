@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+/* index - 하진희 시작 */
+.main_article {
+    min-height: calc(100vh - 50px);
+}
+
+.search_form select {
+    height: var(--height-large);
+    border-radius: var(--border-radius);
+    border: 1px solid #555;
+}
+
+.search_form input {
+    width: calc(100% - 100px);
+}
+
+.admin_top_box {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.keyword_box {
+	display: flex;
+	gap: 12px;
+}
+
+.keyword {
+	padding: 10px;
+	color: var(--font-color-basic);
+	box-shadow: 0 0 0 2px #555 inset;
+	border-radius: 20px;
+}
+
+.keyword.active {
+    color: #fff;
+    background: rgb(145,193,240);
+    background: linear-gradient(90deg, rgba(145,193,240,1) 0%, rgba(240,192,145,1) 64%);
+    box-shadow : none;
+}
+
+.choose_img{
+    width: 100%;
+    height:200px;
+    object-fit: cover;
+}
+
+.fixed {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.fixed a {
+    border-radius: 50%;
+    background: rgb(145,193,240);
+    background: linear-gradient(90deg, rgba(145,193,240,1) 0%, rgba(240,192,145,1) 64%);
+    text-align: center;
+    display: inline-block;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    color: #fff;
+}
+
+.margin_bottom10 {
+    margin-bottom: 10px;
+}
+/* index - 하진희 끝 */
