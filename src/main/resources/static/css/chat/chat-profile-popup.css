@@ -1,0 +1,64 @@
+.popup_header {
+  position: relative;
+  display: flex;
+  height: 45px;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #5C5C5C;
+}
+
+.close_popup_btn {
+  position: absolute;
+  right: 10px;
+}
+
+.popup_content{
+  text-align: center;
+}
+
+.profile_image_wrapper {
+  width: 70px;
+  height: 70px;
+  position: relative;
+  display: flex;
+  margin: 15px auto 0 auto;
+}
+
+.profile_image {
+  border-radius: 50%;
+}
+
+.image_edit_icon {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-color: #C2C2C2;
+  opacity: 80%;
+  padding: 5px;
+  color: var(--color-white);
+  border-radius: 50%;
+}
+
+.chat_nickname_input {
+  border: none;
+  border-bottom: 1px solid var(--font-color-gray);
+  outline: none;
+  border-radius: 0;
+  text-align: center;
+  width: 260px;
+  color: var(--font-color-gray);
+}
+
+.char_count_display {
+  display: flex;
+  font-size: small;
+  width: 260px;
+  margin: auto;
+  justify-content: flex-end;
+  color: var(--font-color-gray);
+}
+
+.btn_join_chat {
+  margin: 5px auto 15px auto;
+  background-color: var(--font-color-gray);
+}

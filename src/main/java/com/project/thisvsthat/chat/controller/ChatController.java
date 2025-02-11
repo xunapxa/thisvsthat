@@ -10,6 +10,6 @@ public class ChatController {
 
     @GetMapping("")
     public String testView(){
-        return "fragments/components";
+        return "chat/chat-profile-popup";
     }
 }

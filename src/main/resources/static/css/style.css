@@ -308,9 +308,7 @@ label span {
 }
 
 [class$=popup_box] {
-    padding: var(--space-medium);
     height: auto;
-    min-height: 300px;
     background-color: var(--color-white);
     border-radius: var(--border-radius-popup);
     box-sizing: border-box;
@@ -332,6 +330,9 @@ label span {
     width: 100%;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    transform: translateY(100%);
+    transition: transform 0.5s ease-in-out;
+
 }
 
 .popup_top {
@@ -407,7 +408,3 @@ label span {
     }
   }
 /* admin - 장혜림 끝 */
-
-/* chat - 큰선아 시작 */
-
-/* chat - 큰선아 끝 */
