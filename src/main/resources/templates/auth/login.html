@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@4.0.1/reset.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" integrity="sha512-oHDEc8Xed4hiW6CxD7qjbnI+B07vDdX7hEPTvn9pSZO1bcRqHp8mj9pyr+8RVC2GmtEfI2Bi9Ke9Ass0as+zpg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/prefixfree.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script th:src="@{/js/auth.js}"></script>
+    <title>Login</title>
+</head>
+<body>
+<section class="auth-container">
+    <div class="logo-container">
+        <p class="logo inter_bold">?</p>
+    </div>
+
+    <div class="auth-options">
+        <button class="bg_gray_light">
+            <img th:src="@{/images/common/logo-google.png}" alt="Google">Google로 계속하기
+        </button>
+        <button>
+            <img th:src="@{/images/common/logo-kakao.png}" alt="Kakao">Kakao로 계속하기
+        </button>
+        <button>
+            <img th:src="@{/images/common/logo-naver.png}" alt="Naver">Naver로 계속하기
+        </button>
+    </div>
+
+    <p class="auth-agreement">
+        다음 단계로 진행하시면, 귀하는 <a class="no-flex" href="#">서비스 약관</a>에 동의하며,
+        <a class="no-flex" href="#">쿠키 정책</a>을 포함한 <a class="no-flex" href="#">개인정보 처리방침</a>을 읽고 동의하신 것으로 간주됩니다.
+    </p>
+</section>
+</body>
+</html>

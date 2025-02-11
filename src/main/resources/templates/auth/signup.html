@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@4.0.1/reset.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" integrity="sha512-oHDEc8Xed4hiW6CxD7qjbnI+B07vDdX7hEPTvn9pSZO1bcRqHp8mj9pyr+8RVC2GmtEfI2Bi9Ke9Ass0as+zpg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/prefixfree.min.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script th:src="@{/js/auth.js}"></script>
+    <title>SignUp</title>
+</head>
+<body>
+<fieldset class="auth-container signup-container">
+    <div class="signup-message-box">
+        <p class="auth-title">회원가입을 위해<br>정보를 입력해주세요.</p>
+        <p class="auth-description">필수 입력 사항</p>
+    </div>
+
+    <form class="signup-form">
+        <!-- 닉네임 입력 -->
+        <div class="input-group">
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력">
+            <div class="input-underline"></div>
+            <p class="input-guide">한글, 영문, 숫자, 언더바(_), 하이픈(-), 공백</p>
+        </div>
+
+        <!-- 생년월일 입력 -->
+        <div class="input-group">
+            <input type="text" id="birthdate" name="birthdate" placeholder="생년월일 입력" pattern="\d{4}-\d{2}-\d{2}" maxlength="10">
+            <div class="input-underline"></div>
+            <p class="input-guide">예: 1995-07-24</p>
+        </div>
+
+        <!-- 성별 선택 -->
+        <div class="gender-container">
+            <div class="gender-group">
+                <span class="input-label">성별</span>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="gender" value="female" checked>
+                        <span>여성</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="gender" value="male">
+                        <span>남성</span>
+                    </label>
+                </div>
+            </div>
+            <div class="input-underline"></div>
+        </div>
+    </form>
+
+    <div class="empty-space"></div>
+
+    <!-- 가입하기 버튼 -->
+    <div class="auth-options">
+        <button class="bg_gray_light" type="submit">
+            가입하기
+        </button>
+    </div>
+</fieldset>
+</body>
+</html>
