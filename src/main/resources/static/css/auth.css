@@ -1,0 +1,240 @@
+/* auth - 킴가 시작 */
+/* 기본 레이아웃 */
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 30px 10px;
+}
+
+/* 로고 컨테이너 */
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 382px;
+}
+
+/* 로고 */
+.logo {
+    align-self: flex-start;
+}
+
+/* 로그인 버튼 그룹 */
+.auth-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 30px;
+    max-width: 382px;
+}
+
+/* 로그인 버튼 */
+.auth-options button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    height: var(--height-xlarge);
+    line-height: var(--height-xlarge);
+    border-radius: var(--border-radius);
+    border: none;
+    font-size: var(--font-size);
+    color: var(--font-color-basic);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 제목 */
+.auth-title {
+    font-size: var(--font-size-xlarge);
+    color: var(--font-color-basic);
+    font-weight: bold;
+}
+
+/* 설명 */
+.auth-description {
+    font-size: var(--font-size-large);
+    font-weight: bold;
+    color: var(--font-color-gray-light);
+}
+
+/* login.html 시작 */
+/* 로그인 버튼 이미지 */
+.auth-options button img {
+    width: 23px;
+    height: 23px;
+}
+
+/* 약관 동의 문구 */
+.auth-agreement {
+    font-size: var(--font-size-small);
+    color: var(--font-color-gray-light);
+    text-align: center;
+    line-height: 1.7;
+}
+
+/* 약관 동의 문구 링크 */
+.auth-agreement a {
+    color: var(--font-color-basic);
+    text-decoration: underline;
+    display: inline;
+}
+/* login.html 끝 */
+
+/* signup.html 시작 */
+/* 회원가입 레이아웃 */
+.signup-container {
+    padding: 60px 10px;
+}
+
+/* 회원가입 상단 텍스트 박스 */
+.signup-message-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 382px;
+    gap: 30px;
+}
+
+/* 회원가입 상단 텍스트 */
+.signup-message-box p {
+    width: 100%;
+    text-align: left;
+    line-height: 1.3;
+}
+
+/* 전체 입력 필드 폼 */
+.signup-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 382px;
+    width: 100%;
+    gap: 30px;
+}
+
+/* 개별 입력 필드 그룹 */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* 닉네임, 생년월일 placeholder */
+.input-group input::placeholder {
+    color: var(--font-color-gray);
+    font-size: var(--font-size);
+}
+
+/* 입력 필드 */
+.input-group input {
+    width: 100%;
+    font-size: var(--font-size);
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+/* 인풋 밑줄 */
+.input-underline {
+    width: 100%;
+    height: 1px;
+    background-color: var(--main-color-gray);
+}
+
+/* 입력 안내 문구 */
+.input-guide {
+    font-size: var(--font-size-small);
+    color: var(--font-color-gray-light);
+    margin-top: 5px;
+}
+
+/* 성별 선택 컨테이너 */
+.gender-container {
+    width: 100%;
+}
+
+/* 성별 선택 */
+.gender-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    gap: 20px;
+}
+
+/* 성별 라벨 스타일 */
+.gender-group .input-label {
+    font-size: var(--font-size);
+    color: var(--font-color-gray);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* 라디오 버튼 그룹 */
+.radio-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+/* 라디오 버튼 텍스트 색상 */
+.signup-form .radio-group label span {
+    color: var(--font-color-gray) !important;
+}
+
+/* 기존 style.css의 라디오 버튼 덮어쓰기 */
+.radio-group label:first-child input[type="radio"] {
+    border: 2px solid var(--main-color-blue) !important;
+}
+
+.radio-group label:first-child input[type="radio"]:checked {
+    background-color: var(--main-color-blue) !important;
+    border: 3px solid white !important;
+    box-shadow: 0 0 0 1.6px var(--main-color-blue) !important;
+}
+
+.radio-group label:last-child input[type="radio"] {
+    border: 2px solid var(--main-color-orange) !important;
+}
+
+.radio-group label:last-child input[type="radio"]:checked {
+    background-color: var(--main-color-orange) !important;
+    border: 3px solid white !important;
+    box-shadow: 0 0 0 1.6px var(--main-color-orange) !important;
+}
+/* signup.html 끝 */
+
+/* social-mismatch.html 시작 */
+/* 소셜 타입 불일치 박스 */
+.social-mismatch-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 382px;
+    gap: 30px;
+}
+
+/* 소셜 타입 불일치 텍스트 */
+.social-mismatch-box p {
+    width: 100%;
+    text-align: center;
+    line-height: 1.7;
+}
+
+/* 위치 조정용 빈 박스 */
+.empty-space {
+    height: var(--height-xlarge);
+}
+/* social-mismatch.html 끝 */
