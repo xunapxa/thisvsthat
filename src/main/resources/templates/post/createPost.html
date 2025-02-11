@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/post.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>새 글 작성</title>
+</head>
+<body>
+<!-- 작업할 공간 -->
+<div layout:fragment="content">
+    <article>
+        <section class="post_section_top">
+            <div><i class="fa-solid fa-chevron-left"></i></div>
+            <div><i></i></div>
+        </section>
+        <section class="post_create_section">
+            <h2>카테고리</h2>
+            <div class="admin_bottom_box"> <!-- 이 부분 수정 하기 -->
+                <div class="keyword_box">
+                    <div class="keyword">자유</div>
+                    <div class="keyword">고민</div>
+                    <div class="keyword">토론</div>
+                </div>
+            </div>
+        </section>
+        <section class="post_create_section">
+            <h2>제목</h2>
+            <div class="post_create_input">
+                <input type="text"/>
+            </div>
+        </section>
+        <section class="post_create_section">
+            <h2>내용</h2>
+            <div class="post_create_textarea">
+                <textarea name="" id="" class="textarea"></textarea>
+            </div>
+        </section>
+        <section class="post_choose_section post_create_section">
+            <h2>이미지 선택</h2>
+            <div class="choose_top_box">
+                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+            </div>
+        </section>
+        <section class="post_create_section">
+            <h2><a href="">설명 작성 ></a></h2>
+        </section>
+        <section class="popup_section">
+            <div class="dim_box"></div>
+            <div class="popup_box post_create_popup_box">
+                <div class="popup_top">
+                    <span>설명 작성</span>
+                    <a href="#1"><i class="fa-solid fa-xmark"></i></a>
+                </div>
+                <div class="popup_content">
+                    <label for="option1">선택지1</label>
+                    <input type="text" id="option1" placeholder="선택지1에 대한 설명을 작성하세요.">
+
+                    <label for="option2">선택지2</label>
+                    <input type="text" id="option2" placeholder="선택지2에 대한 설명을 작성하세요.">
+                </div>
+                <div class="btn_ok_box">
+                    <button class="btn_large bg_gray_light post_create_ok_btn" style="color: black;">확인</button>
+                </div>
+            </div>
+        </section>
+        <section class="post_create_section">
+            <div class="btn_box">
+                <button class="btn_large bg_gray post_create_submit_btn">등록</button>
+            </div>
+        </section>
+    </article>
+</div>
+</body>
+</html>
