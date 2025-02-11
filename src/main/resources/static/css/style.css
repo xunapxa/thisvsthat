@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
+    --height-xlarge: 44px;
     --height-large: 38px;
     --height-medium: 36px;
     --height-small: 24px;
@@ -13,8 +14,12 @@
     --color-white: white;
     --font-color-basic: #19191B;
     --font-color-gray: #858585;
+    --font-color-gray-light: #AFB1B6;
     --font-size: 14px;
+    --font-size-xlarge: 18px;
     --font-size-large: 16px;
+    --font-size-medium: 13px;
+    --font-size-small: 11px;
     --border-radius: 8px;
     --border-radius-popup: 16px;
     --dim-color: #808080;
