@@ -9,7 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class ChatController {
 
     @GetMapping("")
-    public String testView(){
-        return "fragments/components";
+    public String chatProfilePopup(){
+        return "chat/chat-profile-popup";
+    }
+
+    @GetMapping("/{chatRoomId}")
+    public String cahtRoom(){
+        return "chat/chat-room";
     }
 }
