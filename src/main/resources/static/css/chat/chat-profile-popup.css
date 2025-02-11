@@ -12,7 +12,7 @@
   right: 10px;
 }
 
-.popup_content{
+.toast_popup_content{
   text-align: center;
 }
 
@@ -52,7 +52,7 @@
 
 .char_count_display {
   display: flex;
-  font-size: small;
+  font-size: x-small;
   width: 210px;
   margin: auto;
   justify-content: flex-end;
