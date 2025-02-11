@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <link rel="stylesheet" th:href="@{/css/post.css}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 상세보기</title>
+</head>
+<body>
+<!-- 작업할 공간 -->
+<div layout:fragment="content">
+    <article>
+        <section class="post_detail_top">
+            <div><i class="fa-solid fa-chevron-left"></i></div>
+            <div><i></i></div>
+        </section>
+        <section class="post_detail_section">
+            <div class="post_detail_title">
+                <h2>민초단 VS 반민초단</h2>
+            </div>
+        </section>
+        <section class="post_detail_section">
+            <div class="post_detail_content">
+                <h2>친구랑 #민초 먹냐 안먹냐로 싸우는데
+                    솔직히 다들 민초 좋아하지 않음? 투표 부탁한다</h2>
+            </div>
+        </section>
+        <section class="post_choose_section">
+            <div class="choose_top_box">
+                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+            </div>
+            <div class="choose_bottom_box">
+                <fieldset>
+                    <label>
+                        <input type="radio" name="selectOne" value="customization"/>
+                        <span>민초단</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="selectOne" value="customization"/>
+                        <span>반민초단</span>
+                    </label>
+                </fieldset>
+            </div>
+            <div class="btn_box">
+                <button class="btn_large bg_brown"><span>투표하기</span></button>
+            </div>
+        </section>
+        <section class="post_detail_section">
+            <div class="post_detail_progress_top">
+                <h2>투표율</h2>
+                <a href="">투표종료</a>
+            </div>
+            <div class="post_detail_progress_bottom">
+
+            </div>
+        </section>
+        <section class="post_section_bottom">
+            <div>
+                <button class="btn_large bg_gray_light post_detail_btn post_detail_update_btn">수정</button>
+                <button class="btn_large bg_gray_light post_detail_btn post_detail_delete_btn">삭제</button>
+            </div>
+            <div>
+                <button class="btn_large bg_pink post_detail_btn post_detail_chat_btn">채팅</button>
+            </div>
+        </section>
+
+    </article>
+</div>
+</body>
+</html>
