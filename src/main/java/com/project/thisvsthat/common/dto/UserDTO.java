@@ -7,9 +7,11 @@ import com.project.thisvsthat.common.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 
 @Data
 @NoArgsConstructor
@@ -41,5 +43,15 @@ public class UserDTO {
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
+    }
+
+    //연령대 계산 메서드
+    public String getAgeGroup() {
+        if(birthDate == null) {
+            return "알 수 없음";
+        }
+        int age = Period.between(birthDate, LocalDate.now()).getYears();
+        int ageGroup = (age / 10) * 10;
+        return ageGroup + "대";
     }
 }
