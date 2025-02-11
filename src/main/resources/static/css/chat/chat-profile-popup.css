@@ -45,14 +45,15 @@
   outline: none;
   border-radius: 0;
   text-align: center;
-  width: 260px;
+  width: 210px;
   color: var(--font-color-gray);
+  font-size: smaller;
 }
 
 .char_count_display {
   display: flex;
   font-size: small;
-  width: 260px;
+  width: 210px;
   margin: auto;
   justify-content: flex-end;
   color: var(--font-color-gray);
@@ -61,4 +62,5 @@
 .btn_join_chat {
   margin: 5px auto 15px auto;
   background-color: var(--font-color-gray);
+  font-size: smaller;
 }
