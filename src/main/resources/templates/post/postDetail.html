@@ -3,9 +3,9 @@
       layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-    <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/post.css}">
+    <link rel="stylesheet" th:href="@{/css/chat/chat-profile-popup.css}">
+    <script src="js/chat/chat-profile-popup.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시물 상세보기</title>
 </head>
@@ -64,9 +64,47 @@
                 <button class="btn_large bg_gray_light post_detail_btn post_detail_delete_btn">삭제</button>
             </div>
             <div>
-                <button class="btn_large bg_pink post_detail_btn post_detail_chat_btn">채팅</button>
+                <button id="open-chat-profile-popup" class="btn_large bg_pink post_detail_btn post_detail_chat_btn">채팅</button>
             </div>
         </section>
+
+
+        <div id="popup-section" class="popup_section">
+            <div class="dim_box"></div>
+            <div id="toast-popup-box" class="toast_popup_box">
+                <div class="popup_header">
+                    <p>채팅프로필 설정</p>
+                    <i id="close-chat-profile-popup" class="close_popup_btn fa-solid fa-xmark"></i>
+                </div>
+                <div class="toast_popup_content">
+                    <div class="profile_image_wrapper">
+                        <img class="profile_image" src="/images/common/logo.png" alt="profile-image">
+                        <i class="fa-solid fa-pencil image_edit_icon"></i>
+                    </div>
+                    <div class="chat_nickname_wrapper">
+                        <input type="text" class="chat_nickname_input" placeholder="닉네임을 입력해주세요." maxlength="15">
+                        <p class="char_count_display"><span></span>/15</p>
+                    </div>
+                    <div class="preference_options">
+                        <fieldset>
+                            <label>
+                                <input type="radio" name="selectOne" value="blue" />
+                                <span>부먹</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="selectOne" value="neutral" checked/>
+                                <span>중립</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="selectOne" value="orange" />
+                                <span>찍먹</span>
+                            </label>
+                        </fieldset>
+                    </div>
+                    <button class="btn_medium btn_join_chat">입장하기</button>
+                </div>
+            </div>
+        </div>
 
     </article>
 </div>

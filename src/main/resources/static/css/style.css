@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
+    --height-xlarge: 44px;
     --height-large: 38px;
     --height-medium: 36px;
     --height-small: 24px;
@@ -10,11 +11,18 @@
     --main-color-gray: #AFB1B6;
     --main-color-gray-light: #EFEFF0;
     --main-color-brown: #827467;
+    --chat-color-blue: #83AED8;
+    --chat-color-gray: #929292;
+    --chat-color-orange: #D8AD83;
     --color-white: white;
     --font-color-basic: #19191B;
     --font-color-gray: #858585;
+    --font-color-gray-light: #AFB1B6;
     --font-size: 14px;
+    --font-size-xlarge: 18px;
     --font-size-large: 16px;
+    --font-size-medium: 13px;
+    --font-size-small: 11px;
     --border-radius: 8px;
     --border-radius-popup: 16px;
     --dim-color: #808080;
@@ -317,9 +325,7 @@ label span {
 }
 
 [class$=popup_box] {
-    padding: var(--space-medium);
     height: auto;
-    min-height: 300px;
     background-color: var(--color-white);
     border-radius: var(--border-radius-popup);
     z-index: 999;
@@ -340,6 +346,9 @@ label span {
     width: 100%;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+    transform: translateY(100%);
+    transition: transform 0.5s ease-in-out;
+
 }
 
 .popup_top {
