@@ -5,7 +5,23 @@ server:
       charset: utf-8
 
 spring:
-  # 데이터베이스
+  # OAuth 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile, email
+            redirect-uri: http://localhost:8080/auth/google/callback
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+
+  # 데이터베이스 설정
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://this-vs-that-db.c9kaq20smgva.ap-northeast-2.rds.amazonaws.com:5432/thisvsthatDB
@@ -36,13 +52,19 @@ spring:
 #      host: your-redis-hostname
 #      port: 6379
 
-  # AWS S3 설정
+# AWS S3 설정
 aws:
   s3:
     bucket: this-vs-that-bucket
     access-key: ${AWS_ACCESS_KEY}
     secret-key: ${AWS_SECRET_KEY}
     region: ap-northeast-2
+    default-profile-url: https://this-vs-that-bucket.s3.ap-northeast-2.amazonaws.com/IgPhYPQvR7CZgo3oOon5dQ.png
+
+# jwt 설정
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-time: 3600000  # 1시간 유지 (밀리초 단위)
 
 logging:
   level:

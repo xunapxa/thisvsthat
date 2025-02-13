@@ -11,6 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Service
 public class S3Service {
@@ -18,6 +21,9 @@ public class S3Service {
 
     @Value("${aws.s3.bucket}")
     private String bucketName;
+
+    @Value("${aws.s3.default-profile-url}") // 기본 프로필 이미지 URL
+    private String defaultProfileUrl;
 
     @Autowired
     public S3Service(AmazonS3 s3Client) {
@@ -44,5 +50,31 @@ public class S3Service {
 
         // 업로드된 파일의 S3 URL 반환
         return s3Client.getUrl(bucketName, fileName).toString();
+    }
+
+    // Google 프로필 이미지 URL을 S3에 업로드
+    public String uploadProfileImage(String imageUrl, String socialId) {
+        try {
+            if (imageUrl == null || imageUrl.isEmpty()) {
+                return defaultProfileUrl; // 빈 값일 경우 기본 이미지 반환
+            }
+
+            URL url = new URL(imageUrl);
+            InputStream inputStream = url.openStream();
+
+            // S3에 저장할 파일명 설정
+            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String fileName = "profile/" + socialId + "_" + timestamp + ".png";
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/png");
+
+            s3Client.putObject(bucketName, fileName, inputStream, metadata);
+
+            return s3Client.getUrl(bucketName, fileName).toString();
+        } catch (Exception e) {
+            System.err.println("Google 프로필 이미지 다운로드 실패: " + e.getMessage());
+            return defaultProfileUrl; // 실패 시 기본 이미지 반환
+        }
     }
 }

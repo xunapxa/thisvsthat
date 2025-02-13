@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/post.css}">
+    <link rel="stylesheet" th:href="@{/css/chat/chat-profile-popup.css}">
+    <script src="js/chat/chat-profile-popup.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시물 상세보기</title>
+</head>
+<body>
+<!-- 작업할 공간 -->
+<div layout:fragment="content">
+    <article>
+        <section class="post_detail_top">
+            <div><i class="fa-solid fa-chevron-left"></i></div>
+            <div><i></i></div>
+        </section>
+        <section class="post_detail_section">
+            <div class="post_detail_title">
+                <h2>민초단 VS 반민초단</h2>
+            </div>
+        </section>
+        <section class="post_detail_section">
+            <div class="post_detail_content">
+                <h2>친구랑 #민초 먹냐 안먹냐로 싸우는데
+                    솔직히 다들 민초 좋아하지 않음? 투표 부탁한다</h2>
+            </div>
+        </section>
+        <section class="post_choose_section">
+            <div class="choose_top_box">
+                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+            </div>
+            <div class="choose_bottom_box">
+                <fieldset>
+                    <label>
+                        <input type="radio" name="selectOne" value="customization"/>
+                        <span>민초단</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="selectOne" value="customization"/>
+                        <span>반민초단</span>
+                    </label>
+                </fieldset>
+            </div>
+            <div class="btn_box">
+                <button class="btn_large bg_brown"><span>투표하기</span></button>
+            </div>
+        </section>
+        <section class="post_detail_section">
+            <div class="post_detail_progress_top">
+                <h2>투표율</h2>
+                <a href="">투표종료</a>
+            </div>
+            <div class="post_detail_progress_bottom">
+
+            </div>
+        </section>
+        <section class="post_section_bottom">
+            <div>
+                <button class="btn_large bg_gray_light post_detail_btn post_detail_update_btn">수정</button>
+                <button class="btn_large bg_gray_light post_detail_btn post_detail_delete_btn">삭제</button>
+            </div>
+            <div>
+                <button id="open-chat-profile-popup" class="btn_large bg_pink post_detail_btn post_detail_chat_btn">채팅</button>
+            </div>
+        </section>
+
+
+        <div id="popup-section" class="popup_section">
+            <div class="dim_box"></div>
+            <div id="toast-popup-box" class="toast_popup_box">
+                <div class="popup_header">
+                    <p>채팅프로필 설정</p>
+                    <i id="close-chat-profile-popup" class="close_popup_btn fa-solid fa-xmark"></i>
+                </div>
+                <div class="toast_popup_content">
+                    <div class="profile_image_wrapper">
+                        <img class="profile_image" src="/images/common/logo.png" alt="profile-image">
+                        <i class="fa-solid fa-pencil image_edit_icon"></i>
+                    </div>
+                    <div class="chat_nickname_wrapper">
+                        <input type="text" class="chat_nickname_input" placeholder="닉네임을 입력해주세요." maxlength="15">
+                        <p class="char_count_display"><span></span>/15</p>
+                    </div>
+                    <div class="preference_options">
+                        <fieldset>
+                            <label>
+                                <input type="radio" name="selectOne" value="blue" />
+                                <span>부먹</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="selectOne" value="neutral" checked/>
+                                <span>중립</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="selectOne" value="orange" />
+                                <span>찍먹</span>
+                            </label>
+                        </fieldset>
+                    </div>
+                    <button class="btn_medium btn_join_chat">입장하기</button>
+                </div>
+            </div>
+        </div>
+
+    </article>
+</div>
+</body>
+</html>

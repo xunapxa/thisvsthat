@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/chat/chat-room.css}">
+    <script src="js/chat/chat-profile-popup.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이거?저거?</title>
+</head>
+<body>
+<!-- 작업할 공간 -->
+<div layout:fragment="content">
+    <article class="chat_room">
+        <div class="chat_header">
+            <i class="fa-solid fa-chevron-left"></i>
+            <span class="chat_topic">탕수육 부먹 vs 찍먹</span>
+            <span class="user_count"><i class="fa-solid fa-user-group"></i>13</span>
+        </div>
+
+        <div class="message_list">
+            <div class="vote_rate">
+                <div class="vote_rate_header">
+                    <span class="vote_rate_info">
+                        <span class="vote_label">투표율</span>
+                        <span class="vote_count"><i class="fa-solid fa-chart-simple"></i>10</span>
+                    </span>
+                    <i class="collapse_btn fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="vote_bar">
+                    <div class="blue_percentage">91%</div>
+                    <div class="orange_percentage"></div>
+                </div>
+            </div>
+            <div class="other_message">
+                <div class="image_wrapper">
+                    <img class="profile_image" src="/images/common/icon-blue.png">
+                </div>
+                <div class="message_wrapper">
+                    <p class="chat_nickname">사나운 불독</p>
+                    <p class="message_box bg_blue">탕수육은 찍먹이죠. 학교 다닐 때 안 배우셨나요?</p>
+                </div>
+            </div>
+            <div class="other_message">
+                <div class="image_wrapper">
+                    <img class="profile_image" src="/images/common/icon-blue.png">
+                </div>
+                <div class="message_wrapper">
+                    <p class="chat_nickname">사나운 불독</p>
+                    <p class="message_box bg_blue">소스를 부어 먹는 건 죄악입니다. 식사 예절 다시 받으셔야 해요.</p>
+                </div>
+            </div>
+            <div class="my_message">
+                <p class="message_box bg_orange">다들 조용히 하세요. 저희 집 고양이도 부먹이라네요.</p>
+                <div class="image_wrapper">
+                    <img class="profile_image" src="/images/common/icon-orange.png">
+                </div>
+            </div>
+            <div class="other_message">
+                <div class="image_wrapper">
+                    <img class="profile_image" src="/images/common/logo.png">
+                </div>
+                <div class="message_wrapper">
+                    <p class="chat_nickname">상냥한 불곰</p>
+                    <p class="message_box">찍어 먹어서 맛있는 탕수육이 있고 부어 먹어서 맛있는 탕수육이 있는 거죠. 다들 융통성 있게 삽시다.</p>
+                </div>
+            </div>
+            <div class="other_message">
+                <div class="image_wrapper">
+                    <img class="profile_image" src="/images/common/logo.png">
+                </div>
+                <div class="message_wrapper">
+                    <p class="chat_nickname">상냥한 불곰</p>
+                    <p class="message_box">그릇에 반으로 나눠서 한쪽은 부먹, 한쪽은 찍먹하세요. 그럼 됐죠?</p>
+                </div>
+            </div>
+            <div class="other_message">
+                <div class="image_wrapper">
+                    <img class="profile_image" src="/images/common/icon-blue.png">
+                </div>
+                <div class="message_wrapper">
+                    <p class="chat_nickname">사나운 불독</p>
+                    <p class="message_box bg_blue">탕수육을 부어 먹는 건 이해하기가 어렵네요</p>
+                </div>
+            </div>
+            <div class="my_message">
+                <p class="message_box bg_orange">저희 집 고양이도 찍어 먹는거 보면 경계합니다.</p>
+                <div class="image_wrapper">
+                    <img class="profile_image" src="/images/common/icon-orange.png">
+                </div>
+            </div>
+        </div>
+
+        <div class="chat_input_box">
+            <textarea class="chat_input" placeholder="메시지를 입력해주세요."></textarea>
+            <i class="send_btn fa-regular fa-paper-plane"></i>
+        </div>
+    </article>
+</div>
+</body>
+</html>
