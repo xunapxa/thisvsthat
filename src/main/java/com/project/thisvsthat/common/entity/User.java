@@ -68,4 +68,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<ChatLog> chatLogs;
+
+    public Long getUserId() {
+        return this.userId;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

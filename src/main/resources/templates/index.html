@@ -2,14 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이거?저거?</title>
 </head>
 <body>
 <!-- 작업할 공간 -->
 <div layout:fragment="content">
-    <h1>Welcome to This vs That!🔥</h1>
-    <h1>S e t t i n g s</h1>
+    <article class="main_article">
+        <section>
+            <form class="search_form">
+                <select>
+                    <option value="">제목</option>
+                    <option value="">내용</option>
+                    <option value="">해시태그</option>
+                </select>
+                <input type="text">
+            </form>
+        </section>
+
+        <section>
+            <div class="admin_top_box">
+                <h2>카테고리</h2>
+            </div>
+            <div class="admin_bottom_box">
+                <div class="keyword_box">
+                    <a href="" class="keyword active">전체</a>
+                    <a href="" class="keyword">고민</a>
+                    <a href="" class="keyword">토론</a>
+                    <a href="" class="keyword">자유</a>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="admin_top_box">
+                <h2>정렬 기준</h2>
+                <div>
+                    <a href="#"><b>인기순</b></a>
+                    <a href="#">최신순</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="choose_section">
+            <a href="#1" class="choose_total">
+                <div class="choose_top_box">
+                    <img class="choose_img" src="https://placehold.co/150X150" alt=""/>
+                    <img class="choose_img" src="https://placehold.co/150X150" alt=""/>
+                </div>
+                <div class="choose_bottom_box">
+                    <p class="shorten">제목이 들어갈 공간 입니다.</p>
+                </div>
+            </a>
+        </section>
+
+        <section class="fixed">
+            <div class="margin_bottom10">
+                <a href=""><i class="fa-solid fa-pen"></i></a>
+            </div>
+            <div>
+                <a href=""><i class="fa-solid fa-angle-up"></i></a>
+            </div>
+        </section>
+
+    </article>
 </div>
 </body>
 </html>
