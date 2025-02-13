@@ -41,6 +41,7 @@ public class AuthViewController {
             @RequestParam(name = "profile", required = false) String profile,
             @RequestParam(name = "name", required = false, defaultValue = "") String name,
             @RequestParam(name = "socialId", required = false, defaultValue = "") String socialId,
+            @RequestParam(name = "socialType", required = false, defaultValue = "") String socialType,
             Model model) {
 
         // 환경 변수에서 기본 프로필 이미지 가져오기
@@ -55,6 +56,7 @@ public class AuthViewController {
         model.addAttribute("profile", profile);
         model.addAttribute("name", name);
         model.addAttribute("socialId", socialId);
+        model.addAttribute("socialType", socialType);
 
         return "auth/signup";
     }
