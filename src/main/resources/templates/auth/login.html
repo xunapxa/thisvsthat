@@ -10,7 +10,7 @@
     <script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/prefixfree.min.js}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/auth/auth-login.js}" defer></script>
     <title>Login</title>
 </head>
 <body>
@@ -20,13 +20,13 @@
     </div>
 
     <div class="auth-options">
-        <button class="bg_gray_light">
+        <button id="google-login" class="bg_gray_light">
             <img th:src="@{/images/common/logo-google.png}" alt="Google">Google로 계속하기
         </button>
-        <button>
+        <button id="kakao-login" class="bg_gray_light">
             <img th:src="@{/images/common/logo-kakao.png}" alt="Kakao">Kakao로 계속하기
         </button>
-        <button>
+        <button id="naver-login" class="bg_gray_light">
             <img th:src="@{/images/common/logo-naver.png}" alt="Naver">Naver로 계속하기
         </button>
     </div>

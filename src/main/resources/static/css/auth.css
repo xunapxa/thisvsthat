@@ -1,5 +1,5 @@
 /* auth - 킴가 시작 */
-/* 기본 레이아웃 */
+/* auth 공통 스타일 시작 */
 .auth-container {
     display: flex;
     flex-direction: column;
@@ -63,6 +63,7 @@
     font-weight: bold;
     color: var(--font-color-gray-light);
 }
+/* auth 공통 스타일 끝 */
 
 /* login.html 시작 */
 /* 로그인 버튼 이미지 */
@@ -121,6 +122,21 @@
     gap: 30px;
 }
 
+/* 프로필 컨테이너 */
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 프로필 이미지 */
+.profile-container img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 /* 개별 입력 필드 그룹 */
 .input-group {
     display: flex;
@@ -155,6 +171,16 @@
     font-size: var(--font-size-small);
     color: var(--font-color-gray-light);
     margin-top: 5px;
+}
+
+/* 오류 발생 시 input-guide 스타일 */
+.input-guide.error {
+    color: red !important;
+}
+
+/* 오류 발생 시 input-underline 스타일*/
+.input-underline.error {
+    background-color: red !important;
 }
 
 /* 성별 선택 컨테이너 */
