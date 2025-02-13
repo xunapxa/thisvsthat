@@ -1,10 +1,12 @@
 .popup_header {
     position: relative;
     display: flex;
-    height: 45px;
+    height: 50px;
     align-items: center;
     justify-content: center;
-border-bottom: 1px solid #5C5C5C;
+    border-bottom: 1px solid var(--main-color-black);
+    font-size: var(--font-size-xlarge);
+    color: var(--main-color-black);
 }
 
 .close_popup_btn {
@@ -48,12 +50,12 @@ border-bottom: 1px solid #5C5C5C;
     text-align: center;
     width: 210px;
     color: var(--font-color-gray);
-    font-size: smaller;
+    font-size: var(--font-size-large);
 }
 
 .char_count_display {
     display: flex;
-    font-size: x-small;
+    font-size: var(--font-size-small);
     width: 210px;
     margin: auto;
     justify-content: flex-end;
@@ -61,12 +63,12 @@ border-bottom: 1px solid #5C5C5C;
 }
 
 .ninckname_length{
-    font-size: x-small;
+    font-size: var(--font-size-small);
     color: var(--font-color-gray);
 }
 
 .btn_join_chat {
     margin: 5px auto 15px auto;
     background-color: var(--font-color-gray);
-    font-size: smaller;
+    font-size: var(--font-size-medium);
 }
