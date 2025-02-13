@@ -7,6 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/index.css}">
     <link rel="stylesheet" th:href="@{/css/post.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script th:src="@{/js/post.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>글 수정</title>
 </head>
 <body>
@@ -17,63 +20,108 @@
             <div><i class="fa-solid fa-chevron-left"></i></div>
             <div><i></i></div>
         </section>
-        <section class="post_create_section">
-            <h2>카테고리</h2>
-            <div class="admin_bottom_box"> <!-- 이 부분 수정 하기 -->
-                <div class="keyword_box">
-                    <div class="keyword">자유</div>
-                    <div class="keyword">고민</div>
-                    <div class="keyword">토론</div>
+        <form th:action="@{/post/update}" method="post" enctype="multipart/form-data">
+            <section class="post_create_section">
+                <h2>카테고리</h2>
+                <div class="admin_bottom_box"> <!-- 이 부분 수정 하기 -->
+                    <div class="keyword_box" id="categoryBox">
+                        <div class="keyword" onclick="selectCategory(this)">자유</div>
+                        <div class="keyword" onclick="selectCategory(this)">고민</div>
+                        <div class="keyword" onclick="selectCategory(this)">토론</div>
+                    </div>
+                    <input type="hidden" th:field="${dto.category}" id="selectedCategory" th:value="${dto.category}">
                 </div>
-            </div>
-        </section>
-        <section class="post_create_section">
-            <h2>제목</h2>
-            <div class="post_create_input">
-                <input type="text"/>
-            </div>
-        </section>
-        <section class="post_create_section">
-            <h2>내용</h2>
-            <div class="post_create_textarea">
-                <textarea name="" id="" class="textarea"></textarea>
-            </div>
-        </section>
-        <section class="post_choose_section post_create_section">
-            <h2>이미지 선택</h2>
-            <div class="choose_top_box">
-                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
-                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
-            </div>
-        </section>
-        <section class="post_create_section">
-            <h2><a href="">설명 작성 ></a></h2>
-        </section>
-        <section class="popup_section">
-            <div class="dim_box"></div>
-            <div class="popup_box post_create_popup_box">
-                <div class="popup_top">
-                    <span>설명 작성</span>
-                    <a href="#1"><i class="fa-solid fa-xmark"></i></a>
+            </section>
+            <section class="post_create_section">
+                <h2>제목</h2>
+                <div class="post_create_input">
+                    <input type="text" th:field="${dto.title}"/>
                 </div>
-                <div class="popup_content">
-                    <label for="option1">선택지1</label>
-                    <input type="text" id="option1" placeholder="선택지1에 대한 설명을 작성하세요.">
+            </section>
+            <section class="post_create_section">
+                <h2>내용</h2>
+                <div class="post_create_textarea">
+                    <textarea name="" id="" class="textarea" th:field="${dto.content}"> </textarea>
+                </div>
+            </section>
+            <section class="post_choose_section post_create_section">
+                <h2>이미지 선택</h2>
+                <div class="choose_top_box">
+                    <a href="#1" onclick="document.getElementById('imageFile1').click(); return false;">
+                        <img id="preview1" th:src="${dto.option1ImageUrl}"
+                             alt="Uploaded Image"></a>
 
-                    <label for="option2">선택지2</label>
-                    <input type="text" id="option2" placeholder="선택지2에 대한 설명을 작성하세요.">
+                    <a href="#1" onclick="document.getElementById('imageFile2').click(); return false;">
+                        <img id="preview2" th:src="${dto.option2ImageUrl}"
+                             alt="Uploaded Image"></a>
                 </div>
-                <div class="btn_ok_box">
-                    <button class="btn_large bg_gray_light post_create_ok_btn" style="color: black;">확인</button>
+            </section>
+            <section class="post_create_section">
+                <h2><a href="" id="postImgDescription">설명 작성 ></a></h2>
+            </section>
+            <section class="popup_section">
+                <div class="dim_box"></div>
+                <div class="popup_box post_create_popup_box">
+                    <div class="popup_top">
+                        <span>설명 작성</span>
+                        <a id="postCreateCloseBtn"><i class="fa-solid fa-xmark"></i></a>
+                    </div>
+                    <div class="popup_content">
+                        <label for="option1">선택지1</label>
+                        <input type="text" id="option1" placeholder="선택지1에 대한 설명을 작성하세요." th:field="${dto.option1}">
+
+                        <label for="option2">선택지2</label>
+                        <input type="text" id="option2" placeholder="선택지2에 대한 설명을 작성하세요." th:field="${dto.option2}">
+                    </div>
+                    <div class="btn_ok_box">
+                        <button id="postCreateOkBtn" class="btn_large bg_gray_light post_create_ok_btn"
+                                style="color: black;">확인
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </section>
-        <section class="post_create_section">
-            <div class="btn_box">
-                <button class="btn_large bg_gray post_create_submit_btn">수정</button>
-            </div>
-        </section>
+            </section>
+            <section class="post_create_section">
+                <div class="btn_box">
+                    <button class="btn_large bg_gray post_create_submit_btn">수정</button>
+                </div>
+            </section>
+            <section class="post_create_section">
+                <input type="file" name="imageFile1" id="imageFile1" accept="image/*"
+                       onchange="previewImage(event, 'preview1')" style="display:none;">
+                <input type="file" name="imageFile2" id="imageFile2" accept="image/*"
+                       onchange="previewImage(event, 'preview2')" style="display:none;">
+            </section>
+        </form>
+
     </article>
+    <script>
+        // 이미지 선택 시 img 업데이트
+        function previewImage(event, previewId) {
+            var file = event.target.files[0];  // 선택한 파일 가져오기
+            if (!file) return;  // 파일이 선택되지 않았으면 함수 종료
+
+            var reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById(previewId).src = reader.result;  // 미리보기 이미지 변경
+            };
+            reader.readAsDataURL(file);  // 파일 데이터 읽기
+        }
+
+        // update 페이지 로드 시 기존 카테고리 selected 및 클릭 시 css 및 value 변경
+        const selectedCategory = document.getElementById("selectedCategory").value.trim(); // 기존 선택된 카테고리 가져오기
+
+        document.querySelectorAll(".keyword").forEach(div => {
+            if (div.innerText.trim() === selectedCategory) {
+                div.classList.add("selected");
+            }
+        });
+
+        function selectCategory(selectedDiv) {
+            document.querySelectorAll('.keyword').forEach(div => div.classList.remove('selected'));
+            selectedDiv.classList.add('selected');
+            document.getElementById('selectedCategory').value = selectedDiv.innerText.trim();
+        }
+    </script>
 </div>
 </body>
 </html>
