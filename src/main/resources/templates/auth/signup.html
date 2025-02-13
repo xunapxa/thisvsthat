@@ -10,7 +10,7 @@
     <script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/prefixfree.min.js}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script th:src="@{/js/auth.js}"></script>
+    <script th:src="@{/js/auth/auth-signup.js}" defer></script>
     <title>SignUp</title>
 </head>
 <body>
@@ -20,17 +20,32 @@
         <p class="auth-description">필수 입력 사항</p>
     </div>
 
-    <form class="signup-form">
+    <form id="signup-form" class="signup-form">
+        <!-- socialId (hidden)-->
+        <input type="hidden" id="socialId" name="socialId" th:value="${socialId}">
+
+        <!-- 프로필 이미지 -->
+        <div class="profile-container">
+            <img id="profileImage" th:src="${profile}" alt="Profile Image">
+            <input type="hidden" id="profileImageUrl" name="profileImageUrl" th:value="${profile}">
+        </div>
+
+        <!-- 이메일 -->
+        <div class="input-group">
+            <input type="email" id="email" name="email" th:value="${email}" readonly>
+            <div class="input-underline"></div>
+        </div>
+
         <!-- 닉네임 입력 -->
         <div class="input-group">
-            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력">
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력" th:value="${name}" maxlength="20">
             <div class="input-underline"></div>
             <p class="input-guide">한글, 영문, 숫자, 언더바(_), 하이픈(-), 공백</p>
         </div>
 
         <!-- 생년월일 입력 -->
         <div class="input-group">
-            <input type="text" id="birthdate" name="birthdate" placeholder="생년월일 입력" pattern="\d{4}-\d{2}-\d{2}" maxlength="10">
+            <input type="text" id="birthdate" name="birthdate" placeholder="생년월일 입력" maxlength="10">
             <div class="input-underline"></div>
             <p class="input-guide">예: 1995-07-24</p>
         </div>
@@ -41,11 +56,11 @@
                 <span class="input-label">성별</span>
                 <div class="radio-group">
                     <label>
-                        <input type="radio" name="gender" value="female" checked>
+                        <input type="radio" name="gender" value="FEMALE" checked>
                         <span>여성</span>
                     </label>
                     <label>
-                        <input type="radio" name="gender" value="male">
+                        <input type="radio" name="gender" value="MALE">
                         <span>남성</span>
                     </label>
                 </div>
@@ -58,7 +73,7 @@
 
     <!-- 가입하기 버튼 -->
     <div class="auth-options">
-        <button class="bg_gray_light" type="submit">
+        <button id="submit-button" class="bg_gray_light" type="submit" form="signup-form">
             가입하기
         </button>
     </div>
