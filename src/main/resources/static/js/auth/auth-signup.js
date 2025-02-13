@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const nameField = document.getElementById("nickname");
     const birthdateField = document.getElementById("birthdate");
     const signupForm = document.getElementById("signup-form");
+    const submitButton = document.getElementById("submit-button");
 
     let nicknameCheckTimer = null; // 닉네임 중복 검사 타이머
     let isNicknameValid = false; // 닉네임 중복 검사 결과
