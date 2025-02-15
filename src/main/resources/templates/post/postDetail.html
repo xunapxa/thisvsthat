@@ -7,6 +7,9 @@
     <link rel="stylesheet" th:href="@{/css/chat/chat-profile-popup.css}">
     <script src="js/chat/chat-profile-popup.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script th:src="@{/js/post.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>게시물 상세보기</title>
 </head>
 <body>
@@ -24,47 +27,71 @@
         </section>
         <section class="post_detail_section">
             <div class="post_detail_content">
-                <h2 th:text="${dto.content}">친구랑 #민초 먹냐 안먹냐로 싸우는데
+                <h2 id="postContent" th:text="${dto.content}">친구랑 #민초 먹냐 안먹냐로 싸우는데
                     솔직히 다들 민초 좋아하지 않음? 투표 부탁한다</h2>
             </div>
         </section>
-        <section class="post_choose_section">
-            <div class="choose_top_box">
-                <a href="#1"><img th:src="${dto.option1ImageUrl}" alt=""/></a>
-                <a href="#1"><img th:src="${dto.option2ImageUrl}" alt=""/></a>
-            </div>
-            <div class="choose_bottom_box">
-                <fieldset>
-                    <label>
-                        <input type="radio" name="selectOne" value="customization"/>
-                        <span th:text="${dto.option1}">민초단</span>
-                    </label>
-                    <label>
-                        <input type="radio" name="selectOne" value="customization"/>
-                        <span th:text="${dto.option2}">반민초단</span>
-                    </label>
-                </fieldset>
-            </div>
-            <div class="btn_box">
-                <button class="btn_large bg_brown"><span>투표하기</span></button>
-            </div>
-        </section>
-        <section class="post_detail_section">
+        <form th:action="@{/post/{id}/vote(id=${dto.postId})}" method="post">
+            <section class="post_choose_section">
+                <div class="choose_top_box">
+                    <a href="#" class="option1_img" onclick="selectOption('OPTION_1')"><img
+                            th:src="${dto.option1ImageUrl}" alt=""/></a>
+                    <a href="#" class="option2_img" onclick="selectOption('OPTION_2')"><img
+                            th:src="${dto.option2ImageUrl}" alt=""/></a>
+                </div>
+                <div class="choose_bottom_box">
+                    <fieldset>
+                        <label>
+                            <input th:if="${dto.voteStatus.toString() != 'FINISHED'}" type="radio" id="option1_radio"
+                                   name="selectedOption"
+                                   value="OPTION_1"/>
+                            <label th:text="${dto.option1}">민초단</label>
+                        </label>
+                        <label>
+                            <input th:if="${dto.voteStatus.toString() != 'FINISHED'}" type="radio" id="option2_radio"
+                                   name="selectedOption"
+                                   value="OPTION_2"/>
+                            <label th:text="${dto.option2}">반민초단</label>
+                        </label>
+                    </fieldset>
+                </div>
+                <div th:if="${dto.voteStatus.toString() != 'FINISHED'}" class="btn_box post_vote_btn">
+                    <button class="btn_large bg_brown"><span>투표하기</span></button>
+                </div>
+            </section>
+        </form>
+        <section class="post_detail_section"
+                 th:style="${dto.voteStatus.toString() == 'FINISHED' ? 'margin-top:30px;' : ''}"
+                 th:if="${votePercentage.option1Percentage > 0 or votePercentage.option2Percentage > 0}">
             <div class="post_detail_progress_top">
                 <h2>투표율</h2>
-                <a href="">투표종료</a>
+                <a th:style="${dto.voteStatus.toString() == 'FINISHED' ? 'display:none;' : ''}"
+                   th:href="@{/post/{id}/voteFinished(id=${dto.postId})}" id="voteFinished">투표종료</a>
             </div>
             <div class="post_detail_progress_bottom">
-
+                <div class="progress-container">
+                    <div class="progress-bar option1" th:style="'width:' + ${votePercentage.option1Percentage} + '%'">
+                        [[${#numbers.formatInteger(votePercentage.option1Percentage, 0)}]]%
+                    </div>
+                    <div class="progress-bar option2" th:style="'width:' + ${votePercentage.option2Percentage} + '%'">
+                        [[${#numbers.formatInteger(votePercentage.option2Percentage, 0)}]]%
+                    </div>
+                </div>
             </div>
         </section>
         <section class="post_section_bottom">
             <div>
-                <button class="btn_large bg_gray_light post_detail_btn post_detail_update_btn">수정</button>
-                <button class="btn_large bg_gray_light post_detail_btn post_detail_delete_btn">삭제</button>
+                <a th:href="@{/post/{id}/update(id=${dto.postId})}">
+                    <button class="btn_large bg_gray_light post_detail_btn post_detail_update_btn">수정</button>
+                </a>
+                <a th:href="@{/post/{id}/delete(id=${dto.postId})}" id="postDeleteBtn">
+                    <button type="button" class="btn_large bg_gray_light post_detail_btn post_detail_delete_btn">삭제
+                    </button>
+                </a>
             </div>
             <div>
-                <button id="open-chat-profile-popup" class="btn_large bg_pink post_detail_btn post_detail_chat_btn">채팅</button>
+                <button id="open-chat-profile-popup" class="btn_large bg_pink post_detail_btn post_detail_chat_btn">채팅
+                </button>
             </div>
         </section>
 
@@ -82,13 +109,15 @@
                     </div>
                     <input type="file" id="profile-input" style="display: none;" accept="image/*">
                     <div class="chat_nickname_wrapper">
-                        <input type="text" id="chat-nickname" class="chat_nickname_input" placeholder="닉네임을 입력해주세요." maxlength="15">
-                        <p class="char_count_display"><span id="nickname-length" class="ninckname_length">0</span>/15</p>
+                        <input type="text" id="chat-nickname" class="chat_nickname_input" placeholder="닉네임을 입력해주세요."
+                               maxlength="15">
+                        <p class="char_count_display"><span id="nickname-length" class="ninckname_length">0</span>/15
+                        </p>
                     </div>
                     <div class="preference_options">
                         <fieldset>
                             <label>
-                                <input type="radio" name="selectOne" value="blue" />
+                                <input type="radio" name="selectOne" value="blue"/>
                                 <span>부먹</span>
                             </label>
                             <label>
@@ -96,7 +125,7 @@
                                 <span>중립</span>
                             </label>
                             <label>
-                                <input type="radio" name="selectOne" value="orange" />
+                                <input type="radio" name="selectOne" value="orange"/>
                                 <span>찍먹</span>
                             </label>
                         </fieldset>
@@ -106,6 +135,42 @@
             </div>
         </div>
     </article>
+    <script>
+        // 이미지,라디오 클릭 시 동시 활성화
+       document.addEventListener("DOMContentLoaded", function () {
+            function selectOption(value) {
+                document.querySelectorAll(".choose_top_box img").forEach(img => {
+                    img.classList.remove("selected", "dimmed");
+                    img.classList.add("dimmed");
+                });
+
+                const selectedImg = document.querySelector(`.option${value === 'OPTION_1' ? '1' : '2'}_img img`);
+                if (selectedImg) {
+                    selectedImg.classList.remove("dimmed");
+                    selectedImg.classList.add("selected");
+                }
+
+                const radio = document.querySelector(`input[name="selectedOption"][value="${value}"]`);
+                if (radio) {
+                    radio.checked = true;
+                }
+            }
+
+            document.querySelectorAll('input[name="selectedOption"]').forEach(radio => {
+                radio.addEventListener("change", function () {
+                    selectOption(this.value);
+                });
+            });
+
+            window.selectOption = selectOption;
+        });
+
+
+
+
+
+
+    </script>
 </div>
 </body>
 </html>
