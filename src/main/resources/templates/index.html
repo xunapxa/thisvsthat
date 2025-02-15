@@ -85,9 +85,9 @@
                     <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc='popularity', vote_status=${voteStatus})}" id="modal_btn" th:classappend="${#strings.equals(listDesc, 'popularity')} ? 'font_weight_bold' :  ''">인기순</a>
                 </div>
             </div>
-            <!-- 정렬 기준 -->
+            <!-- 투표 정렬 기준 -->
             <div class="post_section_bottom margin_bottom10">
-                <h2>상태</h2>
+                <h2>투표 상태</h2>
                 <div>
                     <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc=${listDesc}, vote_status='', start_date=${startDate}, end_date=${endDate})}" class="margin_right10" th:classappend="${#strings.equals(voteStatus, '')} ? 'font_weight_bold' :  ''">전체</a>
                     <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc=${listDesc}, vote_status='ACTIVE', start_date=${startDate}, end_date=${endDate})}" class="margin_right10" th:classappend="${#strings.equals(voteStatus, 'ACTIVE')} ? 'font_weight_bold' :  ''">진행</a>
@@ -111,17 +111,9 @@
                             <div class="choose_top_box">
                                 <div class="choose_img_wrap" th:classappend="${post.option1ImageUrl != null and #strings.trim(post.option1ImageUrl) != ''} ? 'is_img_wrap' : ''">
                                     <img class="choose_img is_img" th:src="${post.option1ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-o.png';">
-<!--                                    <img class="choose_img"
-                                         th:src="${post.option1ImageUrl != null and #strings.trim(post.option1ImageUrl) != '' ? post.option1ImageUrl : '/images/common/icon-letter-o.png'}"
-                                         th:classappend="${post.option1ImageUrl != null and #strings.trim(post.option1ImageUrl) != ''} ? 'is_img' : ''"
-                                         alt=""  onerror="this.onerror=null; this.src='/images/common/icon-letter-o.png';"/>-->
                                 </div>
                                 <div class="choose_img_wrap" th:classappend="${post.option2ImageUrl != null and #strings.trim(post.option2ImageUrl) != ''} ? 'is_img_wrap' : ''">
                                     <img class="choose_img is_img" th:src="${post.option2ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-x.png';"/>
-<!--                                    <img class="choose_img"
-                                         th:src="${post.option2ImageUrl != null and #strings.trim(post.option2ImageUrl) != '' ? post.option2ImageUrl : '/images/common/icon-letter-x.png'}"
-                                         th:classappend="${post.option2ImageUrl != null and #strings.trim(post.option2ImageUrl) != ''} ? 'is_img' : ''"
-                                         alt="" onerror="this.onerror=null; this.src='/images/common/icon-letter-x.png';"/>-->
                                 </div>
 
                             </div>

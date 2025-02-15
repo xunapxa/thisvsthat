@@ -126,7 +126,7 @@ modalClose.addEventListener('click',function(){
 // 모달 end
 
 // 기간 설정 시 시작날짜, 종료 날짜 입력 후 기간 설정 완료 눌렀을 때 이동 링크 start
-//링크 이동
+// 링크 이동
 document.querySelector('#date_search_btn').addEventListener('click', function(event) {
     event.preventDefault(); // 기본 a 태그 동작 막기
 

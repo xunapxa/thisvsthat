@@ -18,6 +18,7 @@ public class IndexController {
     @Autowired
     private IndexService indexService;
 
+    // 메인(전체, 검색 목록 출력)
     @GetMapping({"", "/"})
     public String index(Model model,
                         @RequestParam(value = "page", defaultValue = "0") int page,
@@ -28,6 +29,7 @@ public class IndexController {
                         @RequestParam(value = "vote_status", required = false, defaultValue = "") String voteStatus,
                         @RequestParam(value = "start_date", required = false, defaultValue = "") String startDate,
                         @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate) {
+
         PostListResponseDTO response = indexService.getFilteredPosts(page, searchBy, keyword, listCategory, listDesc, voteStatus,startDate, endDate);
 
         if(listDesc.equals("createdAt")){
@@ -35,20 +37,20 @@ public class IndexController {
             endDate = "";
         }
 
-
-        model.addAttribute("searchBy", searchBy);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("listCategory", listCategory);
-        model.addAttribute("listDesc", listDesc);
-        model.addAttribute("voteStatus", voteStatus);
-        model.addAttribute("startDate", startDate);
-        model.addAttribute("endDate", endDate);
-        model.addAttribute("posts", response.getPosts());
-        model.addAttribute("totalCount", response.getTotalCount()); // 전체 개수 추가
+        model.addAttribute("searchBy", searchBy); // 검색 - 제목, 내용, 해시태그
+        model.addAttribute("keyword", keyword); // 검색 - 검색어
+        model.addAttribute("listCategory", listCategory); // 검색 - 카테고리(전체, 고민,토론, 자유)
+        model.addAttribute("listDesc", listDesc); // 검색 - 정렬 기준(최신순, 인기순)
+        model.addAttribute("voteStatus", voteStatus); // 검색 - 투표상태(전체, 진행, 종료)
+        model.addAttribute("startDate", startDate); // 검색 - 정렬 인기순 일 때 시작날짜
+        model.addAttribute("endDate", endDate); // 검색 - 정렬 인기순 일 때 종료날짜
+        model.addAttribute("posts", response.getPosts()); // 목록 데이터
+        model.addAttribute("totalCount", response.getTotalCount()); // 목록 전체 개수
+        
         return "index";
     }
 
-
+    // 메인(전체, 검색 목록 출력) 후 무한스크롤 작동
     @GetMapping("/posts")
     @ResponseBody
     public PostListResponseDTO getMorePosts(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -59,7 +61,7 @@ public class IndexController {
                                             @RequestParam(value = "vote_status", required = false, defaultValue = "") String voteStatus,
                                             @RequestParam(value = "start_date", required = false, defaultValue = "") String startDate,
                                             @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate) {
-        System.out.println(startDate);
+
         return indexService.getFilteredPosts(page, searchBy, keyword, listCategory, listDesc, voteStatus,startDate, endDate);
     }
 }
