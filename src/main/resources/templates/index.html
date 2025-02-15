@@ -107,7 +107,7 @@
                              th:text="${#strings.equals(post.voteStatus, 'ACTIVE')} ? '진행' : (${#strings.equals(post.voteStatus, 'FINISHED')} ? '투표 종료' : '' )">
                         </span>
 
-                        <a th:href="@{'/posts/' + ${post.postId}}" class="choose_total">
+                        <a th:href="@{'/post/' + ${post.postId}}" class="choose_total">
                             <div class="choose_top_box">
                                 <div class="choose_img_wrap" th:classappend="${post.option1ImageUrl != null and #strings.trim(post.option1ImageUrl) != ''} ? 'is_img_wrap' : ''">
                                     <img class="choose_img is_img" th:src="${post.option1ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-o.png';">
@@ -132,7 +132,7 @@
 
     <!-- 글쓰기 버튼, Top 버튼 하단 고정 -->
     <div class="fixed">
-        <a href="/posts"><i class="fa-solid fa-pen"></i></a>
+        <a href="/post/create"><i class="fa-solid fa-pen"></i></a>
         <a href="#" class="top_btn"><i class="fa-solid fa-angle-up"></i></a>
     </div>
 

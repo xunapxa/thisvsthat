@@ -1,28 +1,50 @@
 // 게시물 무한 스크롤 start
 let page = 1;
 let loading = false;
+const pageSize = 3;
+
+// 현재 URL의 쿼리스트링 가져오기
+const currentQueryString = window.location.search;
 
 // 검색 조건 가져오기
-const searchBy = new URLSearchParams(window.location.search).get("search_by") || "";
-const keyword = new URLSearchParams(window.location.search).get("keyword") || "";
-const listCategory = new URLSearchParams(window.location.search).get("list_category") || "";
-const listDesc = new URLSearchParams(window.location.search).get("list_desc") || "createdAt";
-const startDate = new URLSearchParams(window.location.search).get("start_date");
-const endDate = new URLSearchParams(window.location.search).get("end_date");
+const searchParams = new URLSearchParams(currentQueryString);
+const searchBy = searchParams.get("search_by") || "";
+const keyword = searchParams.get("keyword") || "";
+const listCategory = searchParams.get("list_category") || "";
+const listDesc = searchParams.get("list_desc") || "createdAt";
+const startDate = searchParams.get("start_date");
+const endDate = searchParams.get("end_date");
 
+// 이전에 저장된 쿼리스트링 가져오기
+const savedQueryString = sessionStorage.getItem("savedQueryString");
 
-// 페이지 로드 시, 게시물 개수가 3개 이하라면 "게시물 완료" 표시
 document.addEventListener("DOMContentLoaded", function () {
     const totalCount = parseInt(document.getElementById("total-count").value, 10);
-    const pageSize = 3;
 
     if (totalCount <= pageSize) {
         document.getElementById("end_message").style.display = "block";
     }
 
-    if (totalCount == 0 && totalCount <= pageSize) {
+    if (totalCount === 0 && totalCount <= pageSize) {
         document.getElementById("no_posts_message").style.display = "block";
         document.getElementById("end_message").style.display = "none";
+    }
+
+    // 쿼리스트링이 변경되었을 경우 저장된 데이터 초기화
+    if (savedQueryString !== currentQueryString) {
+        sessionStorage.removeItem("savedPosts");
+        sessionStorage.removeItem("savedPage");
+        sessionStorage.removeItem("scrollPosition");
+        sessionStorage.setItem("savedQueryString", currentQueryString);
+        window.scrollTo(0, 0);
+        return;
+    }
+
+    // 뒤로 가기 시 데이터 복원 (쿼리스트링이 동일할 때만)
+    if (sessionStorage.getItem("savedPosts")) {
+        $("#list_wrap").html(sessionStorage.getItem("savedPosts"));
+        page = Number(sessionStorage.getItem("savedPage"));
+        window.scrollTo(0, Number(sessionStorage.getItem("scrollPosition")));
     }
 });
 
@@ -41,41 +63,31 @@ function loadMorePosts() {
     $.ajax({
         url: "/posts",
         type: "GET",
-        data: { page: page, search_by: searchBy, keyword: keyword, list_category: listCategory, list_desc: listDesc, start_date: startDate, end_date: endDate },
+        data: { page, search_by: searchBy, keyword, list_category: listCategory, list_desc: listDesc, start_date: startDate, end_date: endDate },
         success: function(data) {
-            if (data.posts.length === 0) { // ✅ posts 배열을 가져와서 확인
-                $("#end_message").show(); // 게시물 완료 메시지 표시
+            if (data.posts.length === 0) {
+                $("#end_message").show();
             } else {
-                data.posts.forEach(post => { // ✅ data.posts로 변경
-                    let option1ImageUrl = post.option1ImageUrl && post.option1ImageUrl.trim() !== ""
-                        ? post.option1ImageUrl
-                        : "/images/common/icon-letter-o.png";
+                data.posts.forEach(post => {
+                    let option1ImageUrl = post.option1ImageUrl?.trim() || "/images/common/icon-letter-o.png";
+                    let option1Class = post.option1ImageUrl?.trim() ? "choose_img is_img" : "choose_img";
 
-                    let option1Class = post.option1ImageUrl && post.option1ImageUrl.trim() !== ""
-                        ? "choose_img is_img"
-                        : "choose_img"; // 이미지가 없으면 no_img 클래스 추가
-
-                    let option2ImageUrl = post.option2ImageUrl && post.option2ImageUrl.trim() !== ""
-                        ? post.option2ImageUrl
-                        : "/images/common/icon-letter-x.png";
-
-                    let option2Class = post.option2ImageUrl && post.option2ImageUrl.trim() !== ""
-                        ? "choose_img is_img"
-                        : "choose_img"; // 이미지가 없으면 no_img 클래스 추가
+                    let option2ImageUrl = post.option2ImageUrl?.trim() || "/images/common/icon-letter-x.png";
+                    let option2Class = post.option2ImageUrl?.trim() ? "choose_img is_img" : "choose_img";
 
                     $("#list_wrap").append(`
                         <div class="choose_section margin_bottom10 position_relative">
-                            <span class="vote_status margin_bottom10 ${post.voteStatus === 'ACTIVE' ? 'vote_ing' : (post.voteStatus === 'FINISHED' ? 'vote_finished' : '')}" >
+                            <span class="vote_status margin_bottom10 ${post.voteStatus === 'ACTIVE' ? 'vote_ing' : (post.voteStatus === 'FINISHED' ? 'vote_finished' : '')}">
                                 ${post.voteStatus === 'ACTIVE' ? '진행' : (post.voteStatus === 'FINISHED' ? '종료' : '')}
                             </span>
 
                             <a href="/posts/${post.postId}" class="choose_total">
                                 <div class="choose_top_box">
-                                    <div class="choose_img_wrap ${post.option1ImageUrl && post.option1ImageUrl.trim() !== '' ? 'is_img_wrap' : ''}">
-                                        <img class="${option1Class} " src="${option1ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-o.png';"/>
+                                    <div class="choose_img_wrap ${post.option1ImageUrl?.trim() ? 'is_img_wrap' : ''}">
+                                        <img class="${option1Class}" src="${option1ImageUrl}" alt="" onerror="this.classList.remove('is_img'); this.onerror=null; this.src='/images/common/icon-letter-o.png';"/>
                                     </div>
-                                    <div class="choose_img_wrap ${post.option2ImageUrl && post.option2ImageUrl.trim() !== '' ? 'is_img_wrap' : ''}">
-                                        <img class="${option2Class} " src="${option2ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-x.png';" />
+                                    <div class="choose_img_wrap ${post.option2ImageUrl?.trim() ? 'is_img_wrap' : ''}">
+                                        <img class="${option2Class}" src="${option2ImageUrl}" alt="" onerror="this.classList.remove('is_img'); this.onerror=null; this.src='/images/common/icon-letter-x.png';"/>
                                     </div>
                                 </div>
                                 <div class="choose_bottom_box">
@@ -84,14 +96,17 @@ function loadMorePosts() {
                             </a>
                         </div>
                     `);
-
                 });
 
-                page++; // 다음 페이지 증가
+                page++;
             }
 
-            // ✅ 전체 개수 체크해서 더 이상 불러올 게시물이 없으면 "게시물 완료" 표시
-            if ((page * 3) >= data.totalCount) {
+            // 저장된 데이터 업데이트 (뒤로 가기 시 복원 가능하도록)
+            sessionStorage.setItem("savedPosts", $("#list_wrap").html());
+            sessionStorage.setItem("savedPage", page);
+            sessionStorage.setItem("scrollPosition", window.scrollY);
+
+            if ((page * pageSize) >= data.totalCount) {
                 $("#end_message").show();
             }
         },
@@ -104,6 +119,7 @@ function loadMorePosts() {
     });
 }
 // 게시물 무한 스크롤 end
+
 
 // 모달 start
 const modal = document.querySelector('.modal');
