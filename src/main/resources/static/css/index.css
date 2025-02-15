@@ -58,12 +58,17 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 5px 0;
 }
 
 .choose_img_wrap.is_img_wrap .choose_img.is_img {
     width: 100%;
     object-fit: cover;
+}
+
+.choose_img_wrap.is_img_wrap .choose_img, .choose_img_wrap .choose_img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
     padding: 0;
 }
 
