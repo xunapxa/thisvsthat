@@ -19,29 +19,29 @@
         </section>
         <section class="post_detail_section">
             <div class="post_detail_title">
-                <h2>민초단 VS 반민초단</h2>
+                <h2 th:text="${dto.title}">민초단 VS 반민초단</h2>
             </div>
         </section>
         <section class="post_detail_section">
             <div class="post_detail_content">
-                <h2>친구랑 #민초 먹냐 안먹냐로 싸우는데
+                <h2 th:text="${dto.content}">친구랑 #민초 먹냐 안먹냐로 싸우는데
                     솔직히 다들 민초 좋아하지 않음? 투표 부탁한다</h2>
             </div>
         </section>
         <section class="post_choose_section">
             <div class="choose_top_box">
-                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
-                <a href="#1"><img src="https://placehold.co/150X150" alt=""/></a>
+                <a href="#1"><img th:src="${dto.option1ImageUrl}" alt=""/></a>
+                <a href="#1"><img th:src="${dto.option2ImageUrl}" alt=""/></a>
             </div>
             <div class="choose_bottom_box">
                 <fieldset>
                     <label>
                         <input type="radio" name="selectOne" value="customization"/>
-                        <span>민초단</span>
+                        <span th:text="${dto.option1}">민초단</span>
                     </label>
                     <label>
                         <input type="radio" name="selectOne" value="customization"/>
-                        <span>반민초단</span>
+                        <span th:text="${dto.option2}">반민초단</span>
                     </label>
                 </fieldset>
             </div>

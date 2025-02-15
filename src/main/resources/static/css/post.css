@@ -1,6 +1,10 @@
 /* post - 작은선아 시작 */
 
 /* createPost.html 시작 */
+.post_create_section {
+    margin-bottom: 20px;
+}
+
 .post_create_section h2 {
     margin-bottom: 10px;
 }
@@ -14,7 +18,7 @@
     text-align: center;
 }
 
-.keyword:first-child {
+.keyword.selected {
     background: linear-gradient(90deg, #91C1F0 0%, #F0C091 100%);
     color: white;
 }
