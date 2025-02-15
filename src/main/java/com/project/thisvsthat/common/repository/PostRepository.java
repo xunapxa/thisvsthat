@@ -2,7 +2,10 @@ package com.project.thisvsthat.common.repository;
 
 import com.project.thisvsthat.common.entity.Post;
 import com.project.thisvsthat.common.enums.PostStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long> {
+public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
     // 게시물 관련 추가 쿼리 메서드가 필요하면 여기에 작성
 
     // 블라인드 상태 글 조회
@@ -29,4 +32,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Modifying
     @Query("UPDATE Post p SET p.postStatus = 'DELETED' WHERE p.postId IN :postIds AND p.postStatus = 'BLINDED'")
     int deleteMultiplePosts(@Param("postIds") List<Long> postIds);
+
+
 }
