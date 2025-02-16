@@ -18,7 +18,7 @@
             <div><i class="fa-solid fa-chevron-left"></i></div>
             <div><i></i></div>
         </section>
-        <form th:action="@{/post/create}" method="post" enctype="multipart/form-data">
+        <form th:action="@{/post/create}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <section class="post_create_section">
                 <h2>카테고리</h2>
                 <div class="admin_bottom_box"> <!-- 이 부분 수정 하기 -->
@@ -33,13 +33,13 @@
             <section class="post_create_section">
                 <h2>제목</h2>
                 <div class="post_create_input">
-                    <input type="text" th:field="${dto.title}"/>
+                    <input id="title" type="text" th:field="${dto.title}"/>
                 </div>
             </section>
             <section class="post_create_section">
                 <h2>내용</h2>
                 <div class="post_create_textarea">
-                    <textarea name="" id="" class="textarea" th:field="${dto.content}"> </textarea>
+                    <textarea id="content" class="textarea" th:field="${dto.content}"> </textarea>
                 </div>
             </section>
             <section class="post_choose_section post_create_section">
@@ -54,7 +54,7 @@
                              alt="Uploaded Image"></a>
                 </div>
             </section>
-            <section class="post_create_section">
+            <section class="post_create_section post_img_description">
                 <h2><a href="" id="postImgDescription">설명 작성 ></a></h2>
             </section>
             <section class="popup_section">
@@ -95,26 +95,20 @@
     <script>
         // 이미지 선택 시 img 업데이트
         function previewImage(event, previewId) {
-            var file = event.target.files[0];  // 선택한 파일 가져오기
-            if (!file) return;  // 파일이 선택되지 않았으면 함수 종료
-
+            var file = event.target.files[0];
+            if (!file) return;
             var reader = new FileReader();
             reader.onload = function () {
-                document.getElementById(previewId).src = reader.result;  // 미리보기 이미지 변경
+                document.getElementById(previewId).src = reader.result;
             };
-            reader.readAsDataURL(file);  // 파일 데이터 읽기
+            reader.readAsDataURL(file);
         }
 
         // 카테고리 클릭 시 css 및 value 변경
         function selectCategory(selectedDiv) {
-        // 모든 카테고리 div에서 'selected' 클래스 제거
-        document.querySelectorAll('.keyword').forEach(div => div.classList.remove('selected'));
-
-        // 클릭한 div에 'selected' 클래스 추가
-        selectedDiv.classList.add('selected');
-
-        // hidden input의 value 업데이트 (선택된 카테고리 값을 저장)
-        document.getElementById('selectedCategory').value = selectedDiv.innerText;
+            document.querySelectorAll('.keyword').forEach(div => div.classList.remove('selected'));
+            selectedDiv.classList.add('selected');
+            document.getElementById('selectedCategory').value = selectedDiv.innerText;
         }
     </script>
 </div>

@@ -9,7 +9,13 @@
     margin-bottom: 10px;
 }
 
+.keyword_box {
+    display: flex;
+    gap: 10px;
+}
+
 .keyword {
+    padding-top: 9px;
     width: 58px;
     height: 36px;
     background-color: #EFEFF0;
@@ -46,6 +52,10 @@
     width: 185px;
     height: 212px;
     border: 1px solid #AFB1B6;
+}
+
+.post_img_description {
+    margin-bottom: 30px;
 }
 
 .post_create_popup_box {
@@ -112,9 +122,36 @@
     padding-left: 10px;
 }
 
+.hashtag {
+    color: #1E8975;
+    font-weight: bold;
+    text-decoration: none;
+    display: contents;
+}
+
+.hashtag:hover {
+    text-decoration: underline;
+}
+
+.choose_top_box img {
+    transition: all 0.3s ease-in-out;
+}
+
+.choose_top_box img.selected {
+    width: 190px;
+    height: 217px;
+    opacity: 1;
+}
+
+.choose_top_box img.dimmed {
+    width: 175px;
+    height: 195px;
+    opacity: 0.3;
+}
+
 .btn_box {
     margin-top: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
 }
 
 .post_detail_progress_top {
@@ -129,7 +166,43 @@
 }
 
 .post_detail_progress_bottom {
-    margin-bottom: 40px;
+    margin-bottom: 60px;
+}
+
+
+.progress-container {
+    width: 100%;
+    background-color: #f1f1f1;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    height: 25px;
+    position: relative;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: white;
+    font-size: 14px;
+    transition: width 0.5s ease;
+    min-width: 10%;
+}
+
+.option1 {
+    background-color: #90CAF9;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.option2 {
+    background-color: #FFCC80;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
 }
 
 .post_detail_btn {
@@ -139,6 +212,7 @@
 
 .post_detail_update_btn, .post_detail_delete_btn {
     color: black;
+    margin-right: 5px;
 }
 /* postDetail.html 끝 */
 

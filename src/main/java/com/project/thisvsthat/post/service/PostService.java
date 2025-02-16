@@ -4,6 +4,7 @@ import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.entity.Post;
 import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.enums.PostStatus;
+import com.project.thisvsthat.common.enums.VoteStatus;
 import com.project.thisvsthat.common.repository.PostRepository;
 import com.project.thisvsthat.common.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -60,6 +61,8 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. ID: " + postId));
         post.setPostStatus(PostStatus.DELETED);
+        post.setVoteStatus(VoteStatus.FINISHED);
         postRepository.save(post);
     }
+
 }

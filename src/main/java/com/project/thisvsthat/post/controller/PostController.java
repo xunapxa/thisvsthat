@@ -1,9 +1,11 @@
 package com.project.thisvsthat.post.controller;
 
 import com.project.thisvsthat.common.dto.PostDTO;
-import com.project.thisvsthat.common.enums.Category;
+import com.project.thisvsthat.common.dto.VoteDTO;
 import com.project.thisvsthat.image.service.ImageService;
+import com.project.thisvsthat.post.dto.VotePercentageDTO;
 import com.project.thisvsthat.post.service.PostService;
+import com.project.thisvsthat.post.service.VoteService;
 import com.project.thisvsthat.post.util.HashtagExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,11 +22,18 @@ public class PostController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private VoteService voteService;
+
     /* 상세 페이지 */
-    @GetMapping("")
-    public String postDetail(Model model) {
-        PostDTO dto = postService.findOnePost(37L);
+    @GetMapping("{id}")
+    public String postDetail(@PathVariable("id") Long postId, Model model) {
+        PostDTO dto = postService.findOnePost(postId);
+        VotePercentageDTO votePercentage = voteService.getVotePercentage(postId);
+
         model.addAttribute("dto", dto);
+        model.addAttribute("vote", new VoteDTO());
+        model.addAttribute("votePercentage", votePercentage);
         return "post/postDetail";
     }
 
@@ -36,9 +45,9 @@ public class PostController {
     }
 
     /* 수정 페이지 */
-    @GetMapping("update")
-    public String updatePost(Model model) {
-        PostDTO dto = postService.findOnePost(37L);
+    @GetMapping("{id}/update")
+    public String updatePost(@PathVariable("id") Long postId, Model model) {
+        PostDTO dto = postService.findOnePost(postId);
         model.addAttribute("dto", dto);
         return "post/updatePost";
     }
@@ -75,8 +84,9 @@ public class PostController {
     }
 
     /* 글 수정 */
-    @PostMapping("update")
+    @PostMapping("{id}/update")
     public String updatePost(@ModelAttribute("dto") PostDTO dto,
+                             @PathVariable("id") Long postId,
                              @RequestParam("imageFile1") MultipartFile imageFile1,
                              @RequestParam("imageFile2") MultipartFile imageFile2,
                              Model model) {
@@ -101,15 +111,33 @@ public class PostController {
         System.out.println("추출한 해시태그 정보 ==========" + extractedHashtags);
         dto.setHashtags(extractedHashtags);
 
-        postService.updatePost(37L, dto);
-        return "redirect:/"; // 해당 글 상세로 이동하는 것으로 수정하기
+        postService.updatePost(postId, dto);
+
+        String url = "redirect:/post/" + postId;
+        return url;
     }
 
     /* 글 삭제 */
-    @PostMapping("delete")
-    public String deletePost() {
-        postService.deletePost(22L);
+    @GetMapping("{id}/delete")
+    public String deletePost(@PathVariable("id") Long postId) {
+        postService.deletePost(postId);
         return "redirect:/";
     }
 
+    /* 투표 저장 */
+    @PostMapping("{id}/vote")
+    public String saveVote(@PathVariable("id") Long postId, @ModelAttribute("dto") VoteDTO dto) {
+        System.out.println("투표한 내용 ==========" + dto.getSelectedOption());
+        voteService.saveVote(100002L,postId, dto.getSelectedOption());
+        String url = "redirect:/post/" + postId;
+        return url;
+    }
+
+    /* 투표 종료 */
+    @GetMapping("{id}/voteFinished")
+    public String voteFinished(@PathVariable("id") Long postId, @ModelAttribute("dto") VoteDTO dto) {
+        voteService.voteFinished(postId);
+        String url = "redirect:/post/" + postId;
+        return url;
+    }
 }
