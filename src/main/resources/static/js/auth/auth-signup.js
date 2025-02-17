@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const submitButton = document.getElementById("submit-button");
 
     let nicknameCheckTimer = null; // 닉네임 중복 검사 타이머
+    const nicknameCache = new Map(); // 닉네임 검사 결과 캐싱
     let isNicknameValid = false; // 닉네임 중복 검사 결과
 
     let defaultMessageNickname = "한글, 영문, 숫자, 언더바(_), 하이픈(-), 공백";
@@ -45,58 +46,48 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     }
 
-    // 닉네임 중복 검사 (AJAX 요청)
+    // 서버에 닉네임 중복 검사 요청 (캐싱 적용)
     async function checkNicknameDuplicate(nickname) {
         console.log("📌 닉네임 중복 검사 시작:", nickname);
+
+        // 1. 캐시 확인 (이미 검사한 닉네임이면 API 요청 없이 결과 반환)
+        if (nicknameCache.has(nickname)) {
+            console.log("📌 캐시 사용: ", nickname, "→", nicknameCache.get(nickname));
+            return nicknameCache.get(nickname);
+        }
+
         try {
             const response = await fetch(`/auth/check-nickname?nickname=${encodeURIComponent(nickname)}`);
             const result = await response.json();
-            console.log("📌 닉네임 중복 검사 결과(true면 중복): ", result.duplicate);
-            return result.duplicate; // true: 중복된 닉네임
+            console.log("📌 서버 응답 (중복 여부): ", result.duplicate);
+
+            // 2. 검사 결과 캐싱
+            nicknameCache.set(nickname, result.duplicate);
+
+            return result.duplicate;
         } catch (error) {
-            console.error("닉네임 중복 검사 요청 실패:", error);
+            console.error("❌ 닉네임 중복 검사 실패:", error);
             return false;
         }
     }
 
-    // 오류 스타일 적용 함수
-    function showError(inputField, message) {
-        const inputGroup = inputField.closest(".input-group");
-        const guide = inputGroup.querySelector(".input-guide");
-        const underline = inputGroup.querySelector(".input-underline");
-
-        guide.textContent = message;
-        guide.classList.add("error");
-        underline.classList.add("error");
-    }
-
-    // 오류 스타일 제거 함수
-    function clearError(inputField, defaultMessage) {
-        const inputGroup = inputField.closest(".input-group");
-        const guide = inputGroup.querySelector(".input-guide");
-        const underline = inputGroup.querySelector(".input-underline");
-
-        guide.textContent = defaultMessage;
-        guide.classList.remove("error");
-        underline.classList.remove("error");
-    }
-
-    // 닉네임 입력 감지
-    nameField.addEventListener("input", function () {
+    // 닉네임 입력 감지 (디바운싱 적용)
+    nameField.addEventListener("input", async function () {
         const nickname = this.value.trim();
         clearTimeout(nicknameCheckTimer);
 
-        // 닉네임 유효성 검사
+        // 1. 닉네임 유효성 검사
         if (!validateNickname(nickname)) {
             showError(nameField, "닉네임은 2~20자, 한글/영문/숫자/_/- 만 사용 가능합니다.");
             isNicknameValid = false;
             toggleSubmitButton();
             return;
-        } else {
-            clearError(nameField, defaultMessageNickname);
         }
 
-        // 닉네임 중복 검사 (디바운싱 적용)
+        // 닉네임이 유효하면 오류 제거 (UI 업데이트)
+        clearError(nameField, defaultMessageNickname);
+
+        // 2. 닉네임 중복 검사 (디바운싱 적용)
         nicknameCheckTimer = setTimeout(async () => {
             const isDuplicate = await checkNicknameDuplicate(nickname);
             if (isDuplicate) {
@@ -107,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 isNicknameValid = true;
             }
             toggleSubmitButton();
-        }, 500);
+        }, 300);
     });
 
     // 생년월일 입력 감지
@@ -158,17 +149,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // 회원가입 요청 전송
+            // FormData 객체 생성
             const formData = new FormData(this);
-            console.log("📌 회원가입 요청 데이터:", new URLSearchParams(formData).toString());
+
+            // FormData → JSON 변환
+            const formDataObject = {};
+            formData.forEach((value, key) => {
+                formDataObject[key] = value;
+            });
+
+            console.log("📌 회원가입 요청 데이터:", JSON.stringify(formDataObject));
 
             submitButton.disabled = true; // 중복 요청 방지
 
             try {
                 const response = await fetch("/auth/signup", {
                     method: "POST",
-                    body: new URLSearchParams(formData),
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+                    body: JSON.stringify(formDataObject), // JSON 형식으로 변환
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
                 });
 
                 const result = await response.json();
@@ -188,5 +188,27 @@ document.addEventListener("DOMContentLoaded", function () {
                 submitButton.disabled = false;
             }
         });
+
+        // 오류 스타일 적용 함수
+        function showError(inputField, message) {
+            const inputGroup = inputField.closest(".input-group");
+            const guide = inputGroup.querySelector(".input-guide");
+            const underline = inputGroup.querySelector(".input-underline");
+
+            guide.textContent = message;
+            guide.classList.add("error");
+            underline.classList.add("error");
+        }
+
+        // 오류 스타일 제거 함수
+        function clearError(inputField, defaultMessage) {
+            const inputGroup = inputField.closest(".input-group");
+            const guide = inputGroup.querySelector(".input-guide");
+            const underline = inputGroup.querySelector(".input-underline");
+
+            guide.textContent = defaultMessage;
+            guide.classList.remove("error");
+            underline.classList.remove("error");
+        }
     }
 });
