@@ -23,6 +23,21 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/**").permitAll() // 인증 없이 접근 허용 (테스트용 전부 허용)
+                        // 정적 리소스 허용
+                        .requestMatchers(
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/favicon.ico"
+                        ).permitAll()
+
+                        // 로그인, 회원가입, OAuth 관련 요청 허용
+                        .requestMatchers(
+                                "/login",
+                                "/login/error/**",
+                                "/signup",
+                                "/auth/**"
+                        ).permitAll()
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
