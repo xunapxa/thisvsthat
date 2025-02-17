@@ -35,16 +35,24 @@ public class AuthViewController {
     /**
      * 로그인 오류 페이지
      */
-    @GetMapping("/login/error/{errorType}")
-    public String loginError(@PathVariable("errorType") String errorType, Model model) {
+    @GetMapping("/login/error/{error-type}")
+    public String loginError(@PathVariable("error-type") String errorType, Model model) {
 
         // 디버깅 로그 - 오류 타입 확인
         System.out.println("Login error: " + errorType);
 
+        // 오류에 맞는 에러 타입 설정
+        // URL 경로에서는 하이픈을 사용하고, 코드에서는 camelCase로 사용
+        // 예를 들어, "social-mismatch"는 "socialMismatch"로 모델에 전달
         if ("banned".equals(errorType)) {
-            model.addAttribute("error", "banned");
+            model.addAttribute("errorType", "banned");
+        } else if ("social-mismatch".equals(errorType)) {
+            model.addAttribute("errorType", "socialMismatch");
+        } else if ("social-consent-failure".equals(errorType)) {
+            model.addAttribute("errorType", "socialConsentFailure");
         }
-        return "auth/login";
+
+        return "auth/login-error";
     }
 
     /**
