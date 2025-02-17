@@ -78,7 +78,7 @@ public class OAuthController {
             // 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
                 return ResponseEntity.status(302)
-                        .header("Location", "/login?error=banned")
+                        .header("Location", "/login/error/banned")
                         .build();  // 로그인 에러 페이지로 리디렉션 처리
             }
 
