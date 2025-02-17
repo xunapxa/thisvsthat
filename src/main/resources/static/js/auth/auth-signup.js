@@ -9,8 +9,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const nicknameCache = new Map(); // 닉네임 검사 결과 캐싱
     let isNicknameValid = false; // 닉네임 중복 검사 결과
 
-    let defaultMessageNickname = "한글, 영문, 숫자, 언더바(_), 하이픈(-), 공백";
-    let defaultMessageBirthdate = "예: 1995-07-24";
+    // 기본 메시지
+    const defaultMessageNickname = "한글, 영문, 숫자, 언더바(_), 하이픈(-), 공백";
+    const defaultMessageBirthdate = "예: 1995-07-24";
+
+    // 유효성 검사 메시지
+    const validationMessageNickname = "닉네임은 2~20자, 한글/영문/숫자/_/- 만 사용 가능합니다.";
+    const validationMessageBirthdate = "생년월일은 YYYY-MM-DD 형식이며, 유효한 날짜여야 합니다.";
+
+    // 에러 메시지
+    const errorMessageNicknameUsed = "이미 사용 중인 닉네임입니다.";
 
     // 한글 디코딩 처리 (닉네임)
     if (nameField) {
@@ -19,8 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 닉네임 유효성 검사
     function validateNickname(nickname) {
+        const trimmedNickname = nickname.trim(); // 앞뒤 공백 제거
         const nicknameRegex = /^[a-zA-Z0-9가-힣 _-]+$/;
-        return nickname.length >= 2 && nickname.length <= 20 && nicknameRegex.test(nickname);
+        return trimmedNickname.length >= 2 && trimmedNickname.length <= 20 && nicknameRegex.test(trimmedNickname);
     }
 
     // 생년월일 유효성 검사
@@ -78,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 1. 닉네임 유효성 검사
         if (!validateNickname(nickname)) {
-            showError(nameField, "닉네임은 2~20자, 한글/영문/숫자/_/- 만 사용 가능합니다.");
+            showError(nameField, validationMessageNickname);
             isNicknameValid = false;
             toggleSubmitButton();
             return;
@@ -91,7 +100,7 @@ document.addEventListener("DOMContentLoaded", function () {
         nicknameCheckTimer = setTimeout(async () => {
             const isDuplicate = await checkNicknameDuplicate(nickname);
             if (isDuplicate) {
-                showError(nameField, "이미 사용 중인 닉네임입니다.");
+                showError(nameField, errorMessageNicknameUsed);
                 isNicknameValid = false;
             } else {
                 clearError(nameField, defaultMessageNickname);
@@ -104,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 생년월일 입력 감지
     birthdateField.addEventListener("input", function () {
         if (!validateBirthdate(this.value.trim())) {
-            showError(this, "생년월일은 YYYY-MM-DD 형식이며, 유효한 날짜여야 합니다.");
+            showError(this, validationMessageBirthdate);
         } else {
             clearError(this, defaultMessageBirthdate);
         }
@@ -127,14 +136,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // 닉네임 유효성 검사
             if (!validateNickname(nicknameValue)) {
-                showError(nameField, "닉네임은 2~20자, 한글/영문/숫자/_/- 만 사용 가능합니다.");
+                showError(nameField, validationMessageNickname);
                 nameField.focus();
                 isValid = false;
             }
 
             // 생년월일 유효성 검사
             if (!validateBirthdate(birthdateValue)) {
-                showError(birthdateField, "생년월일은 YYYY-MM-DD 형식이며, 유효한 날짜여야 합니다.");
+                showError(birthdateField, validationMessageBirthdate);
                 birthdateField.focus();
                 isValid = false;
             }
@@ -144,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // 닉네임 중복 검사 (최종 확인)
             const isDuplicate = await checkNicknameDuplicate(nicknameValue);
             if (isDuplicate) {
-                showError(nameField, "이미 사용 중인 닉네임입니다.");
+                showError(nameField, errorMessageNicknameUsed);
                 nameField.focus();
                 return;
             }
