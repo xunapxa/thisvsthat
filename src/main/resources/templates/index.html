@@ -10,64 +10,140 @@
 <body>
 <!-- 작업할 공간 -->
 <div layout:fragment="content">
-    <article class="main_article">
+
+    <article class="main_article" id="main_article">
+        <div id="scroll_top"></div>
+        <!--모달 팝업-->
+        <div class="modal">
+            <div class="modal_popup">
+                <h3 class="margin_bottom15 text-center"><b>인기순 정렬 기간 설정</b></h3>
+
+                <div class="margin_bottom10">
+                    <div class="margin_bottom5">시작 날짜</div>
+                    <input type="date" id="start_date" class="width100" th:value="${startDate}">
+                </div>
+
+                <div class="margin_bottom10">
+                    <div class="margin_bottom5">종료 날짜</div>
+                    <input type="date" id="end_date" class="width100" th:value="${endDate}">
+                </div>
+                <p class="margin_bottom15 font14">
+                    시작 날짜와 종료날짜 기준으로 작성된 게시글의 투표합산의 글이 보여집니다.
+                </p>
+
+                <div class="btn_box">
+                    <button class="btn_medium bg_orange"><a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc='popularity', vote_status=${voteStatus})}" id="date_search_btn">완료</a></button>
+                    <button type="button" class="btn_medium bg_gray" id="modal_close_btn">닫기</button>
+                </div>
+
+            </div>
+        </div>
+
+
         <section>
-            <form class="search_form">
-                <select>
-                    <option value="">제목</option>
-                    <option value="">내용</option>
-                    <option value="">해시태그</option>
+            <!-- 검색 폼 -->
+            <form class="search_form" method="get">
+                <select name="search_by">
+                    <option value="title" th:selected="${searchBy == 'title'}">제목</option>
+                    <option value="content" th:selected="${searchBy == 'content'}">내용</option>
+                    <option value="hashtags" th:selected="${searchBy == 'hashtags'}">해시태그</option>
                 </select>
-                <input type="text">
+                <input type="text" name="keyword" th:value="${keyword}">
+                <label>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="submit" class="hidden" name="submit" alt="search">
+                </label>
+
             </form>
         </section>
 
         <section>
+            <!-- 카테고리 선택 -->
             <div class="admin_top_box">
                 <h2>카테고리</h2>
             </div>
             <div class="admin_bottom_box">
                 <div class="keyword_box">
-                    <a href="" class="keyword active">전체</a>
-                    <a href="" class="keyword">고민</a>
-                    <a href="" class="keyword">토론</a>
-                    <a href="" class="keyword">자유</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category='', list_desc=${listDesc}, vote_status=${voteStatus}, start_date=${startDate}, end_date=${endDate})}"
+                       class="keyword" th:classappend="${listCategory == ''} ? 'active' : ''">전체</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category='고민', list_desc=${listDesc}, vote_status=${voteStatus}, start_date=${startDate}, end_date=${endDate})}"
+                       class="keyword" th:classappend="${listCategory == '고민'} ? 'active' : ''">고민</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category='토론', list_desc=${listDesc}, vote_status=${voteStatus}, start_date=${startDate}, end_date=${endDate})}"
+                       class="keyword" th:classappend="${listCategory == '토론'} ? 'active' : ''">토론</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category='자유', list_desc=${listDesc}, vote_status=${voteStatus}, start_date=${startDate}, end_date=${endDate})}"
+                       class="keyword" th:classappend="${listCategory == '자유'} ? 'active' : ''">자유</a>
                 </div>
             </div>
         </section>
 
         <section>
-            <div class="admin_top_box">
+            <!-- 정렬 기준 -->
+            <div class="post_section_bottom margin_bottom10">
                 <h2>정렬 기준</h2>
                 <div>
-                    <a href="#"><b>인기순</b></a>
-                    <a href="#">최신순</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc='createdAt', vote_status=${voteStatus})}" class="margin_right10" th:classappend="${#strings.equals(listDesc, 'createdAt')} ? 'font_weight_bold' :  ''">최신순</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc='popularity', vote_status=${voteStatus})}" id="modal_btn" th:classappend="${#strings.equals(listDesc, 'popularity')} ? 'font_weight_bold' :  ''">인기순</a>
                 </div>
+            </div>
+            <!-- 투표 정렬 기준 -->
+            <div class="post_section_bottom margin_bottom10">
+                <h2>투표 상태</h2>
+                <div>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc=${listDesc}, vote_status='', start_date=${startDate}, end_date=${endDate})}" class="margin_right10" th:classappend="${#strings.equals(voteStatus, '')} ? 'font_weight_bold' :  ''">전체</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc=${listDesc}, vote_status='ACTIVE', start_date=${startDate}, end_date=${endDate})}" class="margin_right10" th:classappend="${#strings.equals(voteStatus, 'ACTIVE')} ? 'font_weight_bold' :  ''">진행</a>
+                    <a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc=${listDesc}, vote_status='FINISHED', start_date=${startDate}, end_date=${endDate})}" th:classappend="${#strings.equals(voteStatus, 'FINISHED')} ? 'font_weight_bold' :  ''">종료</a>
+                </div>
+            </div>
+
+        </section>
+
+        <section>
+            <!-- Thymeleaf로 게시물 목록 출력 -->
+            <div id="list_wrap">
+                <th:block th:each="post : ${posts}">
+                    <div class="choose_section margin_bottom20 position_relative">
+                        <span class="vote_status margin_bottom10"
+                             th:classappend="${#strings.equals(post.voteStatus, 'ACTIVE')} ? 'vote_ing' : (${#strings.equals(post.voteStatus, 'FINISHED')} ? 'vote_finished' : '')"
+                             th:text="${#strings.equals(post.voteStatus, 'ACTIVE')} ? '진행' : (${#strings.equals(post.voteStatus, 'FINISHED')} ? '투표 종료' : '' )">
+                        </span>
+
+                        <a th:href="@{'/post/' + ${post.postId}}" class="choose_total">
+                            <div class="choose_top_box">
+                                <div class="choose_img_wrap" th:classappend="${post.option1ImageUrl != null and #strings.trim(post.option1ImageUrl) != ''} ? 'is_img_wrap' : ''">
+                                    <img class="choose_img is_img" th:src="${post.option1ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-o.png';">
+                                </div>
+                                <div class="choose_img_wrap" th:classappend="${post.option2ImageUrl != null and #strings.trim(post.option2ImageUrl) != ''} ? 'is_img_wrap' : ''">
+                                    <img class="choose_img is_img" th:src="${post.option2ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-x.png';"/>
+                                </div>
+
+                            </div>
+                            <div class="choose_bottom_box">
+                                <p class="shorten" th:text="${post.title}"></p>
+                            </div>
+                        </a>
+                    </div>
+                </th:block>
             </div>
         </section>
 
-        <section class="choose_section">
-            <a href="#1" class="choose_total">
-                <div class="choose_top_box">
-                    <img class="choose_img" src="https://placehold.co/150X150" alt=""/>
-                    <img class="choose_img" src="https://placehold.co/150X150" alt=""/>
-                </div>
-                <div class="choose_bottom_box">
-                    <p class="shorten">제목이 들어갈 공간 입니다.</p>
-                </div>
-            </a>
-        </section>
-
-        <section class="fixed">
-            <div class="margin_bottom10">
-                <a href=""><i class="fa-solid fa-pen"></i></a>
-            </div>
-            <div>
-                <a href=""><i class="fa-solid fa-angle-up"></i></a>
-            </div>
-        </section>
-
+        <p id="end_message" class="margin_bottom10" style="">게시물이 모두 표시되었습니다.</p>
+        <p id="no_posts_message" class="margin_bottom10" style="">게시물이 없습니다.</p>
     </article>
+
+    <!-- 글쓰기 버튼, Top 버튼 하단 고정 -->
+    <div class="fixed">
+        <a href="/post/create"><i class="fa-solid fa-pen"></i></a>
+        <a href="#" class="top_btn"><i class="fa-solid fa-angle-up"></i></a>
+    </div>
+
+
+    <input type="hidden" id="total-count" th:value="${totalCount}" />
+
+    <!-- JavaScript 코드 추가 (페이지 맨 아래에 배치) -->
+    <script type="text/javascript" th:src="@{/js/index/index.js}"></script>
 </div>
+
+
+
 </body>
 </html>
