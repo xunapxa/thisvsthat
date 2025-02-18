@@ -5,7 +5,6 @@ import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.enums.PostStatus;
 import com.project.thisvsthat.common.repository.PostRepository;
 import com.project.thisvsthat.common.repository.UserRepository;
-import com.project.thisvsthat.common.service.SpamFilterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,17 +16,6 @@ import java.util.List;
 public class AdminService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final SpamFilterService spamFilterService;
-
-    // 금지 키워드 추가
-    public boolean addKeyword(String keyword) {
-        return spamFilterService.addKeyword(keyword);
-    }
-
-    // 금지 키워드 삭제
-    public void deleteKeywords(List<String> keywords) {
-        spamFilterService.deleteKeywords(keywords);
-    }
 
     // 신고 글 조회
     public List<Post> getBlindedPosts() {

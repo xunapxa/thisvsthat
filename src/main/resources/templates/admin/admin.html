@@ -29,8 +29,11 @@
 				</th:block>
 			</div>
 			<div class="admin_add_box">
-				<input type="text" id="keywordInput" name="keyword" placeholder="금지 키워드 입력">
-				<button class="btn_large bg_brown" id="addKeywordBtn"><span>키워드 추가</span></button>
+				<form method="post" th:action="@{/admin/}">
+					<input type="text" id="keywordInput" name="keyword" placeholder="금지 키워드 입력">
+					<button class="btn_large bg_brown" id="addKeywordBtn"><span>키워드 추가</span></button>
+				</form>
+				<p id="errorMsg" th:if="${error}" th:text="${error}"></p>
 			</div>
 		</div>
 	</section>

@@ -11,11 +11,12 @@ import java.util.List;
 public interface SpamFilterRepository extends JpaRepository<SpamFilter, Long> {
     // 스팸 필터 관련 추가 쿼리 메서드가 필요하면 여기에 작성
 
-    @Query("SELECT s.filterValue FROM SpamFilter s") // ✅ JPQL로 수정
+    @Query("SELECT s.filterValue FROM SpamFilter s") // JPQL로 수정
     List<String> findAllFilterValues();
 
-    boolean existsByFilterValue(String filterValue); // 중복 검사
+    // 키워드 일괄 삭제
+    void deleteByFilterValueIn(List<String> filterValues);
 
-    void deleteByFilterValueIn(List<String> filterValues); // 여러 키워드 삭제
-
+    // 중복 검사
+    boolean existsByFilterValue(String filterValue);
 }
