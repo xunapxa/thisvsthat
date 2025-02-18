@@ -29,4 +29,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Modifying
     @Query("UPDATE Post p SET p.postStatus = 'DELETED' WHERE p.postId IN :postIds AND p.postStatus = 'BLINDED'")
     int deleteMultiplePosts(@Param("postIds") List<Long> postIds);
+
+    // 특정 유저가 쓴 BLINDED 또는 DELETED 상태의 게시글 조회
+    @Query("SELECT p FROM Post p WHERE p.user.id = :userId AND p.postStatus IN ('BLINDED', 'DELETED')")
+    List<Post> findBlindedAndDeletedPostsByUser(@Param("userId") Long userId);
 }

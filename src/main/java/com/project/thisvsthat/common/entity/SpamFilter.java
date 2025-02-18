@@ -37,4 +37,11 @@ public class SpamFilter {
     @UpdateTimestamp
     @Column(insertable = false)
     private LocalDateTime updatedAt;
+
+    public SpamFilter(FilterType filterType, String filterValue) {
+        this.filterType = filterType;
+        this.filterValue = filterValue;
+        this.createdAt = LocalDateTime.now(); // 기본값 설정
+        this.updatedAt = LocalDateTime.now();
+    }
 }
