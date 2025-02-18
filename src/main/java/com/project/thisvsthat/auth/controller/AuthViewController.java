@@ -2,6 +2,7 @@ package com.project.thisvsthat.auth.controller;
 
 import com.project.thisvsthat.auth.dto.GoogleUserInfoDTO;
 import com.project.thisvsthat.auth.dto.KakaoUserInfoDTO;
+import com.project.thisvsthat.auth.dto.NaverUserInfoDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -75,7 +76,7 @@ public class AuthViewController {
         String socialId = null;
         String socialType = null;
 
-        // 구글 & 카카오 DTO 처리
+        // 구글 DTO 처리
         if (socialUserInfo instanceof GoogleUserInfoDTO) {
             GoogleUserInfoDTO googleUser = (GoogleUserInfoDTO) socialUserInfo;
             email = googleUser.getEmail();
@@ -83,6 +84,8 @@ public class AuthViewController {
             nickname = googleUser.getName();
             socialId = googleUser.getId();
             socialType = "GOOGLE";
+
+        // 카카오 DTO 처리
         } else if (socialUserInfo instanceof KakaoUserInfoDTO) {
             KakaoUserInfoDTO kakaoUser = (KakaoUserInfoDTO) socialUserInfo;
             email = kakaoUser.getEmail();
@@ -90,6 +93,15 @@ public class AuthViewController {
             nickname = kakaoUser.getNickname();
             socialId = kakaoUser.getId();
             socialType = "KAKAO";
+
+        // 네이버 DTO 처리
+        } else if (socialUserInfo instanceof NaverUserInfoDTO) {
+            NaverUserInfoDTO naverUser = (NaverUserInfoDTO) socialUserInfo;
+            email = naverUser.getEmail();
+            profileImageUrl = naverUser.getProfileImage();
+            nickname = naverUser.getNickname();
+            socialId = naverUser.getId();
+            socialType = "NAVER";
         }
 
         // 기본 프로필 이미지 설정 (없을 경우 환경 변수에서 가져오기)
