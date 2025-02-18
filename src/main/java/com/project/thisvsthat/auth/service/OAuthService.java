@@ -2,6 +2,7 @@ package com.project.thisvsthat.auth.service;
 
 import com.project.thisvsthat.auth.dto.GoogleUserInfoDTO;
 import com.project.thisvsthat.auth.dto.KakaoUserInfoDTO;
+import com.project.thisvsthat.auth.dto.NaverUserInfoDTO;
 import com.project.thisvsthat.auth.dto.SignupRequestDTO;
 import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.enums.Gender;
@@ -133,6 +134,58 @@ public class OAuthService {
                 Optional.ofNullable(kakaoAccount.get("email")).map(Object::toString).orElse("user_" + attributes.get("id") + "@kakao.com"),
                 Optional.ofNullable(profile.get("nickname")).map(Object::toString).orElse("사용자"),
                 Optional.ofNullable(profile.get("profile_image_url")).map(Object::toString).orElse("")
+        );
+    }
+
+    /**
+     * 네이버 OAuth2 Access Token 요청
+     */
+    public String getNaverAccessToken(String code) {
+        String tokenUri = env.getProperty("spring.security.oauth2.client.provider.naver.token-uri");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<String> request = new HttpEntity<>(
+                "grant_type=authorization_code" +
+                        "&client_id=" + env.getProperty("spring.security.oauth2.client.registration.naver.client-id") +
+                        "&client_secret=" + env.getProperty("spring.security.oauth2.client.registration.naver.client-secret") +
+                        "&redirect_uri=" + env.getProperty("spring.security.oauth2.client.registration.naver.redirect-uri") +
+                        "&code=" + code, headers);
+
+        ResponseEntity<Map> response = restTemplate.exchange(tokenUri, HttpMethod.POST, request, Map.class);
+
+        return Optional.ofNullable(response.getBody())
+                .map(body -> body.get("access_token"))
+                .map(Object::toString)
+                .orElseThrow(() -> new RuntimeException("네이버 OAuth2 Access Token 요청 실패"));
+    }
+
+    /**
+     * 네이버 사용자 정보 가져오기
+     */
+    public NaverUserInfoDTO getNaverUserInfo(String accessToken) {
+        String userInfoUri = env.getProperty("spring.security.oauth2.client.provider.naver.user-info-uri");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessToken);
+
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        ResponseEntity<Map> response = restTemplate.exchange(userInfoUri, HttpMethod.GET, request, Map.class);
+
+        Map<String, Object> attributes = response.getBody();
+
+        if (attributes == null || !attributes.containsKey("response")) {
+            throw new RuntimeException("네이버 사용자 정보 조회 실패");
+        }
+
+        Map<String, Object> responseBody = (Map<String, Object>) attributes.get("response");
+
+        return new NaverUserInfoDTO(
+                responseBody.get("id").toString(),
+                responseBody.get("email").toString(),
+                Optional.ofNullable(responseBody.get("nickname")).map(Object::toString).orElse("사용자"),
+                Optional.ofNullable(responseBody.get("profile_image")).map(Object::toString).orElse("")
         );
     }
 
