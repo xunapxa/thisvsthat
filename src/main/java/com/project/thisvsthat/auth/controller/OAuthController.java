@@ -1,9 +1,6 @@
 package com.project.thisvsthat.auth.controller;
 
-import com.project.thisvsthat.auth.dto.AuthResponseDTO;
-import com.project.thisvsthat.auth.dto.GoogleUserInfoDTO;
-import com.project.thisvsthat.auth.dto.KakaoUserInfoDTO;
-import com.project.thisvsthat.auth.dto.SignupRequestDTO;
+import com.project.thisvsthat.auth.dto.*;
 import com.project.thisvsthat.auth.service.JwtService;
 import com.project.thisvsthat.auth.service.OAuthService;
 import com.project.thisvsthat.common.entity.User;
@@ -143,9 +140,11 @@ public class OAuthController {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
 
-            // 차단된 계정 확인
+            // 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
-                return ResponseEntity.status(403).build();
+                return ResponseEntity.status(302)
+                        .header("Location", "/login/error/banned")
+                        .build();  // 로그인 에러 페이지로 리디렉션 처리
             }
 
             // 기존 회원 → JWT 발급 후 메인 페이지 리디렉션
@@ -161,6 +160,61 @@ public class OAuthController {
         }
 
         // 4. 신규 회원이면, 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
+        request.getSession().setAttribute("signupUserInfo", userInfo);
+
+        return ResponseEntity.status(302)
+                .header("Location", "/signup")  // 회원가입 페이지로 리디렉션
+                .build();
+    }
+
+    /**
+     * 네이버 로그인 URL로 리디렉트
+     */
+    @GetMapping("/naver/login")
+    public void redirectToNaverAuth(HttpServletResponse response) throws IOException {
+        String naverAuthUrl = "https://nid.naver.com/oauth2.0/authorize"
+                + "?client_id=" + env.getProperty("spring.security.oauth2.client.registration.naver.client-id")
+                + "&redirect_uri=" + env.getProperty("spring.security.oauth2.client.registration.naver.redirect-uri")
+                + "&response_type=code";
+
+        response.sendRedirect(naverAuthUrl);
+    }
+
+    /**
+     * 네이버 OAuth Callback
+     */
+    @GetMapping("/naver/callback")
+    public ResponseEntity<Void> naverCallback(@RequestParam("code") String code, HttpServletRequest request) {
+
+        // 1. 네이버 Access Token 요청
+        String accessToken = oAuthService.getNaverAccessToken(code);
+
+        // 2. Access Token을 사용해서 사용자 정보 가져오기
+        NaverUserInfoDTO userInfo = oAuthService.getNaverUserInfo(accessToken);
+
+        // 3. 기존 회원 확인
+        Optional<User> existingUser = userRepository.findByEmail(userInfo.getEmail());
+
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+
+            // 차단된 계정인지 확인
+            if (user.getUserStatus() == UserStatus.BANNED) {
+                return ResponseEntity.status(302)
+                        .header("Location", "/login/error/banned")
+                        .build();  // 로그인 에러 페이지로 리디렉션 처리
+            }
+
+            // 기존 회원 → JWT 발급 후 메인 페이지 리디렉션
+            String jwtToken = jwtService.generateToken(user);
+
+            return ResponseEntity.status(302)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
+                    .header("Location", "/")  // 메인 페이지로 리디렉션
+                    .build();
+        }
+
+        // 4. 신규 회원이면 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
         request.getSession().setAttribute("signupUserInfo", userInfo);
 
         return ResponseEntity.status(302)
