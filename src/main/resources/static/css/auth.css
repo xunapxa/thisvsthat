@@ -18,8 +18,8 @@
     max-width: 382px;
 }
 
-/* 로고 */
-.logo {
+/* 로고 링크 */
+.logo-container a {
     align-self: flex-start;
 }
 
