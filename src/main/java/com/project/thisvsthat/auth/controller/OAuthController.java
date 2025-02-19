@@ -6,15 +6,11 @@ import com.project.thisvsthat.auth.service.OAuthService;
 import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.enums.UserStatus;
 import com.project.thisvsthat.common.repository.UserRepository;
-import io.jsonwebtoken.ExpiredJwtException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -81,7 +77,7 @@ public class OAuthController {
 
             // 로그인 전 URL 가져오기 (기본값은 홈 `/`)
             String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
-            request.getSession().removeAttribute("redirectUrl"); // 세션 값 삭제 (다시 로그인해도 남아있지 않게)
+            request.getSession().removeAttribute("redirectUrl"); // 사용 후 세션 값 삭제
             response.sendRedirect((redirectUrl != null && !redirectUrl.isEmpty()) ? redirectUrl : "/");
             return;
         }
@@ -220,31 +216,36 @@ public class OAuthController {
     }
 
     /**
-     * 회원가입 API
+     * 회원가입 API (JWT를 HTTP-Only 쿠키로 저장)
      */
     @PostMapping("/signup")
-    public ResponseEntity<AuthResponseDTO> signup(@RequestBody SignupRequestDTO signupRequest, HttpServletRequest request) {
+    public ResponseEntity<Map<String, String>> signup(@RequestBody SignupRequestDTO signupRequest, HttpServletRequest request, HttpServletResponse response) {
         try {
-            // 디버깅 로그 - 회원가입 정보 확인
-            System.out.println("Received signup request: " + signupRequest);
+            System.out.println("📌 Received signup request: " + signupRequest);
 
-            User newUser = oAuthService.registerUser(signupRequest); // 신규 회원 등록
-            String jwtToken = jwtService.generateToken(newUser); // 회원가입 후 JWT 토큰 발급
+            // 1. 신규 회원 등록
+            User newUser = oAuthService.registerUser(signupRequest);
 
-            // 디버깅 로그 - 생성된 JWT 토큰 확인
-            System.out.println("Generated JWT Token: " + jwtToken);
+            // 2. JWT 발급 및 HTTP-Only 쿠키 저장
+            String jwtToken = jwtService.generateToken(newUser);
+            jwtService.setJwtCookie(response, jwtToken);
+            System.out.println("📌 Generated JWT Token: " + jwtToken);
 
-            // 회원가입 후 세션 정보 삭제
+            // 3. 회원가입 후 세션 정보 삭제
             request.getSession().removeAttribute("signupUserInfo");
 
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                    .body(new AuthResponseDTO(jwtToken, newUser.getNickname(), newUser.getEmail(), newUser.getProfileImageUrl(), signupRequest.getSocialType().name()));
-        } catch (Exception e) {
-            // 디버깅 로그 - 예외 메시지 확인
-            System.out.println("Error during signup: " + e.getMessage());
+            // 4. 세션에서 redirectUrl 가져오기
+            String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
+            if (redirectUrl == null || redirectUrl.isEmpty()) {
+                redirectUrl = "/"; // 기본값 설정
+            }
+            request.getSession().removeAttribute("redirectUrl"); // 회원가입 완료 후 삭제
 
-            return ResponseEntity.badRequest().body(new AuthResponseDTO(null, e.getMessage(), "", "", ""));
+            // 5. 응답 (redirectUrl을 반환하여 프론트에서 리다이렉트 처리)
+            return ResponseEntity.ok(Map.of("message", "회원가입 성공", "redirectUrl", redirectUrl != null ? redirectUrl : "/"));
+        } catch (Exception e) {
+            System.out.println("❌ 회원가입 오류: " + e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 

@@ -184,9 +184,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.log("📌 서버 응답:", result);
 
                 if (response.ok) {
-                    localStorage.setItem("token", result.token);
-                    alert("회원가입 완료! 메인 페이지로 이동합니다.");
-                    window.location.href = "/";
+                    // 백엔드에서 제공한 redirectUrl로 이동
+                    window.location.href = result.redirectUrl;
                 } else {
                     alert(result.message || "회원가입 실패");
                     submitButton.disabled = false; // 실패 시 버튼 다시 활성화
