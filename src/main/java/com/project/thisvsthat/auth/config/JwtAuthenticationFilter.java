@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -88,7 +87,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
+                    authentication.setDetails(user); // 인증 객체에 사용자 정보 저장
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                    System.out.println("✅ [SUCCESS] SecurityContext에 사용자 인증 설정됨: " + authentication.getName());
                 }
             }
         } catch (ExpiredJwtException e) {
