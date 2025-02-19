@@ -3,6 +3,8 @@ package com.project.thisvsthat.auth.controller;
 import com.project.thisvsthat.auth.dto.GoogleUserInfoDTO;
 import com.project.thisvsthat.auth.dto.KakaoUserInfoDTO;
 import com.project.thisvsthat.auth.dto.NaverUserInfoDTO;
+import com.project.thisvsthat.auth.service.JwtService;
+import com.project.thisvsthat.common.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,25 +14,28 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
 @RequiredArgsConstructor
 public class AuthViewController {
 
     private final Environment env;
+    private final JwtService jwtService;
 
     /**
      * 로그인 페이지
      */
     @GetMapping("/login")
-    public String loginPage(Model model) {
+    public String loginPage(HttpServletRequest request, Model model) {
+        Optional<User> loggedInUser = jwtService.getUserFromRequest(request);
 
-        // 디버깅 로그 - Google OAuth 로그인 URL 확인
-        System.out.println("Redirecting to Google OAuth login URL");
+        if (loggedInUser.isPresent()) {
+            User user = loggedInUser.get();
+            model.addAttribute("userEmail", user.getEmail());
+            model.addAttribute("socialType", user.getSocialType().name());
+        }
 
-        // Google OAuth 로그인 URL을 `/auth/google/login`을 통해 리디렉트하도록 변경
-        String googleAuthUrl = "/auth/google/login";
-
-        model.addAttribute("googleAuthUrl", googleAuthUrl);
         return "auth/login";
     }
 
@@ -41,9 +46,6 @@ public class AuthViewController {
     public String loginError(@PathVariable("error-type") String errorType,
                              @RequestParam(value = "provider", required = false) String provider,
                              Model model) {
-
-        // 디버깅 로그 - 오류 타입 확인
-        System.out.println("Login error: " + errorType);
 
         // 오류에 맞는 에러 타입 설정
         // URL 경로에서는 하이픈을 사용하고, 코드에서는 camelCase로 사용
