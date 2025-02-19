@@ -80,6 +80,10 @@ article .admin_section:not(:first-child) .admin_bottom_box, .keyword_box {
     margin-right: var(--space-medium);
 }
 
+#errorMsg {
+    display: none;
+}
+
 .admin_top_box div form {
     display: flex;
 }

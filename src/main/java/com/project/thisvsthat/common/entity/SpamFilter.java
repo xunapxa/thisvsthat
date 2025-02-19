@@ -24,8 +24,8 @@ public class SpamFilter {
     private Long filterId;
 
     @Enumerated(EnumType.STRING)
-    @Column(length = 20, nullable = false)
-    private FilterType filterType;
+    @Column(nullable = false, length = 20)
+    private FilterType filterType = FilterType.WORD;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String filterValue;
@@ -41,7 +41,9 @@ public class SpamFilter {
     public SpamFilter(FilterType filterType, String filterValue) {
         this.filterType = filterType;
         this.filterValue = filterValue;
-        this.createdAt = LocalDateTime.now(); // 기본값 설정
-        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void setFilterValue(String filterValue) {
+        this.filterValue = filterValue;
     }
 }

@@ -1,3 +1,11 @@
+document.addEventListener("DOMContentLoaded", function () {
+        let errorMsgElement = document.getElementById("errorMsg");
+        if (errorMsgElement && errorMsgElement.textContent.trim() !== "") {
+            alert(errorMsgElement.textContent); // 알림 창 표시
+            document.getElementById("keywordInput").value = ""; // 입력 필드 리셋
+        }
+    });
+
 let selectedUserId = null;
 
 function toggleSelection(section) {
