@@ -7,6 +7,7 @@ import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.enums.UserStatus;
 import com.project.thisvsthat.common.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,24 +48,19 @@ public class OAuthController {
 
     /**
      * Google OAuth Callback
-     * JWT를 Authorization 헤더에 설정하고 JSON 응답 반환
      */
     @GetMapping("/google/callback")
-    public ResponseEntity<Void> googleCallback(@RequestParam("code") String code, HttpServletRequest request) {
-        // 디버깅 로그 - Google OAuth에서 받은 코드 확인
-        System.out.println("Received Google OAuth code: " + code);
+    public void googleCallback(@RequestParam("code") String code,
+                               HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("📌 Received Google OAuth code: " + code);
 
         // 1. Google OAuth에서 받은 코드로 Access Token 요청
         String accessToken = oAuthService.getGoogleAccessToken(code);
-
-        // 디버깅 로그 - Access Token 확인
-        System.out.println("Received Google Access Token: " + accessToken);
+        System.out.println("📌 Received Google Access Token: " + accessToken);
 
         // 2. Access Token을 사용하여 사용자 정보 가져오기
         GoogleUserInfoDTO userInfo = oAuthService.getGoogleUserInfo(accessToken);
-
-        // 디버깅 로그 - 사용자 정보 확인
-        System.out.println("Google User Info: " + userInfo);
+        System.out.println("📌 Google User Info: " + userInfo);
 
         // 3. 기존 회원 여부 확인
         Optional<User> existingUser = userRepository.findByEmail(userInfo.getEmail());
@@ -74,29 +70,25 @@ public class OAuthController {
 
             // 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
-                return ResponseEntity.status(302)
-                        .header("Location", "/login/error/banned")
-                        .build();  // 로그인 에러 페이지로 리디렉션 처리
+                response.sendRedirect("/login/error/banned");
+                return;
             }
 
-            // 기존 회원 → JWT 발급 후 메인 페이지 리디렉션
+            // 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
             String jwtToken = jwtService.generateToken(user);
+            jwtService.setJwtCookie(response, jwtToken);
+            System.out.println("📌 Generated JWT Token: " + jwtToken);
 
-            // 디버깅 로그 - 생성된 JWT 토큰 확인
-            System.out.println("Generated JWT Token: " + jwtToken);
-
-            return ResponseEntity.status(302)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                    .header("Location", "/")  // 메인 페이지로 리디렉션
-                    .build();
+            // 로그인 전 URL 가져오기 (기본값은 홈 `/`)
+            String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
+            request.getSession().removeAttribute("redirectUrl"); // 세션 값 삭제 (다시 로그인해도 남아있지 않게)
+            response.sendRedirect((redirectUrl != null && !redirectUrl.isEmpty()) ? redirectUrl : "/");
+            return;
         }
 
-        // 4. 신규 회원이면 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
+        // 4. 신규 회원 → 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
         request.getSession().setAttribute("signupUserInfo", userInfo);
-
-        return ResponseEntity.status(302)
-                .header("Location", "/signup")  // 회원가입 페이지로 리디렉션
-                .build();
+        response.sendRedirect("/signup");
     }
 
     /**
@@ -114,27 +106,21 @@ public class OAuthController {
 
     /**
      * Kakao OAuth Callback
-     * JWT를 Authorization 헤더에 설정하고 JSON 응답 반환
      */
     @GetMapping("/kakao/callback")
-    public ResponseEntity<Void> kakaoCallback(@RequestParam("code") String code, HttpServletRequest request) {
-
-        // 디버깅 로그 - 카카오에서 받은 코드 확인
-        System.out.println("Received Kakao OAuth code: " + code);
+    public void kakaoCallback(@RequestParam("code") String code,
+                              HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("📌 Received Kakao OAuth code: " + code);
 
         // 1. 카카오 액세스 토큰 요청
         String accessToken = oAuthService.getKakaoAccessToken(code);
+        System.out.println("📌 Received Kakao Access Token: " + accessToken);
 
-        // 디버깅 로그 - Access Token 확인
-        System.out.println("Received Kakao Access Token: " + accessToken);
-
-        // 2. 카카오 사용자 정보 가져오기
+        // 2. Access Token을 사용하여 사용자 정보 가져오기
         KakaoUserInfoDTO userInfo = oAuthService.getKakaoUserInfo(accessToken);
+        System.out.println("📌 Kakao User Info: " + userInfo);
 
-        // 디버깅 로그 - 사용자 정보 확인
-        System.out.println("Kakao User Info: " + userInfo);
-
-        // 3. 기존 회원 확인
+        // 3. 기존 회원 여부 확인
         Optional<User> existingUser = userRepository.findByEmail(userInfo.getEmail());
 
         if (existingUser.isPresent()) {
@@ -142,29 +128,25 @@ public class OAuthController {
 
             // 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
-                return ResponseEntity.status(302)
-                        .header("Location", "/login/error/banned")
-                        .build();  // 로그인 에러 페이지로 리디렉션 처리
+                response.sendRedirect("/login/error/banned");
+                return;
             }
 
-            // 기존 회원 → JWT 발급 후 메인 페이지 리디렉션
+            // 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
             String jwtToken = jwtService.generateToken(user);
+            jwtService.setJwtCookie(response, jwtToken);
+            System.out.println("📌 Generated JWT Token: " + jwtToken);
 
-            // 디버깅 로그 - 생성된 JWT 토큰 확인
-            System.out.println("Generated JWT Token: " + jwtToken);
-
-            return ResponseEntity.status(302)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                    .header("Location", "/")  // 메인 페이지로 리디렉션
-                    .build();
+            // 로그인 전 URL 가져오기 (기본값은 홈 `/`)
+            String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
+            request.getSession().removeAttribute("redirectUrl"); // 세션 값 삭제
+            response.sendRedirect((redirectUrl != null && !redirectUrl.isEmpty()) ? redirectUrl : "/");
+            return;
         }
 
-        // 4. 신규 회원이면, 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
+        // 4. 신규 회원 → 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
         request.getSession().setAttribute("signupUserInfo", userInfo);
-
-        return ResponseEntity.status(302)
-                .header("Location", "/signup")  // 회원가입 페이지로 리디렉션
-                .build();
+        response.sendRedirect("/signup");
     }
 
     /**
@@ -184,15 +166,19 @@ public class OAuthController {
      * 네이버 OAuth Callback
      */
     @GetMapping("/naver/callback")
-    public ResponseEntity<Void> naverCallback(@RequestParam("code") String code, HttpServletRequest request) {
+    public void naverCallback(@RequestParam("code") String code,
+                              HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("📌 Received Naver OAuth code: " + code);
 
-        // 1. 네이버 Access Token 요청
+        // 1. 네이버 액세스 토큰 요청
         String accessToken = oAuthService.getNaverAccessToken(code);
+        System.out.println("📌 Received Naver Access Token: " + accessToken);
 
-        // 2. Access Token을 사용해서 사용자 정보 가져오기
+        // 2. Access Token을 사용하여 사용자 정보 가져오기
         NaverUserInfoDTO userInfo = oAuthService.getNaverUserInfo(accessToken);
+        System.out.println("📌 Naver User Info: " + userInfo);
 
-        // 3. 기존 회원 확인
+        // 3. 기존 회원 여부 확인
         Optional<User> existingUser = userRepository.findByEmail(userInfo.getEmail());
 
         if (existingUser.isPresent()) {
@@ -200,26 +186,25 @@ public class OAuthController {
 
             // 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
-                return ResponseEntity.status(302)
-                        .header("Location", "/login/error/banned")
-                        .build();  // 로그인 에러 페이지로 리디렉션 처리
+                response.sendRedirect("/login/error/banned");
+                return;
             }
 
-            // 기존 회원 → JWT 발급 후 메인 페이지 리디렉션
+            // 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
             String jwtToken = jwtService.generateToken(user);
+            jwtService.setJwtCookie(response, jwtToken);
+            System.out.println("📌 Generated JWT Token: " + jwtToken);
 
-            return ResponseEntity.status(302)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwtToken)
-                    .header("Location", "/")  // 메인 페이지로 리디렉션
-                    .build();
+            // 로그인 전 URL 가져오기 (기본값은 홈 `/`)
+            String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
+            request.getSession().removeAttribute("redirectUrl"); // 세션 값 삭제
+            response.sendRedirect((redirectUrl != null && !redirectUrl.isEmpty()) ? redirectUrl : "/");
+            return;
         }
 
-        // 4. 신규 회원이면 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
+        // 4. 신규 회원 → 세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션
         request.getSession().setAttribute("signupUserInfo", userInfo);
-
-        return ResponseEntity.status(302)
-                .header("Location", "/signup")  // 회원가입 페이지로 리디렉션
-                .build();
+        response.sendRedirect("/signup");
     }
 
     /**
@@ -264,50 +249,37 @@ public class OAuthController {
     }
 
     /**
-     * JWT 토큰 기반 사용자 정보 조회 (테스트용)
+     * JWT 토큰 기반 사용자 정보 조회 (쿠키 기반 인증 적용)
      */
     @GetMapping("/user-info")
-    public ResponseEntity<Map<String, Object>> getUserInfo(@RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("🚨 [ERROR] 유효하지 않은 인증 헤더");
-            return ResponseEntity.status(401)
-                    .body(Collections.singletonMap("error", "유효하지 않은 인증 헤더"));
+    public ResponseEntity<Map<String, Object>> getUserInfo(HttpServletRequest request) {
+        Optional<User> userOptional = jwtService.getUserFromRequest(request);
+
+        if (userOptional.isEmpty()) {
+            System.out.println("🚨 [ERROR] JWT 쿠키 없음 또는 유효하지 않음");
+            return ResponseEntity.status(401).body(Collections.singletonMap("error", "로그인이 필요합니다."));
         }
 
-        String token = authorizationHeader.substring(7);
-        try {
-            Optional<User> userOptional = jwtService.getUserFromToken(token);
-            if (userOptional.isEmpty()) {
-                System.out.println("🚨 [ERROR] 유효하지 않은 JWT 토큰");
-                return ResponseEntity.status(401)
-                        .body(Collections.singletonMap("error", "유효하지 않은 토큰"));
-            }
+        User user = userOptional.get();
+        System.out.println("✅ [SUCCESS] 사용자 정보:");
+        System.out.println("   - ID: " + user.getUserId());
+        System.out.println("   - 닉네임: " + user.getNickname());
+        System.out.println("   - 이메일: " + user.getEmail());
+        System.out.println("   - 프로필 이미지: " + user.getProfileImageUrl());
+        System.out.println("   - 가입 날짜: " + user.getCreatedAt());
+        System.out.println("   - 상태: " + user.getUserStatus().name());
+        System.out.println("   - 로그인 타입: " + user.getSocialType().name());
 
-            User user = userOptional.get();
-            System.out.println("✅ [SUCCESS] 사용자 정보: " + user.getNickname());
+        Map<String, Object> response = Map.of(
+                "userId", user.getUserId(),
+                "nickname", user.getNickname(),
+                "email", user.getEmail(),
+                "profileImage", user.getProfileImageUrl(),
+                "createdAt", user.getCreatedAt(),
+                "userStatus", user.getUserStatus().name(),
+                "socialType", user.getSocialType().name()
+        );
 
-            // 사용자 정보 반환
-            Map<String, Object> response = Map.of(
-                    "userId", user.getUserId(),
-                    "nickname", user.getNickname(),
-                    "email", user.getEmail(),
-                    "profileImage", user.getProfileImageUrl(),
-                    "createdAt", user.getCreatedAt(),  // 계정 생성일
-                    "userStatus", user.getUserStatus().name(),  // 활성/차단 상태
-                    "socialType", user.getSocialType().name()  // 로그인한 소셜 타입 (Google, Kakao 등)
-            );
-
-            return ResponseEntity.ok(response);
-
-        } catch (ExpiredJwtException e) {
-            System.out.println("🚨 [ERROR] JWT 토큰이 만료되었습니다.");
-            return ResponseEntity.status(401).body(Collections.singletonMap("error", "토큰이 만료되었습니다."));
-        } catch (JwtException e) {
-            System.out.println("🚨 [ERROR] JWT 파싱 실패: " + e.getMessage());
-            return ResponseEntity.status(401).body(Collections.singletonMap("error", "유효하지 않은 토큰"));
-        } catch (Exception e) {
-            System.out.println("🚨 [ERROR] 알 수 없는 오류 발생: " + e.getMessage());
-            return ResponseEntity.status(500).body(Collections.singletonMap("error", "서버 내부 오류"));
-        }
+        return ResponseEntity.ok(response);
     }
 }
