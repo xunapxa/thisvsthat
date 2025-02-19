@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.core.env.Environment;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,7 +38,9 @@ public class AuthViewController {
      * 로그인 오류 페이지
      */
     @GetMapping("/login/error/{error-type}")
-    public String loginError(@PathVariable("error-type") String errorType, Model model) {
+    public String loginError(@PathVariable("error-type") String errorType,
+                             @RequestParam(value = "provider", required = false) String provider,
+                             Model model) {
 
         // 디버깅 로그 - 오류 타입 확인
         System.out.println("Login error: " + errorType);
@@ -49,6 +52,7 @@ public class AuthViewController {
             model.addAttribute("errorType", "banned");
         } else if ("social-mismatch".equals(errorType)) {
             model.addAttribute("errorType", "socialMismatch");
+            model.addAttribute("provider", provider);
         } else if ("social-failure".equals(errorType)) {
             model.addAttribute("errorType", "socialFailure");
         }

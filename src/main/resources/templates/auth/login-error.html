@@ -21,11 +21,17 @@
 
     <!-- 소셜 로그인 미스매치 메시지 -->
     <div th:if="${errorType == 'socialMismatch'}" class="error-message-box">
-        <p class="auth-title">이 계정은 Google로 가입되어 있습니다.</p>
+        <p class="auth-title">이 계정은 <span th:text="${provider.toUpperCase()}"></span>로 가입되어 있습니다.</p>
         <p class="auth-description">기존 계정으로 로그인하여 서비스를 이용해 주세요.</p>
         <div class="auth-options">
-            <button class="bg_gray_light">
+            <button class="bg_gray_light" th:if="${provider == 'google'}" onclick="location.href='/auth/google/login'">
                 <img th:src="@{/images/common/logo-google.png}" alt="Google">Google로 계속하기
+            </button>
+            <button class="bg_gray_light" th:if="${provider == 'kakao'}" onclick="location.href='/auth/kakao/login'">
+                <img th:src="@{/images/common/logo-kakao.png}" alt="Kakao">Kakao로 계속하기
+            </button>
+            <button class="bg_gray_light" th:if="${provider == 'naver'}" onclick="location.href='/auth/naver/login'">
+                <img th:src="@{/images/common/logo-naver.png}" alt="Naver">Naver로 계속하기
             </button>
         </div>
     </div>
@@ -35,13 +41,13 @@
         <p class="auth-title">소셜 로그인에 실패했습니다.</p>
         <p class="auth-description">다시 시도해주세요.</p>
         <div class="auth-options">
-            <button id="google-login" class="bg_gray_light">
+            <button class="bg_gray_light" onclick="location.href='/auth/google/login'">
                 <img th:src="@{/images/common/logo-google.png}" alt="Google">Google로 계속하기
             </button>
-            <button id="kakao-login" class="bg_gray_light">
+            <button class="bg_gray_light" onclick="location.href='/auth/kakao/login'">
                 <img th:src="@{/images/common/logo-kakao.png}" alt="Kakao">Kakao로 계속하기
             </button>
-            <button id="naver-login" class="bg_gray_light">
+            <button class="bg_gray_light" onclick="location.href='/auth/naver/login'">
                 <img th:src="@{/images/common/logo-naver.png}" alt="Naver">Naver로 계속하기
             </button>
         </div>

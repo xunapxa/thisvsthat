@@ -4,6 +4,7 @@ import com.project.thisvsthat.auth.dto.*;
 import com.project.thisvsthat.auth.service.JwtService;
 import com.project.thisvsthat.auth.service.OAuthService;
 import com.project.thisvsthat.common.entity.User;
+import com.project.thisvsthat.common.enums.SocialType;
 import com.project.thisvsthat.common.enums.UserStatus;
 import com.project.thisvsthat.common.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -80,6 +81,12 @@ public class OAuthController {
                 return;
             }
 
+            // 소셜 로그인 미스매치 체크
+            if (user.getSocialType() != SocialType.GOOGLE) {
+                response.sendRedirect("/login/error/social-mismatch?provider=" + user.getSocialType().name().toLowerCase());
+                return;
+            }
+
             // 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
             String jwtToken = jwtService.generateToken(user);
             jwtService.setJwtCookie(response, jwtToken);
@@ -136,6 +143,12 @@ public class OAuthController {
             // 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
                 response.sendRedirect("/login/error/banned");
+                return;
+            }
+
+            // 소셜 로그인 미스매치 체크
+            if (user.getSocialType() != SocialType.KAKAO) {
+                response.sendRedirect("/login/error/social-mismatch?provider=" + user.getSocialType().name().toLowerCase());
                 return;
             }
 
@@ -206,6 +219,12 @@ public class OAuthController {
             // 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
                 response.sendRedirect("/login/error/banned");
+                return;
+            }
+
+            // 소셜 로그인 미스매치 체크
+            if (user.getSocialType() != SocialType.NAVER) {
+                response.sendRedirect("/login/error/social-mismatch?provider=" + user.getSocialType().name().toLowerCase());
                 return;
             }
 

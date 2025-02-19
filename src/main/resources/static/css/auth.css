@@ -266,6 +266,13 @@
     display: inline;
 }
 
+/* 에러 텍스트 내 span */
+.error-message-box span {
+    font-size: var(--font-size-xlarge);
+    color: var(--font-color-basic);
+    display: inline;
+}
+
 /* 위치 조정용 빈 박스 */
 .empty-space {
     height: var(--height-xlarge);
