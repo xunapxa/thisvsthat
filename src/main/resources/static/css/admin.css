@@ -41,8 +41,8 @@ article .admin_section:not(:first-child) .admin_bottom_box, .keyword_box {
     align-content: start;
     padding: var(--space-medium);
     width: 100%;
-    height: 300px;
-    border: 1px solid #333;
+    height: 200px;
+    border: 1px solid #9DC79B;
     border-radius: var(--border-radius);
     overflow-y: auto;
 }
@@ -51,7 +51,7 @@ article .admin_section:not(:first-child) .admin_bottom_box, .keyword_box {
     height: 200px;
 }
 
-.keyword, .bastard_user {
+.choose_section.keyword, .choose_section.bastard_user {
     margin-right: var(--space-medium);
     margin-bottom: var(--space-medium);
     width: auto;
@@ -65,7 +65,7 @@ article .admin_section:not(:first-child) .admin_bottom_box, .keyword_box {
     cursor: pointer;
 }
 
-:is(.admin_selected, .keyword:hover, .bastard_user:hover) {
+:is(.admin_selected, .choose_section:hover, .keyword:hover) {
     border: 1px solid var(--main-color-orange);
     box-shadow: 0 5px 18px rgba(0, 0, 0, 0.19), 0 5px 5px rgba(0, 0, 0, 0.23);
 }
@@ -80,9 +80,100 @@ article .admin_section:not(:first-child) .admin_bottom_box, .keyword_box {
     margin-right: var(--space-medium);
 }
 
+#errorMsg {
+    display: none;
+}
+
+.admin_top_box div form {
+    display: flex;
+}
+
+.admin_top_box div form button:last-of-type {
+    margin-left: 15px;
+}
+
+.admin_top_box div form button {
+    display: flex;
+    align-items: center;
+    height: var(--height-xlarge);
+}
+
+.admin_top_box div form button span {
+    font-weight: 500;
+    letter-spacing: -1px;
+    font-size: var(--font-size-xlarge);
+}
+
+.report_post {
+    max-width: 320px;
+}
+
+.admin_bottom_box {
+    -ms-overflow-style: none;
+}
+
+.admin_bottom_box::-webkit-scrollbar {
+    width: 20px;
+}
+
+.admin_bottom_box::-webkit-scrollbar-thumb {
+    background-color: #9DC79B;
+    border: 5px solid rgba(255,255,255,1);
+    border-radius: 10px;
+}
+
+:is(.admin_bottom_box, .admin_choose_bottom_box p)::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,0);
+}
+
+article .admin_section:nth-child(2) .admin_bottom_box {
+    height: 500px;
+}
 
 .admin_bottom_box .choose_section {
     margin: 0 var(--space-medium) var(--space-medium) 0;
+    transition: all 0.25s ease-in-out;
+}
+
+.admin_choose_top_box {
+    flex-direction: column;
+}
+
+.admin_choose_top_img_box {
+    display: flex;
+}
+
+.admin_choose_top_box p {
+    display: flex;
+    margin: var(--space-medium) 0;
+}
+
+.admin_choose_top_box p span {
+    display: block;
+    width: 50%;
+    text-align: center;
+    color: var(--font-color-basic);
+}
+
+.admin_choose_bottom_box p {
+    margin-bottom: 20px;
+    height: auto;
+    max-height: 50px;
+    overflow: auto;
+}
+
+.admin_choose_bottom_box p:first-child {
+    max-height: 30px;
+}
+
+#adminPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
 }
 
   @keyframes animatedTextGradient {
