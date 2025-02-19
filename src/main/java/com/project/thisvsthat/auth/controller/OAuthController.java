@@ -37,8 +37,8 @@ public class OAuthController {
                 + "?client_id=" + env.getProperty("spring.security.oauth2.client.registration.google.client-id")
                 + "&redirect_uri=" + env.getProperty("spring.security.oauth2.client.registration.google.redirect-uri")
                 + "&response_type=code"
-                + "&scope=email%20profile"
-                + "&auth_type=reprompt"; // 동의 화면 강제 표시
+                + "&scope=email%20profile";
+//                + "&auth_type=reprompt"; 동의 화면 강제 표시
 
         response.sendRedirect(googleAuthUrl);
     }
@@ -164,8 +164,8 @@ public class OAuthController {
         String naverAuthUrl = "https://nid.naver.com/oauth2.0/authorize"
                 + "?client_id=" + env.getProperty("spring.security.oauth2.client.registration.naver.client-id")
                 + "&redirect_uri=" + env.getProperty("spring.security.oauth2.client.registration.naver.redirect-uri")
-                + "&response_type=code"
-                + "&auth_type=reprompt"; // 동의 화면 강제 표시
+                + "&response_type=code";
+//                + "&auth_type=reprompt"; // 동의 화면 강제 표시
 
         response.sendRedirect(naverAuthUrl);
     }
@@ -262,7 +262,7 @@ public class OAuthController {
             if (redirectUrl == null || redirectUrl.isEmpty()) {
                 redirectUrl = "/"; // 기본값 설정
             }
-            request.getSession().removeAttribute("redirectUrl"); // 회원가입 완료 후 삭제
+            request.getSession().removeAttribute("redirectUrl"); // 세션에서 redirectUrl 삭제
 
             // 5. 응답 (redirectUrl을 반환하여 프론트에서 리다이렉트 처리)
             return ResponseEntity.ok(Map.of("message", "회원가입 성공", "redirectUrl", redirectUrl != null ? redirectUrl : "/"));
