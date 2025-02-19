@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const googleLoginBtn = document.getElementById("google-login");
-    const kakaoLoginBtn = document.getElementById("kakao-login");
-    const naverLoginBtn = document.getElementById("naver-login");
-
-    // 로그인 버튼 이벤트 리스너
-    googleLoginBtn.addEventListener("click", () => window.location.href = "/auth/google/login");
-    kakaoLoginBtn.addEventListener("click", () => window.location.href = "/auth/kakao/login");
-    naverLoginBtn.addEventListener("click", () => window.location.href = "/auth/naver/login");
 
     // JWT 쿠키 존재 시 사용자 정보 요청
     fetch("/auth/user-info", {
