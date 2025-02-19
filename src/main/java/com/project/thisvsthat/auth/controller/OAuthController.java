@@ -37,7 +37,8 @@ public class OAuthController {
                 + "?client_id=" + env.getProperty("spring.security.oauth2.client.registration.google.client-id")
                 + "&redirect_uri=" + env.getProperty("spring.security.oauth2.client.registration.google.redirect-uri")
                 + "&response_type=code"
-                + "&scope=email%20profile";
+                + "&scope=email%20profile"
+                + "&auth_type=reprompt"; // 동의 화면 강제 표시
 
         response.sendRedirect(googleAuthUrl);
     }
@@ -46,8 +47,17 @@ public class OAuthController {
      * Google OAuth Callback
      */
     @GetMapping("/google/callback")
-    public void googleCallback(@RequestParam("code") String code,
-                               HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void googleCallback(@RequestParam(value = "code", required = false) String code,
+                               @RequestParam(value = "error", required = false) String error,
+                               HttpServletRequest request,
+                               HttpServletResponse response) throws IOException {
+        // 사용자가 동의 거부한 경우 → /login/error/social-failure로 이동
+        if (error != null) {
+            System.out.println("🚨 Google 로그인 실패: " + error);
+            response.sendRedirect("/login/error/social-failure");
+            return;
+        }
+
         System.out.println("📌 Received Google OAuth code: " + code);
 
         // 1. Google OAuth에서 받은 코드로 Access Token 요청
@@ -105,7 +115,8 @@ public class OAuthController {
      */
     @GetMapping("/kakao/callback")
     public void kakaoCallback(@RequestParam("code") String code,
-                              HttpServletRequest request, HttpServletResponse response) throws IOException {
+                              HttpServletRequest request,
+                              HttpServletResponse response) throws IOException {
         System.out.println("📌 Received Kakao OAuth code: " + code);
 
         // 1. 카카오 액세스 토큰 요청
@@ -153,7 +164,8 @@ public class OAuthController {
         String naverAuthUrl = "https://nid.naver.com/oauth2.0/authorize"
                 + "?client_id=" + env.getProperty("spring.security.oauth2.client.registration.naver.client-id")
                 + "&redirect_uri=" + env.getProperty("spring.security.oauth2.client.registration.naver.redirect-uri")
-                + "&response_type=code";
+                + "&response_type=code"
+                + "&auth_type=reprompt"; // 동의 화면 강제 표시
 
         response.sendRedirect(naverAuthUrl);
     }
@@ -162,8 +174,19 @@ public class OAuthController {
      * 네이버 OAuth Callback
      */
     @GetMapping("/naver/callback")
-    public void naverCallback(@RequestParam("code") String code,
-                              HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void naverCallback(@RequestParam(value = "code", required = false) String code,
+                              @RequestParam(value = "error", required = false) String error,
+                              @RequestParam(value = "error_description", required = false) String errorDescription,
+                              HttpServletRequest request,
+                              HttpServletResponse response) throws IOException {
+
+        // 사용자가 동의 거부한 경우 → /login/error/social-failure로 이동
+        if (error != null) {
+            System.out.println("🚨 네이버 로그인 실패: " + error + " - " + errorDescription);
+            response.sendRedirect("/login/error/social-failure");
+            return;
+        }
+
         System.out.println("📌 Received Naver OAuth code: " + code);
 
         // 1. 네이버 액세스 토큰 요청
