@@ -50,7 +50,7 @@ public class JwtService {
         cookie.setSecure(false); // false: HTTP에서도 쿠키 전송, true: HTTPS에서만 사용
         cookie.setPath("/"); // 모든 경로에서 사용 가능
         cookie.setMaxAge(-1); // 세션 쿠키 (브라우저 종료 시 삭제)
-        cookie.setAttribute("SameSite", "Strict"); // 크로스 사이트 요청 불가
+        cookie.setAttribute("SameSite", "Lax"); // 크로스 사이트 요청 가능
         response.addCookie(cookie);
     }
 

@@ -92,9 +92,14 @@ public class OAuthController {
             jwtService.setJwtCookie(response, jwtToken);
             System.out.println("📌 Generated JWT Token: " + jwtToken);
 
-            // 로그인 전 URL 가져오기 (기본값은 홈 `/`)
+            // 세션에 저장된 redirectUrl 가져오기
             String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
-            request.getSession().removeAttribute("redirectUrl"); // 사용 후 세션 값 삭제
+            System.out.println("🔄 세션에서 가져온 리디렉트 URL: " + redirectUrl);
+
+            // 사용 후 세션에서 삭제
+            request.getSession().removeAttribute("redirectUrl");
+
+            // redirectUrl이 있으면 해당 페이지로 이동, 없으면 기본 홈으로 이동
             response.sendRedirect((redirectUrl != null && !redirectUrl.isEmpty()) ? redirectUrl : "/");
             return;
         }
@@ -157,9 +162,14 @@ public class OAuthController {
             jwtService.setJwtCookie(response, jwtToken);
             System.out.println("📌 Generated JWT Token: " + jwtToken);
 
-            // 로그인 전 URL 가져오기 (기본값은 홈 `/`)
+            // 세션에 저장된 redirectUrl 가져오기
             String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
-            request.getSession().removeAttribute("redirectUrl"); // 세션 값 삭제
+            System.out.println("🔄 세션에서 가져온 리디렉트 URL: " + redirectUrl);
+
+            // 사용 후 세션에서 삭제
+            request.getSession().removeAttribute("redirectUrl");
+
+            // redirectUrl이 있으면 해당 페이지로 이동, 없으면 기본 홈으로 이동
             response.sendRedirect((redirectUrl != null && !redirectUrl.isEmpty()) ? redirectUrl : "/");
             return;
         }
@@ -233,9 +243,14 @@ public class OAuthController {
             jwtService.setJwtCookie(response, jwtToken);
             System.out.println("📌 Generated JWT Token: " + jwtToken);
 
-            // 로그인 전 URL 가져오기 (기본값은 홈 `/`)
+            // 세션에 저장된 redirectUrl 가져오기
             String redirectUrl = (String) request.getSession().getAttribute("redirectUrl");
-            request.getSession().removeAttribute("redirectUrl"); // 세션 값 삭제
+            System.out.println("🔄 세션에서 가져온 리디렉트 URL: " + redirectUrl);
+
+            // 사용 후 세션에서 삭제
+            request.getSession().removeAttribute("redirectUrl");
+
+            // redirectUrl이 있으면 해당 페이지로 이동, 없으면 기본 홈으로 이동
             response.sendRedirect((redirectUrl != null && !redirectUrl.isEmpty()) ? redirectUrl : "/");
             return;
         }
