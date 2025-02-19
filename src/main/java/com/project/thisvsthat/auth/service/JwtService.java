@@ -4,11 +4,15 @@ import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
 
@@ -35,6 +39,38 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime)) // 만료 시간 설정
                 .signWith(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256) // HMAC SHA256 서명
                 .compact();
+    }
+
+    /**
+     * JWT를 HTTP-Only 쿠키로 저장
+     */
+    public void setJwtCookie(HttpServletResponse response, String token) {
+        Cookie cookie = new Cookie("jwt", token);
+        cookie.setHttpOnly(true); // JavaScript에서 접근 불가
+        cookie.setSecure(false); // false: HTTP에서도 쿠키 전송, true: HTTPS에서만 사용
+        cookie.setPath("/"); // 모든 경로에서 사용 가능
+        cookie.setMaxAge(-1); // 세션 쿠키 (브라우저 종료 시 삭제)
+        cookie.setAttribute("SameSite", "Lax"); // 크로스 사이트 요청 가능
+        response.addCookie(cookie);
+    }
+
+    /**
+     * JWT 토큰 유효성 검사
+     */
+    public Claims validateToken(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8))) // 시크릿 키 검증
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            System.out.println("🚨 [ERROR] JWT 토큰이 만료되었습니다.");
+            throw e; // 필터에서 만료된 토큰 예외를 캐치할 수 있도록 던짐
+        } catch (JwtException e) {
+            System.out.println("🚨 [ERROR] 유효하지 않은 JWT 토큰: " + e.getMessage());
+            throw new RuntimeException("유효하지 않은 JWT 토큰");
+        }
     }
 
     /**
@@ -71,7 +107,7 @@ public class JwtService {
     }
 
     /**
-     * JWT 토큰에서 사용자 정보 가져오기
+     * JWT 토큰에서 사용자 정보 가져오기 (기존 방식 - 토큰 직접 전달)
      */
     public Optional<User> getUserFromToken(String token) {
         try {
@@ -81,5 +117,32 @@ public class JwtService {
             System.out.println("❌ [ERROR] JWT에서 사용자 정보를 가져오는 데 실패했습니다: " + e.getMessage());
             return Optional.empty();
         }
+    }
+
+    /**
+     * HTTP-Only 쿠키에서 JWT를 가져와서 사용자 정보 조회
+     */
+    public Optional<User> getUserFromRequest(HttpServletRequest request) {
+        String jwt = getJwtFromCookies(request);
+        if (jwt == null) {
+            System.out.println("🚨 [ERROR] 요청에서 JWT 쿠키 없음");
+            return Optional.empty();
+        }
+
+        return getUserFromToken(jwt);
+    }
+
+    /**
+     * 요청의 쿠키에서 JWT 가져오기
+     */
+    private String getJwtFromCookies(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            return Arrays.stream(request.getCookies())
+                    .filter(cookie -> "jwt".equals(cookie.getName()))
+                    .findFirst()
+                    .map(Cookie::getValue)
+                    .orElse(null);
+        }
+        return null;
     }
 }
