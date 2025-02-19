@@ -24,13 +24,16 @@
         <!-- socialId (hidden)-->
         <input type="hidden" id="socialId" name="socialId" th:value="${socialId}">
 
+        <!-- socialType (hidden) -->
+        <input type="hidden" id="socialType" name="socialType" th:value="${socialType}">
+
         <!-- 프로필 이미지 -->
         <div class="profile-container">
-            <img id="profileImage" th:src="${profile}" alt="Profile Image">
-            <input type="hidden" id="profileImageUrl" name="profileImageUrl" th:value="${profile}">
+            <img id="profileImage" th:src="${profileImageUrl}" alt="Profile Image">
+            <input type="hidden" id="profileImageUrl" name="profileImageUrl" th:value="${profileImageUrl}">
         </div>
 
-        <!-- 이메일 -->
+        <!-- 이메일 (readonly) -->
         <div class="input-group">
             <input type="email" id="email" name="email" th:value="${email}" readonly>
             <div class="input-underline"></div>
@@ -38,7 +41,7 @@
 
         <!-- 닉네임 입력 -->
         <div class="input-group">
-            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력" th:value="${name}" maxlength="20">
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임 입력" maxlength="20" th:value="${nickname}">
             <div class="input-underline"></div>
             <p class="input-guide">한글, 영문, 숫자, 언더바(_), 하이픈(-), 공백</p>
         </div>

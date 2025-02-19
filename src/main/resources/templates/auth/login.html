@@ -16,17 +16,35 @@
 <body>
 <section class="auth-container">
     <div class="logo-container">
-        <p class="logo inter_bold">?</p>
+        <a href="/"><p class="logo inter_bold">?</p></a>
     </div>
 
-    <div class="auth-options">
-        <button id="google-login" class="bg_gray_light">
+    <!-- 현재 로그인된 계정 정보 표시 -->
+    <div th:if="${userEmail}" class="error-message-box">
+        <p class="auth-title">현재 로그인된 계정</p>
+        <p class="auth-description">
+            <b th:text="${userEmail}"></b> 계정으로 로그인되어 있습니다.
+        </p>
+        <div class="auth-options">
+            <button onclick="location.href='/logout'" class="bg_red">로그아웃</button>
+        </div>
+        <div class="auth-options">
+            <button onclick="location.href='/users'" class="bg_red">마이 페이지</button>
+        </div>
+        <div class="auth-options">
+            <button onclick="location.href='/'" class="bg_red">메인 페이지</button>
+        </div>
+    </div>
+
+    <!-- 로그인 버튼 -->
+    <div th:if="${userEmail == null}" class="auth-options">
+        <button class="bg_gray_light" onclick="location.href='/auth/google/login'">
             <img th:src="@{/images/common/logo-google.png}" alt="Google">Google로 계속하기
         </button>
-        <button id="kakao-login" class="bg_gray_light">
+        <button class="bg_gray_light" onclick="location.href='/auth/kakao/login'">
             <img th:src="@{/images/common/logo-kakao.png}" alt="Kakao">Kakao로 계속하기
         </button>
-        <button id="naver-login" class="bg_gray_light">
+        <button class="bg_gray_light" onclick="location.href='/auth/naver/login'">
             <img th:src="@{/images/common/logo-naver.png}" alt="Naver">Naver로 계속하기
         </button>
     </div>

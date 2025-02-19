@@ -18,8 +18,8 @@
     max-width: 382px;
 }
 
-/* 로고 */
-.logo {
+/* 로고 링크 */
+.logo-container a {
     align-self: flex-start;
 }
 
@@ -240,9 +240,9 @@
 }
 /* signup.html 끝 */
 
-/* social-mismatch.html 시작 */
-/* 소셜 타입 불일치 박스 */
-.social-mismatch-box {
+/* login-error.html 시작 */
+/* 에러 메시지 박스 */
+.error-message-box {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -252,15 +252,29 @@
     gap: 30px;
 }
 
-/* 소셜 타입 불일치 텍스트 */
-.social-mismatch-box p {
+/* 에러 텍스트 */
+.error-message-box p {
     width: 100%;
     text-align: center;
     line-height: 1.7;
+}
+
+/* 에러 텍스트 내 링크 */
+.error-message-box a {
+    color: var(--font-color-gray);
+    text-decoration: underline;
+    display: inline;
+}
+
+/* 에러 텍스트 내 span */
+.error-message-box span {
+    font-size: var(--font-size-xlarge);
+    color: var(--font-color-basic);
+    display: inline;
 }
 
 /* 위치 조정용 빈 박스 */
 .empty-space {
     height: var(--height-xlarge);
 }
-/* social-mismatch.html 끝 */
+/* login-error.html 끝 */
