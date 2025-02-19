@@ -30,8 +30,8 @@
         </div>
     </div>
 
-    <!-- 소셜 로그인 동의 실패 메시지 -->
-    <div th:if="${errorType == 'socialConsentFailure'}" class="error-message-box">
+    <!-- 소셜 로그인 실패 메시지 -->
+    <div th:if="${errorType == 'socialFailure'}" class="error-message-box">
         <p class="auth-title">소셜 로그인에 실패했습니다.</p>
         <p class="auth-description">다시 시도해주세요.</p>
         <div class="auth-options">

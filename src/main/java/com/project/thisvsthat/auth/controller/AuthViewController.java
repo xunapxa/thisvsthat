@@ -49,8 +49,8 @@ public class AuthViewController {
             model.addAttribute("errorType", "banned");
         } else if ("social-mismatch".equals(errorType)) {
             model.addAttribute("errorType", "socialMismatch");
-        } else if ("social-consent-failure".equals(errorType)) {
-            model.addAttribute("errorType", "socialConsentFailure");
+        } else if ("social-failure".equals(errorType)) {
+            model.addAttribute("errorType", "socialFailure");
         }
 
         return "auth/login-error";
@@ -117,17 +117,5 @@ public class AuthViewController {
         model.addAttribute("socialType", socialType);
 
         return "auth/signup";
-    }
-
-    /**
-     * 소셜 로그인 정보 불일치 시 안내 페이지
-     */
-    @GetMapping("/social-mismatch")
-    public String socialMismatchPage() {
-
-        // 디버깅 로그 - 소셜 로그인 정보 불일치 확인
-        System.out.println("User's social login information mismatch detected.");
-
-        return "auth/social-mismatch";
     }
 }
