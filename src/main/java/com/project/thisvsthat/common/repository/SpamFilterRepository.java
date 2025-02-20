@@ -2,8 +2,11 @@ package com.project.thisvsthat.common.repository;
 
 import com.project.thisvsthat.common.entity.SpamFilter;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,7 +18,10 @@ public interface SpamFilterRepository extends JpaRepository<SpamFilter, Long> {
     List<String> findAllFilterValues();
 
     // 키워드 일괄 삭제
-    void deleteByFilterValueIn(List<String> filterValues);
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM SpamFilter s WHERE s.filterId IN :filterIds")
+    void deleteByFilterIdIn(@Param("filterIds") List<Long> filterIds);
 
     // 중복 검사
     boolean existsByFilterValue(String filterValue);

@@ -25,7 +25,8 @@
 		<div class="admin_bottom_box">
 			<div class="keyword_box">
 				<th:block th:each="keyword : ${keywords}">
-					<div class="keyword" th:text="${keyword}"></div>
+<!--					<div class="keyword" th:text="${keyword}" th:attr="data-keyword-id=${keyword.filterId}"></div>-->
+					<div class="keyword" th:text="${keyword.filterValue}" th:attr="data-id=${keyword.filterId}"></div>
 				</th:block>
 			</div>
 			<div class="admin_add_box">
