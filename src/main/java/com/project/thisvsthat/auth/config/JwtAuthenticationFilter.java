@@ -82,7 +82,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         return;
                     }
 
-                    // 4. 인증 객체 생성 후 SecurityContextHolder에 저장
+                    // 4. 탈퇴한 계정 처리
+                    if (user.getUserStatus() == UserStatus.WITHDRAWN) {
+                        System.out.println("🚨 [ERROR] 탈퇴한 계정 접근 시도: " + userEmail);
+                        deleteJwtCookie(response); // 쿠키 삭제
+                        response.sendRedirect("/logout"); // 로그아웃 처리 후 로그인 페이지로 이동
+                        return;
+                    }
+
+                    // 5. 인증 객체 생성 후 SecurityContextHolder에 저장
                     UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
