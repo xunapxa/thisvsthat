@@ -6,7 +6,6 @@ import com.project.thisvsthat.auth.dto.NaverUserInfoDTO;
 import com.project.thisvsthat.auth.dto.SignupRequestDTO;
 import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.enums.Gender;
-import com.project.thisvsthat.common.enums.SocialType;
 import com.project.thisvsthat.common.enums.UserStatus;
 import com.project.thisvsthat.common.repository.UserRepository;
 import com.project.thisvsthat.image.service.S3Service;
@@ -193,27 +192,6 @@ public class OAuthService {
      * 회원가입 처리 (기존 회원 조회 후 신규 가입)
      */
     public User registerUser(SignupRequestDTO signupRequest) {
-        // 이메일로 기존 회원 조회
-        Optional<User> existingUser = userRepository.findByEmail(signupRequest.getEmail());
-
-        // 이미 존재하는 회원인지 확인
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-
-            // 차단된 계정인지 확인
-            if (user.getUserStatus() == UserStatus.BANNED) {
-                throw new RuntimeException("차단된 계정입니다. 가입이 불가능합니다.");
-            }
-
-            // 탈퇴한 계정이라면 기존 계정 재활성화
-            if (user.getUserStatus() == UserStatus.WITHDRAWN) {
-                user.setUserStatus(UserStatus.ACTIVE);
-                user.setNickname(signupRequest.getNickname());
-                user.setBirthDate(LocalDate.parse(signupRequest.getBirthdate()));
-                user.setProfileImageUrl(signupRequest.getProfileImageUrl());
-                return userRepository.save(user); // 기존 계정 재사용
-            }
-        }
 
         // 닉네임 중복 검사
         if (userRepository.existsByNickname(signupRequest.getNickname())) {
@@ -233,6 +211,31 @@ public class OAuthService {
         LocalDate parsedBirthdate = Optional.ofNullable(signupRequest.getBirthdate())
                 .map(LocalDate::parse)
                 .orElseThrow(() -> new RuntimeException("잘못된 생년월일 형식입니다: " + signupRequest.getBirthdate()));
+
+        // 이메일로 기존 회원 조회
+        Optional<User> existingUser = userRepository.findByEmail(signupRequest.getEmail());
+
+        // 이미 존재하는 회원인지 확인
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+
+            // 차단된 계정인지 확인
+            if (user.getUserStatus() == UserStatus.BANNED) {
+                throw new RuntimeException("차단된 계정입니다. 가입이 불가능합니다.");
+            }
+
+            // 탈퇴한 계정이라면 기존 계정 재활성화
+            if (user.getUserStatus() == UserStatus.WITHDRAWN) {
+                user.setUserStatus(UserStatus.ACTIVE);
+                user.setNickname(signupRequest.getNickname());
+                user.setBirthDate(parsedBirthdate);
+                user.setProfileImageUrl(s3ProfileImageUrl);
+                user.setGender(userGender);
+                user.setSocialType(signupRequest.getSocialType());
+                user.setSocialId(signupRequest.getSocialId());
+                return userRepository.save(user); // 기존 계정 정보 업데이트 후 저장
+            }
+        }
 
         // 새 사용자 생성 및 저장
         User newUser = User.builder()
