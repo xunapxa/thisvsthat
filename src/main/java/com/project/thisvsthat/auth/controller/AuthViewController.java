@@ -5,6 +5,7 @@ import com.project.thisvsthat.auth.dto.KakaoUserInfoDTO;
 import com.project.thisvsthat.auth.dto.NaverUserInfoDTO;
 import com.project.thisvsthat.auth.service.JwtService;
 import com.project.thisvsthat.common.entity.User;
+import com.project.thisvsthat.common.enums.UserStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,12 @@ public class AuthViewController {
 
         if (loggedInUser.isPresent()) {
             User user = loggedInUser.get();
+
+            // 탈퇴된 사용자(WITHDRAWN)나 차단된 사용자(BANNED)는 모델에 값 넣지 않음
+            if (user.getUserStatus() == UserStatus.WITHDRAWN || user.getUserStatus() == UserStatus.BANNED) {
+                return "auth/login";
+            }
+
             model.addAttribute("userEmail", user.getEmail());
             model.addAttribute("socialType", user.getSocialType().name());
         }

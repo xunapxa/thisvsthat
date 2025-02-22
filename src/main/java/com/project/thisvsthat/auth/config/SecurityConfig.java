@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,7 +21,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화
+                // 세션 관리 비활성화
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // CSRF 비활성화
+                .csrf(csrf -> csrf.disable())
+
+                // 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         // 정적 리소스 접근 허용
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico", "/sm/**"
@@ -45,8 +54,9 @@ public class SecurityConfig {
 //                        .anyRequest().authenticated() // 나머지 요청은 인증 필요
                         .anyRequest().permitAll() // 나머지 요청은 인증 없이 접근 가능
                 )
+
+                // 인증이 필요할 경우 로그인 페이지로 리디렉션
                 .exceptionHandling(exception -> exception
-                        // 인증이 필요할 경우 로그인 페이지로 리디렉트
                         .authenticationEntryPoint((request, response, authException) -> {
                             // 원래 요청한 URL을 세션에 저장
                             String redirectUrl = request.getRequestURI();
@@ -54,12 +64,15 @@ public class SecurityConfig {
                             response.sendRedirect("/login"); // 로그인 페이지로 이동
                         })
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
+
+                // JWT 필터 추가
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // 로그아웃 설정
                 .logout(logout -> logout
                         .logoutUrl("/logout") // 로그아웃 URL 지정
                         .logoutSuccessUrl("/login") // 로그아웃 후 이동할 URL
-                        .invalidateHttpSession(true) // 세션 무효화
-                        .deleteCookies("JSESSIONID", "jwt") // 쿠키 삭제
+                        .deleteCookies("jwt") // JWT 쿠키 삭제
                 );
 
         return http.build();

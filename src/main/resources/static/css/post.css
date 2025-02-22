@@ -1,6 +1,10 @@
 /* post - 작은선아 시작 */
 
 /* createPost.html 시작 */
+.hide-share-icon {
+    visibility: hidden !important;
+}
+
 .post_create_section {
     margin-bottom: 20px;
 }

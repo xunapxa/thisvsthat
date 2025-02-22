@@ -52,6 +52,7 @@ public class OAuthController {
                                @RequestParam(value = "error", required = false) String error,
                                HttpServletRequest request,
                                HttpServletResponse response) throws IOException {
+
         // 사용자가 동의 거부한 경우 → /login/error/social-failure로 이동
         if (error != null) {
             System.out.println("🚨 Google 로그인 실패: " + error);
@@ -75,19 +76,27 @@ public class OAuthController {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
 
-            // 차단된 계정인지 확인
+            // 3-1. 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
                 response.sendRedirect("/login/error/banned");
                 return;
             }
 
-            // 소셜 로그인 미스매치 체크
+            // 3-2. 탈퇴한 사용자 처리
+            if (user.getUserStatus() == UserStatus.WITHDRAWN) {
+                // 탈퇴한 사용자 → 신규 회원처럼 처리 (세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션)
+                request.getSession().setAttribute("signupUserInfo", userInfo);
+                response.sendRedirect("/signup");
+                return;
+            }
+
+            // 3-3. 소셜 로그인 미스매치 체크
             if (user.getSocialType() != SocialType.GOOGLE) {
                 response.sendRedirect("/login/error/social-mismatch?provider=" + user.getSocialType().name().toLowerCase());
                 return;
             }
 
-            // 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
+            // 3-4. 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
             String jwtToken = jwtService.generateToken(user);
             jwtService.setJwtCookie(response, jwtToken);
             System.out.println("📌 Generated JWT Token: " + jwtToken);
@@ -145,19 +154,27 @@ public class OAuthController {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
 
-            // 차단된 계정인지 확인
+            // 3-1. 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
                 response.sendRedirect("/login/error/banned");
                 return;
             }
 
-            // 소셜 로그인 미스매치 체크
+            // 3-2. 탈퇴한 사용자 처리
+            if (user.getUserStatus() == UserStatus.WITHDRAWN) {
+                // 탈퇴한 사용자 → 신규 회원처럼 처리 (세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션)
+                request.getSession().setAttribute("signupUserInfo", userInfo);
+                response.sendRedirect("/signup");
+                return;
+            }
+
+            // 3-3. 소셜 로그인 미스매치 체크
             if (user.getSocialType() != SocialType.KAKAO) {
                 response.sendRedirect("/login/error/social-mismatch?provider=" + user.getSocialType().name().toLowerCase());
                 return;
             }
 
-            // 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
+            // 3-4. 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
             String jwtToken = jwtService.generateToken(user);
             jwtService.setJwtCookie(response, jwtToken);
             System.out.println("📌 Generated JWT Token: " + jwtToken);
@@ -226,19 +243,27 @@ public class OAuthController {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
 
-            // 차단된 계정인지 확인
+            // 3-1. 차단된 계정인지 확인
             if (user.getUserStatus() == UserStatus.BANNED) {
                 response.sendRedirect("/login/error/banned");
                 return;
             }
 
-            // 소셜 로그인 미스매치 체크
+            // 3-2. 탈퇴한 사용자 처리
+            if (user.getUserStatus() == UserStatus.WITHDRAWN) {
+                // 탈퇴한 사용자 → 신규 회원처럼 처리 (세션에 사용자 정보 저장 후 회원가입 페이지로 리디렉션)
+                request.getSession().setAttribute("signupUserInfo", userInfo);
+                response.sendRedirect("/signup");
+                return;
+            }
+
+            // 3-3. 소셜 로그인 미스매치 체크
             if (user.getSocialType() != SocialType.NAVER) {
                 response.sendRedirect("/login/error/social-mismatch?provider=" + user.getSocialType().name().toLowerCase());
                 return;
             }
 
-            // 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
+            // 3-4. 기존 회원 → JWT 발급 후 HTTP-Only 쿠키 저장
             String jwtToken = jwtService.generateToken(user);
             jwtService.setJwtCookie(response, jwtToken);
             System.out.println("📌 Generated JWT Token: " + jwtToken);

@@ -49,10 +49,12 @@
         </button>
     </div>
 
-    <p class="auth-agreement">
+    <p th:if="${userEmail == null}" class="auth-agreement">
         다음 단계로 진행하시면, 귀하는 <a class="no-flex" href="#">서비스 약관</a>에 동의하며,
         <a class="no-flex" href="#">쿠키 정책</a>을 포함한 <a class="no-flex" href="#">개인정보 처리방침</a>을 읽고 동의하신 것으로 간주됩니다.
     </p>
+
+    <div th:if="${userEmail}" class="empty-space"></div>
 </section>
 </body>
 </html>
