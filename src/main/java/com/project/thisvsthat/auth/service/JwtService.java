@@ -143,7 +143,7 @@ public class JwtService {
     /**
      * 요청의 쿠키에서 JWT 가져오기
      */
-    private String getJwtFromCookies(HttpServletRequest request) {
+    public String getJwtFromCookies(HttpServletRequest request) {
         if (request.getCookies() != null) {
             return Arrays.stream(request.getCookies())
                     .filter(cookie -> "jwt".equals(cookie.getName()))
