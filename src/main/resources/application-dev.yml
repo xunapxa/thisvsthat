@@ -1,4 +1,5 @@
 server:
+  address: 0.0.0.0
   port: 8080
   servlet:
     encoding:
@@ -67,10 +68,10 @@ spring:
     show-sql: true  # SQL 로그 출력
 
   # Redis 설정
-#  data:
-#    redis:
-#      host: your-redis-hostname
-#      port: 6379
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 
 # AWS S3 설정
 aws:
@@ -91,6 +92,12 @@ logging:
     org:
       springframework:
         security: DEBUG
+    com:
+      project:
+        thisvsthat:
+          chat:
+            config:
+              RedisConnectionLogger: INFO
 
 # Spring Actuator 설정
 management:
