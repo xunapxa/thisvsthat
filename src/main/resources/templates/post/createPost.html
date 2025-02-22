@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/post.css}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script th:src="@{/js/post.js}"></script>
+    <script th:src="@{/js/post.js}" defer></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>새 글 작성</title>
@@ -16,7 +16,7 @@
     <article>
         <section class="post_section_top">
             <div><i class="fa-solid fa-chevron-left"></i></div>
-            <div><i></i></div>
+            <div class="hide-share-icon"></div>
         </section>
         <form th:action="@{/post/create}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <section class="post_create_section">
