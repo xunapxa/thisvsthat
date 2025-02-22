@@ -1,8 +1,32 @@
 $(document).ready(function() {
     // 채팅 팝업 열기
     $('#open-chat-profile-popup').on('click', function() {
-        $('#popup-section').fadeIn();
-        $('#toast-popup-box').css('transform', 'translateY(0)');
+        const token = getCookie("JWT_TOKEN"); // JWT 토큰을 쿠키에서 가져옴
+
+        if (token) {
+            // 토큰이 있으면 닉네임을 가져오려고 서버에 요청
+            axios.get(`/chat/get-profile`, { headers: { "Authorization": `Bearer ${token}` } })
+                .then(function(response) {
+                    const user = response.data;
+
+                    if (user.profileImageUrl) {
+                        $("#profile-image").attr("src", user.profileImageUrl);
+                    }
+                    $('#chat-nickname').val(user.nickname);
+                    $('#nickname-length').text(user.nickname.length);
+
+                    // 팝업창 보이기
+                    $('#popup-section').fadeIn();
+                    $('#toast-popup-box').css('transform', 'translateY(0)');
+                })
+                .catch(function(error) {
+                    console.error("프로필 로드 중 오류:", error);
+                    alert("프로필을 불러오지 못했습니다.");
+                });
+        } else {
+            alert("로그인이 필요합니다!");
+            window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href);
+        }
     });
 
     // 채팅 팝업 닫기
