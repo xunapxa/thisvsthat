@@ -38,4 +38,5 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     @Query("SELECT p FROM Post p WHERE p.user.id = :userId AND p.postStatus IN ('BLINDED', 'DELETED')")
     List<Post> findBlindedAndDeletedPostsByUser(@Param("userId") Long userId);
 
+    List<Post> findByUser_UserIdOrderByCreatedAtDesc(Long userId);
 }
