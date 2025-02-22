@@ -26,17 +26,17 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getProfileByUserId(userId));
     }
 
-    // 채팅방 입장 및 이전 메시지 조회
-    @GetMapping("{post_id}")
-    public String chatRoom(@RequestParam String chatRoomId, Model model) {
-        // Redis에서 이전 메시지 50개 조회
-        List<ChatMessage> previousMessages = chatService.getPreviousMessages(chatRoomId);
-
-        model.addAttribute("chatRoomId", chatRoomId);
-        model.addAttribute("previousMessages", previousMessages);
-//        model.addAttribute("voteResult", previousMessages);
-
-        // 채팅방 페이지로 이동
-        return "chat/chat-room";
-    }
+//    // 채팅방 입장 및 이전 메시지 조회
+//    @GetMapping("{post_id}")
+//    public String chatRoom(@RequestParam String chatRoomId, Model model) {
+//        // Redis에서 이전 메시지 50개 조회
+//        List<ChatMessage> previousMessages = chatService.getPreviousMessages(chatRoomId);
+//
+//        model.addAttribute("chatRoomId", chatRoomId);
+//        model.addAttribute("previousMessages", previousMessages);
+////        model.addAttribute("voteResult", previousMessages);
+//
+//        // 채팅방 페이지로 이동
+//        return "chat/chat-room";
+//    }
 }
