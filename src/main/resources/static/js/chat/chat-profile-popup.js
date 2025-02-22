@@ -1,8 +1,43 @@
 $(document).ready(function() {
     // 채팅 팝업 열기
     $('#open-chat-profile-popup').on('click', function() {
-        $('#popup-section').fadeIn();
-        $('#toast-popup-box').css('transform', 'translateY(0)');
+        axios.post("/auth/check-token", {}, { withCredentials: true })
+            .then(function(response) {
+                if (response.data && response.data !== "JWT 쿠키 없음") {
+                    // JWT 토큰이 있고 userId가 반환됨
+                    const userId = response.data;
+
+                    // userId를 이용해 닉네임 가져오기
+                    axios.get(`/chat/get-profile/${userId}`)
+                        .then(function(response) {
+                            const user = response.data;
+
+                            // 프로필 사진 변경
+                            if (user.profileImageUrl) {
+                                $("#profile-image").attr("src", user.profileImageUrl); // 프로필 이미지 URL로 변경
+                            }
+                            // 닉네임 변경
+                            $('#chat-nickname').val(user.nickname);
+                            $('#nickname-length').text(user.nickname.length);
+
+                            // 팝업창 보이기
+                            $('#popup-section').fadeIn();
+                            $('#toast-popup-box').css('transform', 'translateY(0)');
+                        })
+                        .catch(function(error) {
+                            console.error("닉네임 로드 중 오류:", error);
+                            alert("닉네임을 불러오지 못했습니다.");
+                        });
+                } else {
+                    // 토큰이 없으면 로그인 요청
+                    alert("로그인이 필요합니다!");
+                    window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href); // 로그인 후 원래 페이지로 돌아올 수 있게
+                }
+            })
+            .catch(function(error) {
+                console.error("토큰 확인 중 오류:", error);
+                alert("토큰 검증에 실패했습니다. 다시 시도해주세요.");
+            });
     });
 
     // 채팅 팝업 닫기
