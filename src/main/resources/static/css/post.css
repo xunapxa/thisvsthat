@@ -1,7 +1,11 @@
 /* post - 작은선아 시작 */
 
 /* createPost.html 시작 */
-.hide-share-icon {
+.back_icon {
+    cursor: pointer;
+}
+
+.hide_share_icon {
     visibility: hidden !important;
 }
 
@@ -26,6 +30,7 @@
     border-radius: 8px;
     box-shadow: none;
     text-align: center;
+    cursor: pointer;
 }
 
 .keyword.selected {
@@ -114,7 +119,15 @@
 /* createPost.html 끝 */
 
 /* postDetail.html 시작 */
-.post_detail_title{
+.share_icon {
+    cursor: pointer;
+}
+
+button {
+    cursor: pointer;
+}
+
+.post_detail_title {
     border-bottom: 1px solid #AFB1B6;
     width: 100%;
     padding: 10px;
@@ -131,6 +144,7 @@
     font-weight: bold;
     text-decoration: none;
     display: contents;
+    cursor: pointer;
 }
 
 .hashtag:hover {
