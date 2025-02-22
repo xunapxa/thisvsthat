@@ -129,7 +129,15 @@ public class JwtService {
             return Optional.empty();
         }
 
-        return getUserFromToken(jwt);
+        try {
+            // 토큰 검증
+            validateToken(jwt);
+
+            return getUserFromToken(jwt);
+        } catch (Exception e) {
+            System.out.println("🚨 [ERROR] JWT 검증 실패: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 
     /**
