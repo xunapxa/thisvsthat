@@ -1,3 +1,50 @@
+document.querySelectorAll(".keyword").forEach(item => {
+    item.addEventListener("click", function () {
+        this.classList.toggle("admin_selected");
+    });
+});
+
+document.getElementById("deleteKeywordBtn").addEventListener("click", function () {
+    const selectedUsers = document.querySelectorAll(".keyword.admin_selected");
+    if (selectedUsers.length === 0) {
+        alert("삭제할 키워드를 선택하세요.");
+        return;
+    }
+
+    if (!confirm("선택한 키워드를 삭제하시겠습니까?")) {
+        return;
+    }
+
+    let idsToDelete = [];
+    selectedUsers.forEach(user => {
+        const id = user.getAttribute("data-id");
+        if (id) {
+            idsToDelete.push(parseInt(id, 10));
+        }
+    });
+
+    console.log("삭제 요청 보냄: ", JSON.stringify({ keywordIds: idsToDelete }));
+
+    fetch("/admin/delete-keywords", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: new URLSearchParams({ keywordIds: idsToDelete.join(",") })
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("서버 오류");
+        return response.text();
+    })
+    .then(result => {
+        console.log("삭제 완료: ", result);
+        location.reload(); // 새로고침하여 최신 데이터 반영
+    })
+    .catch(error => console.error("삭제 오류: ", error));
+});
+
+
+
 document.addEventListener("DOMContentLoaded", function () {
         let errorMsgElement = document.getElementById("errorMsg");
         if (errorMsgElement && errorMsgElement.textContent.trim() !== "") {

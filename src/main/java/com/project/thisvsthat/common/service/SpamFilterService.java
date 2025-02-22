@@ -4,6 +4,7 @@ import com.project.thisvsthat.common.entity.SpamFilter;
 import com.project.thisvsthat.common.repository.SpamFilterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,9 +34,12 @@ public class SpamFilterService {
         return spamFilterRepository.existsByFilterValue(filterValue);
     }
 
-    // 금지 키워드 삭제
-    public void deleteKeywords(List<String> keywords) {
-        spamFilterRepository.deleteByFilterValueIn(keywords);
+    @Transactional
+    public void deleteKeywords(List<Long> filterIds) {
+        if (filterIds == null || filterIds.isEmpty()) {
+            throw new IllegalArgumentException("삭제할 키워드가 없습니다.");
+        }
+        spamFilterRepository.deleteByFilterIdIn(filterIds);
     }
 
 }

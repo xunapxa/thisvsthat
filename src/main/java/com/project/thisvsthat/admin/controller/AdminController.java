@@ -2,11 +2,12 @@ package com.project.thisvsthat.admin.controller;
 
 import com.project.thisvsthat.admin.service.AdminService;
 import com.project.thisvsthat.common.entity.Post;
+import com.project.thisvsthat.common.entity.SpamFilter;
 import com.project.thisvsthat.common.entity.User;
+import com.project.thisvsthat.common.repository.SpamFilterRepository;
 import com.project.thisvsthat.common.service.SpamFilterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final SpamFilterRepository spamFilterRepository;
     @Autowired
     private final SpamFilterService spamFilterService;
 
@@ -28,7 +30,7 @@ public class AdminController {
     public String adminReport(Model model) {
         List<User> users = adminService.getReportedUsers();
         List<Post> posts = adminService.getBlindedPosts();
-        List<String> keywords = spamFilterService.getAllKeywords();
+        List<SpamFilter> keywords = spamFilterRepository.findAll();
         model.addAttribute("users", users);
         model.addAttribute("posts", posts);
         model.addAttribute("keywords", keywords);
@@ -48,10 +50,19 @@ public class AdminController {
     }
 
     // 금지 키워드 삭제
-    @PostMapping("/spam-filters/delete")
-    public ResponseEntity<String> deleteSpamFilters(@RequestParam("keywords") List<String> keywords) {
-        spamFilterService.deleteKeywords(keywords);
-        return ResponseEntity.ok("삭제되었습니다.");
+    @PostMapping("/delete-keywords")
+    public String deleteKeywords(@RequestParam("keywordIds") List<Long> keywordIds, RedirectAttributes redirectAttributes) {
+        try {
+            if (keywordIds == null || keywordIds.isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "삭제할 키워드가 없습니다.");
+            } else {
+                spamFilterService.deleteKeywords(keywordIds);
+                redirectAttributes.addFlashAttribute("success", "삭제 완료되었습니다.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "삭제 실패: " + e.getMessage());
+        }
+        return "redirect:/admin/";
     }
 
     // 선택된 게시글을 일괄 복구 또는 삭제
