@@ -89,3 +89,41 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// 공유 버튼 클릭 시 URL 복사
+document.addEventListener("DOMContentLoaded", function () {
+    const shareBtn = document.getElementById("shareButton");
+
+    if (shareBtn) {
+        shareBtn.addEventListener("click", function () {
+            const url = window.location.href;
+            const textarea = document.createElement("textarea");
+
+            textarea.value = url;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+
+            alert("URL이 클립보드에 복사되었습니다.");
+        });
+    }
+});
+
+// 뒤로 가기 버튼 클릭 시 뒤로 가기
+document.addEventListener("DOMContentLoaded", function () {
+    const backButton = document.getElementById("backButton");
+
+    if (backButton) {
+        backButton.addEventListener("click", function () {
+            if (window.history.length > 1) {
+                // 뒤로 갈 페이지가 있으면 뒤로 가기
+                window.history.back();
+            } else {
+                // 뒤로 갈 페이지가 없으면 메인 페이지로 이동
+                window.location.href = "/";
+            }
+        });
+    }
+});
+
+
