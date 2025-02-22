@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,19 +14,15 @@
 </head>
 <body>
 
-<header>
-    <p class="logo inter_bold">?</p>
-    <a href="#1"><i class="fa-regular fa-user"></i></a>
-</header>
+<th:block th:replace="~{fragments/header :: header}"></th:block>
 
-<!-- 뒤로가기 -->
-<!-- <div>
+<div layout:fragment="content">
+
+<article>
+    <!-- 뒤로가기 -->
     <section class="post_section_top">
         <div><i class="fa-solid fa-chevron-left"></i></div>
     </section>
-</div> -->
-
-<article>
     <section class="myPage_section">
         <div class="myPage_top">
             <h2> 1. 정보 수정 </h2>
@@ -35,7 +31,7 @@
             <h3> 닉네임 </h3>
             <!-- AJAX를 사용하여 비동기적으로 데이터 전송 -->
             <form id="nicknameForm">
-                <input type="text" name="nickname" id="nickname" th:placeholder="${dto.nickname}" />
+                <input type="text" name="nickname" id="nickname" th:value="${dto != null ? dto.nickname : ''}" />
                 <button type="submit" class="btn_large bg_blue"><span>확인</span></button>
             </form>
             <!-- AJAX 성공 메시지 -->
@@ -53,15 +49,18 @@
         <div class="myPage_top">
             <h2> 2. 투표한 글 </h2>
         </div>
+
+        <!-- 가로 스크롤 가능한 컨테이너 -->
         <div class="myPage_bottom">
-            <section class="choose_section" style="max-width: 350px;" th:each="post : ${votedPosts}">
+            <!-- 투표한 글 목록 -->
+            <section th:each="post : ${votedPosts}" class="myPage_post" style="max-width: 350px;">
                 <div class="choose_top_box">
                     <!-- 이미지가 없으면 기본 이미지로 대체 -->
                     <a th:href="@{'/post/' + ${post.postId}}">
-                        <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/static/images/common/icon-question-gradation-blue'}" alt=""/>
+                        <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/images/common/icon-blue.png'}" alt=""/>
                     </a>
                     <a th:href="@{'/post/' + ${post.postId}}">
-                        <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/static/images/common/icon-question-gradation-orange'}" alt=""/>
+                        <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/images/common/icon-orange.png'}" alt=""/>
                     </a>
                 </div>
                 <div class="choose_bottom_box">
@@ -81,19 +80,25 @@
                 </div>
             </section>
         </div>
+
+        <!-- 투표한 글이 없다면 메시지 출력 -->
+        <div th:if="${#lists.isEmpty(votedPosts)}">
+            <p>투표한 게시물이 없습니다</p>
+        </div>
     </section>
 
     <section class="myPage_section">
         <div class="myPage_top">
             <h2> 3. 내가 올린 글 </h2>
         </div>
-        <div class="myPage_bottom">
-            <section class="choose_section" style="max-width: 400px;">
-                <a th:each="post : ${myPosts}" th:href="@{'/post/' + ${post.postId}}" class="choose_total">
+        <div class="myPage_posts">
+            <!-- 내가 올린 게시물 리스트 -->
+            <section th:each="post : ${myPosts}" class="myPage_post" style="max-width: 400px;">
+                <a th:href="@{'/post/' + ${post.postId}}" class="choose_total">
                     <div class="choose_top_box">
                         <!-- 이미지가 없으면 기본 이미지로 대체 -->
-                        <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/static/images/common/icon-question-gradation-blue'}" alt=""/>
-                        <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/static/images/common/icon-question-gradation-orange'}" alt=""/>
+                        <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/images/common/icon-blue.png'}" alt=""/>
+                        <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/images/common/icon-orange.png'}" alt=""/>
                     </div>
                     <div class="choose_bottom_box">
                         <p class="shorten" th:text="${post.title}">제목</p>
@@ -101,6 +106,11 @@
                     </div>
                 </a>
             </section>
+
+            <!-- 내가 올린 글이 없다면 메시지 출력 -->
+            <div th:if="${#lists.isEmpty(myPosts)}">
+                <p>올린 게시물이 없습니다</p>
+            </div>
         </div>
     </section>
 
@@ -109,16 +119,20 @@
             <h2> 4. 참여한 채팅방 </h2>
         </div>
         <div class="myPage_bottom">
-            <h3> 참여중인 채팅방이 없습니다</h3>
+            <p> 참여중인 채팅방이 없습니다</p>
         </div>
     </section>
 
-    <section class="myPage_section">
-        <div class="myPage_bottom">
-            <p id="withdrawnBtn" class="withdrawn-btn">탈퇴하기</p>
-            <div id="withdrawnMessage"></div>
-        </div>
-    </section>
+    <!--    <section class="myPage_section">-->
+    <!--        <div class="myPage_bottom">-->
+    <!--            <p id="withdrawnBtn" class="withdrawn-btn">탈퇴하기</p>-->
+    <!--            <div id="withdrawnMessage"></div>-->
+    <!--        </div>-->
+    <!--    </section>-->
+    <div class="userWithdrawn">
+        <button id="withdrawnBtn" class="withdrawn-btn">탈퇴하기</button>
+        <div id="withdrawnMessage"></div>
+    </div>
 </article>
 
 <script>
@@ -150,23 +164,36 @@
                 }
             });
         });
-    });
 
-            // 탈퇴하기 버튼 클릭 시
-        $("#withdrawnBtn").click(function() {
+        // 탈퇴하기 버튼 클릭 시
+        $("#withdrawnBtn").click(function () {
             if (confirm("정말 탈퇴하시겠습니까?")) {
+                let $btn = $(this);
+                let $message = $("#withdrawnMessage");
+
+                // 로딩 상태 표시
+                $btn.prop("disabled", true).text("탈퇴 처리 중...");
+
                 $.ajax({
                     url: "/users/withdrawn", // 탈퇴 API 경로
                     type: "PATCH", // PATCH 요청
-                    success: function(response) {
+                    success: function (response) {
                         if (response.success) {
-                            $("#withdrawnMessage").text("회원 탈퇴가 완료되었습니다.").css("color", "green");
+                            $message.text("회원 탈퇴가 완료되었습니다.").css("color", "green");
+                            $btn.text("탈퇴 완료").prop("disabled", true);
+
+                            // 예시: 3초 후 메인 페이지로 이동 (원하는 페이지로 수정 가능)
+                            setTimeout(() => {
+                                window.location.href = "/";
+                            }, 3000);
                         } else {
-                            $("#withdrawnMessage").text("회원 탈퇴 실패!").css("color", "red");
+                            $message.text("회원 탈퇴 실패!").css("color", "red");
+                            $btn.prop("disabled", false).text("탈퇴하기"); // 버튼 복구
                         }
                     },
-                    error: function(xhr, status, error) {
-                        $("#withdrawnMessage").text("서버 오류가 발생했습니다.").css("color", "red");
+                    error: function () {
+                        $message.text("서버 오류가 발생했습니다.").css("color", "red");
+                        $btn.prop("disabled", false).text("탈퇴하기"); // 버튼 복구
                     }
                 });
             }
@@ -174,5 +201,6 @@
     });
 </script>
 
+</div>
 </body>
 </html>

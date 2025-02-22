@@ -28,4 +28,72 @@
     display: flex;
     gap: 10px;
 }
-/* history 끝 */
+
+.myPage_posts {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;  /* 가로 스크롤 가능 */
+    white-space: nowrap;  /* 요소들이 줄바꿈 없이 가로로 배치됨 */
+    padding-bottom: 10px;  /* 스크롤바와 컨텐츠 간 여백 */
+    scrollbar-width: thin;  /* 스크롤바 크기 조정 (Firefox) */
+}
+
+.myPage_post {
+    flex: 0 0 auto;  /* 크기가 고정된 요소로 설정 */
+    width: 250px;  /* 카드 너비 지정 */
+    background-color: var(--main-color-gray-light);
+    border-radius: var(--border-radius);
+    padding: var(--space-medium);
+    text-align: center;
+}
+
+.myPage_post img {
+    width: 49%;
+    height: auto;
+    border-radius: var(--border-radius);
+}
+
+.myPage_post p {
+    margin-top: var(--space-small);
+    font-size: var(--font-size);
+    font-weight: bold;
+}
+
+/* 가로 스크롤바 스타일 (크롬, 엣지, 사파리) */
+.myPage_posts::-webkit-scrollbar {
+    height: 6px; /* 스크롤바 높이 */
+}
+
+.myPage_posts::-webkit-scrollbar-thumb {
+    background: var(--main-color-gray);
+    border-radius: 10px;
+}
+
+.myPage_section .empty {
+    color: var(--font-color-gray);
+    text-align: center;
+    margin-top: var(--space-medium);
+}
+
+.userWithdrawn {
+    float: right;
+    margin-top: 150px;
+    margin-bottom: 40px;
+}
+
+#withdrawnBtn {
+    font-style: italic;
+    color: red;
+    border: none;
+    background: none;
+    padding-bottom: 10px;
+    text-decoration: underline;
+}
+
+/* 임시 설정 */
+.logo {
+    width: 40px;
+    height: 40px;
+    font-size: 25px;
+}
+/* myPage 끝 */
