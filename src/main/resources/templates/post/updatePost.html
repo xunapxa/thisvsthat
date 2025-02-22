@@ -16,7 +16,7 @@
     <article>
         <section class="post_section_top">
             <div><i class="fa-solid fa-chevron-left"></i></div>
-            <div><i></i></div>
+            <div class="hide-share-icon"></div>
         </section>
         <form th:action="@{/post/{id}/update(id=${dto.postId})}" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <section class="post_create_section">

@@ -17,6 +17,7 @@
     --chat-color-orange: #D8AD83;
     --color-white: white;
     --font-color-basic: #19191B;
+    --font-color-black-light: #333333;
     --font-color-gray: #858585;
     --font-color-gray-light: #AFB1B6;
     --font-size: 14px;
@@ -391,6 +392,13 @@ label span {
     height: 35px;
     background-color: var(--main-color-gray-light);
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post_section_top div:not(:only-child):last-child i {
+    color: var(--font-color-black-light);
 }
 
 .post_section_bottom div {
