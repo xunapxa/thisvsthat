@@ -12,6 +12,7 @@
 }
 
 .myPage_bottom {
+    overflow-x: auto;
 	display: flex;
 	gap: 10px;
 	padding-bottom: var(--font-size); /* 14px */
@@ -48,8 +49,7 @@
 }
 
 .myPage_post img {
-    width: 49%;
-    height: auto;
+    height: 105px;
     border-radius: var(--border-radius);
 }
 
@@ -90,10 +90,61 @@
     text-decoration: underline;
 }
 
+#logout {
+    background: linear-gradient(90deg, rgba(145, 193, 240, 1) 0%, rgba(240, 192, 145, 1) 64%);
+}
+
 /* 임시 설정 */
-.logo {
+.logo { /* 기본 설정 크기가 마이페이지에서는 크게 보이는 느낌이 있어서 일단 설정 따로 해놧어요 */
     width: 40px;
     height: 40px;
     font-size: 25px;
 }
+
+.back_icon {
+    cursor: pointer;
+    padding-top: 10px;
+}
+
+a {
+    font-size: 14px; /* sylte.css에는 사이즈 설정 안되어 있으나 다른 페이지에서 사용할까봐 일단 여기에 적어용 */
+}
+
+span {
+    font-size: 13px; /* 기본 설정인 14px이 좀 커서 줄였습니당 */
+}
+
+fieldset label input[type='radio'] {
+    width: 20px;
+    height: 20px;
+}
+
+input[type="radio"]:disabled:checked {
+        background-color: #91C1F0; *//* 선택된 버튼 색 *//*
+}
+
+input[type="radio"]:checked {
+    background-color: var(--main-color-blue);  *//* 예시로 선택된 라디오의 배경색 *//*
+    border: 3px solid white;
+    box-shadow: 0 0 0 1.6px var(--main-color-blue);
+}
+
+/* 기본 스타일 */
+fieldset label [type='radio'] {
+    border: 2px solid var(--radio-border-color);
+    border-radius: 50%;
+    width: var(--radio-or-check);
+    height: var(--radio-or-check);
+    outline: none;
+    cursor: pointer;
+}
+
+fieldset label [type='radio']:checked {
+    background-color: var(--radio-background-color);
+    box-shadow: 0 0 0 1.6px var(--radio-border-color);
+}
+
+
+/* 임시 설정 끝 */
+
 /* myPage 끝 */

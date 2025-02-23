@@ -74,7 +74,6 @@ public class VoteService {
         voteRepository.save(vote);
     }
 
-
     public void voteFinished(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. ID: " + postId));

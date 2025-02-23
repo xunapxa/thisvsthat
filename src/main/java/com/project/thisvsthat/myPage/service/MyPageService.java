@@ -26,19 +26,8 @@ public class MyPageService {
     @Autowired
     private VoteRepository voteRepository;
 
-    // 기본 이미지 URL 설정
-    private static final String DEFAULT_OPTION1_IMAGE = "/images.common/icon-blue";
-    private static final String DEFAULT_OPTION2_IMAGE = "/images.common/icon-orange";
-
     @Autowired
     EntityManager em; //DB와 상호작용
-
-    //사용자 ID 조회 --> findById()와 중복
-//    public Long findUserId(Long userId) {
-//        return userRepository.findByUserId(userId)
-//                .map(User::getUserId) // User 엔티티에서 userId 추출
-//                .orElse(null); // 없으면 null 반환
-//    }
 
     //사용자 정보 조회
     public UserDTO findLoginUser(Long userId) {
@@ -71,7 +60,10 @@ public class MyPageService {
     public List<PostDTO> findVotedPosts(Long userId) {
         return voteRepository.findVotedPostsByUserId(userId)
                 .stream()
-                .map(PostDTO::fromEntity) // Post -> PostDTO 변환
+                .map(post -> {
+                    String userSelectedOption = voteRepository.findUserVoteForPost(userId, post.getPostId());
+                    return PostDTO.fromEntity(post, userSelectedOption);
+                })
                 .collect(Collectors.toList());
     }
 
