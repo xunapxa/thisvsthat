@@ -1,5 +1,6 @@
 package com.project.thisvsthat.chat.config;
 
+import com.project.thisvsthat.chat.dto.ChatMessage;
 import com.project.thisvsthat.chat.util.RedisSubscriber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -42,7 +44,22 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());  // 기본적으로 String으로 직렬화
+        return template;
+    }
+
+    // ChatMessage를 저장할 템플릿
+    @Bean
+    public RedisTemplate<String, ChatMessage> chatMessageRedisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, ChatMessage> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+
+        // 문자열 키에 대한 직렬화 설정
+        template.setKeySerializer(new StringRedisSerializer());
+
+        // 값에 대한 직렬화 설정 (JSON 직렬화)
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+
         return template;
     }
 

@@ -24,7 +24,7 @@
     font-size: var(--font-size-large);
 }
 
-.user_count {
+.user_count_wrapper {
     background-color: var(--main-color-brown);
     padding: 3px;
     border-radius: 3px;
