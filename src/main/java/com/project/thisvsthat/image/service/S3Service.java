@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 
 @Service
@@ -49,6 +51,32 @@ public class S3Service {
         s3Client.putObject(bucketName, fileName, inputStream, metadata);
 
         // 업로드된 파일의 S3 URL 반환
+        return s3Client.getUrl(bucketName, fileName).toString();
+    }
+
+    // Base64 이미지 업로드
+    public String uploadBase64Image(String base64Image) throws Exception {
+        // Base64 디코딩
+        String[] parts = base64Image.split(",");
+        String base64Data = parts[1];
+        byte[] imageBytes = Base64.getDecoder().decode(base64Data);
+
+        // 이미지 파일을 InputStream으로 변환
+        InputStream inputStream = new ByteArrayInputStream(imageBytes);
+
+        // 파일명 생성 (UUID 기반)
+        String extension = "png"; // 파일 확장자는 .png로 고정
+        String fileName = FileNameGenerator.generateBase64UUIDFileName(extension); // UUID 기반 파일명 생성
+
+        // 메타데이터 설정
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType("image/png");
+        metadata.setContentLength(imageBytes.length); // Content-Length 추가
+
+        // S3에 업로드
+        s3Client.putObject(bucketName, fileName, inputStream, metadata);
+
+        // 업로드된 이미지의 S3 URL 반환
         return s3Client.getUrl(bucketName, fileName).toString();
     }
 

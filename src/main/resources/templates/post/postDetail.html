@@ -104,7 +104,7 @@
                 </div>
                 <div class="toast_popup_content">
                     <div class="profile_image_wrapper">
-                        <img id="profile-image" class="profile_image" src="/images/common/logo.png" alt="profile-image">
+                        <img id="profile-image" class="profile_image" src="/images/common/profile-default.png" alt="profile-image">
                         <i id="edit-icon" class="fa-solid fa-pencil image_edit_icon"></i>
                     </div>
                     <input type="file" id="profile-input" style="display: none;" accept="image/*">
@@ -130,7 +130,7 @@
                             </label>
                         </fieldset>
                     </div>
-                    <button class="btn_medium btn_join_chat">입장하기</button>
+                    <button id="btn-join-chat" class="btn_medium btn_join_chat" th:data-post-id="${dto.postId}">입장하기</button>
                 </div>
             </div>
         </div>
