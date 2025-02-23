@@ -5,6 +5,7 @@ import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.dto.UserDTO;
 import com.project.thisvsthat.common.repository.UserRepository;
 import com.project.thisvsthat.myPage.service.MyPageService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,20 +106,5 @@ public class MyPageController {
         response.put("success", withdrawnSuccess);
 
         return ResponseEntity.ok(response);
-    }
-
-    // 로그아웃 처리
-    @PostMapping("/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        // 쿠키에서 JWT 가져오기
-        String token = jwtService.getJwtFromCookies(request);
-
-        if (token != null) {
-            // JWT 쿠키 삭제
-            jwtService.deleteJwtCookie(response);
-        }
-
-        // 로그인 페이지로 리다이렉트
-        return "redirect:/login";
     }
 }

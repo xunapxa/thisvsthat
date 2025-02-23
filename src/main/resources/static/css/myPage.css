@@ -90,7 +90,7 @@
     text-decoration: underline;
 }
 
-#logoutBtn {
+#logout {
     background: linear-gradient(90deg, rgba(145, 193, 240, 1) 0%, rgba(240, 192, 145, 1) 64%);
 }
 
