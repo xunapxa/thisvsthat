@@ -79,7 +79,7 @@ public class PostController {
         System.out.println("추출한 해시태그 정보 ==========" + extractedHashtags);
         dto.setHashtags(extractedHashtags);
 
-        postService.savePost(15L, dto);
+        postService.savePost(100002L, dto);
         return "redirect:/";
     }
 
@@ -128,7 +128,7 @@ public class PostController {
     @PostMapping("{id}/vote")
     public String saveVote(@PathVariable("id") Long postId, @ModelAttribute("dto") VoteDTO dto) {
         System.out.println("투표한 내용 ==========" + dto.getSelectedOption());
-        voteService.saveVote(15L,postId, dto.getSelectedOption());
+        voteService.saveVote(100002L,postId, dto.getSelectedOption());
         String url = "redirect:/post/" + postId;
         return url;
     }
