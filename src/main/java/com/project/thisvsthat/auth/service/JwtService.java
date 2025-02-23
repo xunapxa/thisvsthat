@@ -153,4 +153,14 @@ public class JwtService {
         }
         return null;
     }
+
+    public void deleteJwtCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // true로 설정하면 HTTPS에서만 사용 가능
+        cookie.setPath("/"); // 모든 경로에서 사용 가능
+        cookie.setMaxAge(0); // 만료 시간 0으로 설정하여 즉시 삭제
+        cookie.setAttribute("SameSite", "Lax"); // 크로스 사이트 요청 가능
+        response.addCookie(cookie);
+    }
 }

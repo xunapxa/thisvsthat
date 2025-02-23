@@ -31,9 +31,10 @@ public class PostDTO {
     private PostStatus postStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String userSelectedOption;
 
     // entity -> dto
-    public static PostDTO fromEntity(Post post) {
+    public static PostDTO fromEntity(Post post, String userSelectedOption) {
         return new PostDTO(
                 post.getPostId(),
                 post.getUser().getUserId(),
@@ -51,7 +52,8 @@ public class PostDTO {
                 post.getReportCount(),
                 post.getPostStatus(),
                 post.getCreatedAt(),
-                post.getUpdatedAt()
+                post.getUpdatedAt(),
+                userSelectedOption
         );
     }
 
@@ -70,5 +72,10 @@ public class PostDTO {
         post.setOption1ImageUrl(dto.getOption1ImageUrl());
         post.setOption2ImageUrl(dto.getOption2ImageUrl());
         return post;
+    }
+
+    //userSelectedOption 필요 없는 경우 사용하는 fromEntity 메서드
+    public static PostDTO fromEntity(Post post) {
+        return fromEntity(post, null); // userSelectedOption을 null로 설정
     }
 }

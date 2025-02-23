@@ -20,4 +20,7 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 
     @Query("SELECT v.post FROM Vote v WHERE v.user.userId = :userId")
     List<Post> findVotedPostsByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT v.selectedOption FROM Vote v WHERE v.user.userId = :userId AND v.post.postId = :postId")
+    String findUserVoteForPost(@Param("userId") Long userId, @Param("postId") Long postId);
 }

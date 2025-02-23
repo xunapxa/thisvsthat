@@ -20,8 +20,8 @@
 
 <article>
     <!-- 뒤로가기 -->
-    <section class="post_section_top">
-        <div><i class="fa-solid fa-chevron-left"></i></div>
+    <section class="myPage_section_top">
+        <div class="back_icon" id="backButton"><i class="fa-solid fa-chevron-left"></i></div>
     </section>
     <section class="myPage_section">
         <div class="myPage_top">
@@ -32,7 +32,7 @@
             <!-- AJAX를 사용하여 비동기적으로 데이터 전송 -->
             <form id="nicknameForm">
                 <input type="text" name="nickname" id="nickname" th:value="${dto != null ? dto.nickname : ''}" />
-                <button type="submit" class="btn_large bg_blue"><span>확인</span></button>
+                <button type="submit" class="btn_large bg_blue">확인</button>
             </form>
             <!-- AJAX 성공 메시지 -->
             <div id="message"></div>
@@ -49,36 +49,42 @@
         <div class="myPage_top">
             <h2> 2. 투표한 글 </h2>
         </div>
-
-        <!-- 가로 스크롤 가능한 컨테이너 -->
         <div class="myPage_bottom">
-            <!-- 투표한 글 목록 -->
-            <section th:each="post : ${votedPosts}" class="myPage_post" style="max-width: 350px;">
-                <div class="choose_top_box">
-                    <!-- 이미지가 없으면 기본 이미지로 대체 -->
-                    <a th:href="@{'/post/' + ${post.postId}}">
-                        <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/images/common/icon-blue.png'}" alt=""/>
-                    </a>
-                    <a th:href="@{'/post/' + ${post.postId}}">
-                        <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/images/common/icon-orange.png'}" alt=""/>
-                    </a>
-                </div>
-                <div class="choose_bottom_box">
-                    <fieldset>
-                        <label>
-                            <input type="radio" name="selectOne" value="customization" />
-                            <span>사용자지정1</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="selectOne" value="customization" />
-                            <span>사용자지정2</span>
-                        </label>
-                    </fieldset>
-                </div>
-                <div class="btn_box">
-                    <button class="btn_large bg_brown"><span>투표하기</span></button>
-                </div>
-            </section>
+            <th:block th:each="post : ${votedPosts}">
+                <form method="POST" th:action="@{/posts/{postId}/vote(postId=${post.postId})}">
+                <section class="myPage_post" style="max-width: 350px;">
+                    <div class="post_header">
+                        <!-- 게시물 제목을 클릭할 수 있게 하며, 각 게시물의 상세 페이지로 이동 -->
+                        <a th:href="@{/post/{postId}(postId=${post.postId})}" th:text="${post.title}">Post Title</a>
+                    </div>
+                    <div class="choose_top_box">
+                        <!-- 이미지가 없으면 기본 이미지로 대체 -->
+                        <a th:href="@{'/post/' + ${post.postId}}">
+                            <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/images/common/icon-blue.png'}" alt=""/>
+                        </a>
+                        <a th:href="@{'/post/' + ${post.postId}}">
+                            <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/images/common/icon-orange.png'}" alt=""/>
+                        </a>
+                    </div>
+                    <div class="choose_bottom_box">
+                        <fieldset>
+                            <!--<p>선택한 옵션: <span th:text="${post.userSelectedOption}"></span></p>-->
+                            <!--<p>게시물: <span th:text="${post.postId}"></span></p>-->
+                            <label data-post-id="${post.postId}" data-radio-color="91C1F0">
+                                <input type="radio" name="selectOne" value="OPTION_1"
+                                       th:checked="${post.userSelectedOption == 'OPTION_1'}" disabled />
+                                <span>사용자지정1</span>
+                            </label>
+                            <label data-post-id="${post.postId}" data-radio-color="F0C091">
+                                <input type="radio" name="selectOne" value="OPTION_2"
+                                       th:checked="${post.userSelectedOption == 'OPTION_2'}" disabled />
+                                <span>사용자지정2</span>
+                            </label>
+                        </fieldset>
+                    </div>
+                </section>
+                </form>
+            </th:block>
         </div>
 
         <!-- 투표한 글이 없다면 메시지 출력 -->
@@ -129,6 +135,11 @@
     <!--            <div id="withdrawnMessage"></div>-->
     <!--        </div>-->
     <!--    </section>-->
+
+    <div class="userLogout">
+        <button id="logoutBtn" class="btn_large bg_red">로그아웃</button>
+    </div>
+
     <div class="userWithdrawn">
         <button id="withdrawnBtn" class="withdrawn-btn">탈퇴하기</button>
         <div id="withdrawnMessage"></div>
@@ -136,6 +147,16 @@
 </article>
 
 <script>
+
+
+    const fieldsetLabels = document.querySelectorAll('fieldset label');
+
+fieldsetLabels.forEach((label) => {
+    const radioColor = label.getAttribute('data-radio-color');
+    label.style.setProperty('--radio-border-color', `#${radioColor}`);
+    label.style.setProperty('--radio-background-color', `#${radioColor}`);
+});
+
     // AJAX 요청을 처리하는 함수
     $(document).ready(function() {
         $("#nicknameForm").submit(function(event) {
@@ -197,6 +218,20 @@
                     }
                 });
             }
+        });
+
+        $("#logoutBtn").click(function () {
+            $.ajax({
+                url: "/logout", // 로그아웃 URL
+                type: "POST", // POST 요청
+                success: function() {
+                    // 로그아웃 성공 시
+                    window.location.href = "/"; // 로그아웃 후 홈으로 이동
+                },
+                error: function() {
+                    alert("로그아웃 중 오류가 발생했습니다.");
+                }
+            });
         });
     });
 </script>
