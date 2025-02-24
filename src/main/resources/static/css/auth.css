@@ -1,17 +1,13 @@
 /* auth - 킴가 시작 */
 /* auth 공통 스타일 시작 */
 /* 기본 높이 설정 */
-html, body {
-    min-height: 100vh;  /* 기본 높이 설정 (JS 적용되기 전) */
-    height: 100dvh;      /* 최신 브라우저에서 사용 */
-    overflow: hidden;    /* 하단 툴바 등장 시 레이아웃 밀림 방지 */
+:root {
+    --vh: 100%;
 }
 
-/* 100dvh를 지원하지 않는 경우 */
-@supports not (height: 100dvh) {
-    html, body {
-        height: calc(var(--vh) * 100); /* JS에서 설정된 --vh 값을 사용 */
-    }
+html, body {
+    height: 100vh;  /* 기본적으로 100vh를 설정 */
+    height: calc(var(--vh) * 1); /* JS에서 설정된 --vh 값을 사용하여 높이 적용 */
 }
 
 .auth-container {
