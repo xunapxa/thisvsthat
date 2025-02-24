@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -301,8 +302,18 @@ public class OAuthController {
      * 회원가입 API (JWT를 HTTP-Only 쿠키로 저장)
      */
     @PostMapping("/signup")
-    public ResponseEntity<Map<String, String>> signup(@RequestBody SignupRequestDTO signupRequest, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> signup(
+            @ModelAttribute SignupRequestDTO signupRequest,  // FormData를 DTO로 매핑
+            @RequestParam(value = "profileImageFile", required = false) MultipartFile profileImageFile, // 프로필 이미지 파일
+            HttpServletRequest request,
+            HttpServletResponse response) {
         try {
+
+            // 프로필 이미지 파일을 DTO에 세팅
+            if (profileImageFile != null && !profileImageFile.isEmpty()) {
+                signupRequest.setProfileImageFile(profileImageFile);
+            }
+
             System.out.println("📌 Received signup request: " + signupRequest);
 
             // 1. 신규 회원 등록

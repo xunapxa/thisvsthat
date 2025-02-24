@@ -1,5 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
 
+    const profileImage = document.getElementById("profileImage");
+    const editIcon = document.getElementById("editIcon");
+    const profileImageInput = document.getElementById("profileImageInput");
+    const profileImageUrlInput = document.getElementById("profileImageUrl");
+
+    // 프로필 이미지 또는 편집 아이콘 클릭 시 파일 입력창 열기
+    profileImage.addEventListener("click", () => profileImageInput.click());
+    editIcon.addEventListener("click", () => profileImageInput.click());
+
+    // 파일 선택 시 프로필 이미지 변경
+    profileImageInput.addEventListener("change", function (event) {
+        updateProfileImage(event);
+    });
+
+    // 선택한 파일을 프로필 이미지로 미리보기만 하고, 실제 회원가입 시 함께 전송
+    function updateProfileImage(event) {
+        const file = event.target.files[0]; // 선택한 파일 가져오기
+        if (file) {
+            const reader = new FileReader(); // FileReader 객체 생성
+            reader.onload = function (e) {
+                profileImage.src = e.target.result; // 이미지 미리보기
+            };
+            reader.readAsDataURL(file); // 파일을 Data URL로 변환하여 읽기
+        }
+    }
+
     const nameField = document.getElementById("nickname");
     const birthdateField = document.getElementById("birthdate");
     const signupForm = document.getElementById("signup-form");
@@ -161,23 +187,26 @@ document.addEventListener("DOMContentLoaded", function () {
             // FormData 객체 생성
             const formData = new FormData(this);
 
-            // FormData → JSON 변환
+            // 프로필 이미지가 수정된 경우, 파일을 추가 (이미지 수정 시)
+            const profileImageFile = profileImageInput.files[0];
+            if (profileImageFile) {
+                console.log(profileImageFile);  // 파일 정보 출력
+                formData.append("profileImageFile", profileImageFile); // 이미지 파일 추가
+            }
+
+            // FormData를 순차적으로 출력하기
             const formDataObject = {};
             formData.forEach((value, key) => {
                 formDataObject[key] = value;
+                console.log(`📌 Key: ${key}, Value: ${value}`);
             });
-
-            console.log("📌 회원가입 요청 데이터:", JSON.stringify(formDataObject));
 
             submitButton.disabled = true; // 중복 요청 방지
 
             try {
                 const response = await fetch("/auth/signup", {
                     method: "POST",
-                    body: JSON.stringify(formDataObject), // JSON 형식으로 변환
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+                    body: formData, // FormData 객체 그대로 전송
                 });
 
                 const result = await response.json();

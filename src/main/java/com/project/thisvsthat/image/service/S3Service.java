@@ -52,11 +52,11 @@ public class S3Service {
         return s3Client.getUrl(bucketName, fileName).toString();
     }
 
-    // Google 프로필 이미지 URL을 S3에 업로드
+    // 프로필 이미지 URL을 S3에 업로드
     public String uploadProfileImage(String imageUrl, String socialId) {
         try {
             if (imageUrl == null || imageUrl.isEmpty()) {
-                return defaultProfileUrl; // 빈 값일 경우 기본 이미지 반환
+                return defaultProfileUrl; // 이미지 URL이 없으면 기본 이미지 URL 반환
             }
 
             URL url = new URL(imageUrl);
@@ -73,7 +73,32 @@ public class S3Service {
 
             return s3Client.getUrl(bucketName, fileName).toString();
         } catch (Exception e) {
-            System.err.println("Google 프로필 이미지 다운로드 실패: " + e.getMessage());
+            System.err.println("프로필 이미지 url 업로드 실패: " + e.getMessage());
+            return defaultProfileUrl; // 실패 시 기본 이미지 반환
+        }
+    }
+
+    // 프로필 이미지 파일을 S3에 업로드
+    public String uploadProfileImage(MultipartFile imageFile, String socialId) {
+        try {
+            if (imageFile == null || imageFile.isEmpty()) {
+                return defaultProfileUrl; // 이미지 파일이 없으면 기본 이미지 URL 반환
+            }
+
+            // S3에 저장할 파일명 설정
+            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String fileName = "profile/" + socialId + "_" + timestamp + ".png";
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image/png");
+
+            // S3에 업로드
+            s3Client.putObject(bucketName, fileName, imageFile.getInputStream(), metadata);
+
+            // 업로드된 이미지 URL 반환
+            return s3Client.getUrl(bucketName, fileName).toString();
+        } catch (Exception e) {
+            System.err.println("프로필 이미지 파일 업로드 실패: " + e.getMessage());
             return defaultProfileUrl; // 실패 시 기본 이미지 반환
         }
     }
