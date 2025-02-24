@@ -2,12 +2,14 @@
 /* auth 공통 스타일 시작 */
 /* 기본 높이 설정 */
 :root {
-    --vh: 100%;
+    --vh: 100%; /* 기본 vh 값을 100으로 설정 */
 }
 
 html, body {
-    height: 100vh;  /* 기본적으로 100vh를 설정 */
-    height: calc(var(--vh) * 1); /* JS에서 설정된 --vh 값을 사용하여 높이 적용 */
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* 기본적으로 100vh를 설정 */
+    height: calc(var(--vh) * 100); /* JS에서 설정된 --vh 값을 사용하여 높이 적용 */
 }
 
 .auth-container {
@@ -15,7 +17,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    height: 100vh;
+    height: calc(var(--vh) * 100);
     padding: 30px 10px;
 }
 
