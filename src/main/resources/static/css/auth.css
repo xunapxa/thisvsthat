@@ -1,5 +1,19 @@
 /* auth - 킴가 시작 */
 /* auth 공통 스타일 시작 */
+/* 기본 높이 설정 */
+html, body {
+    min-height: 100vh;  /* 기본 높이 설정 (JS 적용되기 전) */
+    height: 100dvh;      /* 최신 브라우저에서 사용 */
+    overflow: hidden;    /* 하단 툴바 등장 시 레이아웃 밀림 방지 */
+}
+
+/* 100dvh를 지원하지 않는 경우 */
+@supports not (height: 100dvh) {
+    html, body {
+        height: calc(var(--vh) * 100); /* JS에서 설정된 --vh 값을 사용 */
+    }
+}
+
 .auth-container {
     display: flex;
     flex-direction: column;
@@ -62,6 +76,11 @@
     font-size: var(--font-size-large);
     font-weight: bold;
     color: var(--font-color-gray-light);
+}
+
+/* 위치 조정용 빈 박스 */
+.empty-space {
+    height: var(--height-xlarge);
 }
 /* auth 공통 스타일 끝 */
 
@@ -292,10 +311,5 @@
     font-size: var(--font-size-xlarge);
     color: var(--font-color-basic);
     display: inline;
-}
-
-/* 위치 조정용 빈 박스 */
-.empty-space {
-    height: var(--height-xlarge);
 }
 /* login-error.html 끝 */
