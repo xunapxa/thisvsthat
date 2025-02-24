@@ -67,7 +67,7 @@
         <div class="chat_input_box">
             <textarea id="message-input" class="chat_input" placeholder="메시지를 입력해주세요."></textarea>
             <i id="btn-send" class="send_btn fa-regular fa-paper-plane"
-               data-user-id="[[${userId}]]" data-post-id="[[${postId}]]"></i>
+               th:data-user-id="${userId}" th:data-post-id="${postId}"></i>
         </div>
     </article>
 </div>

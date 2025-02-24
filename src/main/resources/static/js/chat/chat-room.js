@@ -13,7 +13,7 @@ $(document).ready(function() {
     // 웹소켓 연결
     connectWebSocket();
 
-    // 채팅방 입장시 기존의 채팅 50개 리스트로 출력
+    // 채팅방 입장 시 기존의 채팅 50개 리스트로 출력
     function showMessage(message) {
         $('#messageList').append('<div>' + message + '</div>');
     }
@@ -60,6 +60,8 @@ $(document).ready(function() {
             console.log('🔗연결 성공: ' + frame);
             // 채팅방 구독
             subscribeToChatRoom();
+            // 채팅방 입장 시 인원 수 알림
+            stompClient.send(`/pub/join/${postId}`);
         }, function(error) {
             console.error('⛓️‍💥서버 연결 실패: ', error);
         });
@@ -88,12 +90,21 @@ $(document).ready(function() {
         }, function(error) {
             console.error('구독 오류:', error);
         });
+
+        // 인원 수 업데이트 메시지 구독
+        stompClient.subscribe(`/sub/chatroom/userCount/${postId}`, function(response) {
+            let data = JSON.parse(response.body);
+            let userCount = data.userCount;  // "현재 채팅 인원: x" 형태
+            userCount = userCount.replace(/\D/g, '');  // 숫자만 추출 (숫자 이외의 문자 제거)
+            console.log("인원수: " + userCount);
+            $('#user-count').text(userCount);  // 인원 수 표시
+        });
     }
 
-    // 실시간으로 인원 수 업데이트
-    function updateUserCount(userCount) {
-        $('#user-count').text(userCount);
-    }
+    // 퇴장 시 서버에 퇴장 메시지 보내기
+    window.onbeforeunload = function() {
+        stompClient.send(`/pub/leave/${postId}`, {}, "");
+    };
 
     // 스크롤을 채팅 창 맨 아래로 이동
     function scrollToBottom() {

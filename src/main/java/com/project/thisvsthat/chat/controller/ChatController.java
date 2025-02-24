@@ -5,7 +5,9 @@ import com.project.thisvsthat.chat.dto.ChatMessage;
 import com.project.thisvsthat.common.dto.UserDTO;
 import com.project.thisvsthat.image.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import net.minidev.json.JSONObject;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -16,13 +18,20 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("chat")
 public class ChatController {
+
     private final ChatService chatService;
     private final S3Service s3Service;
+    private final SimpMessagingTemplate messagingTemplate;  // 메시지 전송을 위한 template
+
+    // 채팅방 별 사용자 수를 관리할 Map
+    private final Map<String, AtomicInteger> roomUserCount = new ConcurrentHashMap<>();
 
     // 닉네임 및 프로필 사진 조회 API
     @GetMapping("/get-profile/{userId}")
@@ -68,10 +77,41 @@ public class ChatController {
         return "chat/chat-room";
     }
 
-    @MessageMapping("/sendMessage/{roomId}")
-    @SendTo("/sub/chatroom/{roomId}")
-    public ChatMessage sendMessage(ChatMessage message, @DestinationVariable String roomId) {
-        Long postId = Long.parseLong(roomId);  // roomId를 postId로 변환 (혹은 다른 방식으로 매핑)
+    // 채팅방에 접속할 때마다 호출되는 메서드
+    @MessageMapping("/join/{postId}")
+    public void joinChat(@DestinationVariable("postId") String postId) {
+        roomUserCount.putIfAbsent(postId, new AtomicInteger(0));  // 방이 처음이라면 초기화
+        int currentCount = roomUserCount.get(postId).incrementAndGet();  // 인원 수 증가
+
+        // JSON 라이브러리를 사용해 메시지 생성
+        JSONObject userCountMessage = new JSONObject();
+        userCountMessage.put("userCount", "현재 채팅 인원: " + currentCount);
+
+        // 현재 인원 수를 채팅방에 브로드캐스트
+        messagingTemplate.convertAndSend("/sub/chatroom/userCount/" + postId, userCountMessage.toString());
+    }
+
+    // 채팅방에서 나갈 때 호출되는 메서드
+    @MessageMapping("/leave/{postId}")
+    public void leaveChat(@DestinationVariable("postId") String postId) {
+        if (roomUserCount.containsKey(postId)) {
+            int currentCount = roomUserCount.get(postId).decrementAndGet();  // 인원 수 감소
+            if (currentCount > 0) {
+                // JSON 라이브러리를 사용해 메시지 생성
+                JSONObject userCountMessage = new JSONObject();
+                userCountMessage.put("userCount", "현재 채팅 인원: " + currentCount);
+                messagingTemplate.convertAndSend("/sub/chatroom/userCount/" + postId, userCountMessage.toString());
+            } else {
+                roomUserCount.remove(postId);  // 채팅방에 더 이상 인원이 없다면 방을 제거
+            }
+        }
+    }
+
+    // 메시지 발송 및 채팅방 사용자 수 관리
+    @MessageMapping("/sendMessage/{postId}")
+    @SendTo("/sub/chatroom/{postId}")
+    public ChatMessage sendMessage(ChatMessage message, @DestinationVariable("postId") String Id) {
+        Long postId = Long.parseLong(Id);  // roomId를 postId로 변환 (혹은 다른 방식으로 매핑)
         chatService.saveMessageToRedis(message, postId);  // 메시지를 레디스에 저장 및 DB로 이전 작업
 
         return message;  // 메시지 반환 (구독자에게 전달)
