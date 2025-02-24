@@ -64,7 +64,7 @@ public class MyPageController {
 
     //정보 수정(닉네임) 처리
     @PatchMapping("")
-    public ResponseEntity<Map<String, Object>> editNickname(@RequestParam String nickname, HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> editNickname(@RequestParam(name = "nickname") String nickname, HttpServletRequest request) {
         String token = jwtService.getJwtFromCookies(request);
         if (token == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "Unauthorized"));

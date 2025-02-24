@@ -19,6 +19,8 @@
 	font-size: var(--font-size-large); /* 16px */
 	line-height: var(--height-large); /* h3 가운데 정렬1 */
 	text-align: center; /* h3 가운데 정렬2 */
+	align-items: center; /* 세로 중앙 정렬 */
+	flex-wrap: wrap; /* 요소들이 한 줄로 넘칠 경우 다음 줄로 넘어가게 */
 }
 
 .myPage_bottom h3 {
@@ -32,6 +34,18 @@
 
 #nickname {
     padding-left: 5px;  /* input 텍스트 왼쪽 여백 추가 */
+}
+
+.message {
+    font-size: var(--font-size-medium); /* 13px */
+}
+
+.message.success {
+    color: var(--font-color-gray); /* 닉네임 수정 성공 시 메시지 컬러 */
+}
+
+.message.error {
+    color: red; /* 닉네임 수정 실패 시 메시지 컬러 */
 }
 
 .myPage_posts {
