@@ -131,26 +131,37 @@ $(document).ready(function() {
                 fetch('/chat/upload-profile-img', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'text/plain'  // 순수 String으로 보내기
                     },
-                    body: JSON.stringify({ profileImage: profileImage })  // JSON 형식으로 보내기
+                    body: profileImage // JSON.stringify() 사용하지 않음
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('서버 응답 실패');
+                    }
+                    return response.text(); // 응답이 단순 문자열일 경우 text() 사용
+                })
                 .then(data => {
-                    profileImage = data;  // 반환된 URL 사용
+                    console.log("업로드 성공:", data);
+
+                    sessionStorage.setItem('nickname', nickname);
+                    sessionStorage.setItem('selectedOption', selectedOption);
+                    sessionStorage.setItem('profileImage', data);
+
+                    // 채팅방으로 이동
+                    window.location.href = "/chat/" + postId;
                 })
                 .catch(error => console.error('이미지 업로드 실패:', error));
+            }else{
+                sessionStorage.setItem('nickname', nickname);
+                sessionStorage.setItem('selectedOption', selectedOption);
+                sessionStorage.setItem('profileImage', profileImage);
+
+                // 채팅방으로 이동
+                window.location.href = "/chat/" + postId;
             }
-
-            sessionStorage.setItem('nickname', nickname);
-            sessionStorage.setItem('selectedOption', selectedOption);
-            sessionStorage.setItem('profileImage', profileImage);
-
-            // 채팅방으로 이동
-            window.location.href = "/chat/" + postId;
         } else {
             alert("닉네임을 입력해주세요.");
         }
     });
-
 });

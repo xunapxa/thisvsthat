@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,15 +32,17 @@ public class ChatController {
 
     // 채팅 프로필 이미지 업로드
     @PostMapping("/upload-profile-img")
-    public ResponseEntity<?> handleBase64ImageUpload(@RequestParam("profileImage") String profileImage) {
+    public ResponseEntity<?> handleBase64ImageUpload(@RequestBody String profileImage) {
         try {
+            if (profileImage == null || profileImage.isEmpty()) {
+                return ResponseEntity.badRequest().body("이미지가 없습니다.");
+            }
+
             // Base64 이미지 업로드 및 URL 반환
             String imageUrl = s3Service.uploadBase64Image(profileImage);
 
-            // URL을 반환
             return ResponseEntity.ok().body(imageUrl);
         } catch (Exception e) {
-            // 오류 처리
             return ResponseEntity.status(500).body("이미지 업로드 실패: " + e.getMessage());
         }
     }
