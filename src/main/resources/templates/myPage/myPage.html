@@ -90,7 +90,7 @@
 
         <!-- 투표한 글이 없다면 메시지 출력 -->
         <div th:if="${#lists.isEmpty(votedPosts)}">
-            <p>투표한 게시물이 없습니다</p>
+            <p>투표한 게시물이 없습니다.</p>
         </div>
     </section>
 
@@ -116,7 +116,7 @@
 
             <!-- 내가 올린 글이 없다면 메시지 출력 -->
             <div th:if="${#lists.isEmpty(myPosts)}">
-                <p>올린 게시물이 없습니다</p>
+                <p>올린 게시물이 없습니다.</p>
             </div>
         </div>
     </section>
@@ -126,7 +126,7 @@
             <h2> 4. 참여한 채팅방 </h2>
         </div>
         <div class="myPage_bottom">
-            <p> 참여중인 채팅방이 없습니다</p>
+            <p> 참여 중인 채팅방이 없습니다.</p>
         </div>
     </section>
 
@@ -209,7 +209,7 @@
                     type: "PATCH", // PATCH 요청
                     success: function (response) {
                         if (response.success) {
-                            $message.text("회원 탈퇴가 완료되었습니다.").css("color", "green");
+                            $message.text("회원 탈퇴가 완료되었습니다. 잠시 후 로그아웃됩니다.").css("color", "#858585");
                             $btn.text("탈퇴 완료").prop("disabled", true);
 
                             // 예시: 3초 후 메인 페이지로 이동 (원하는 페이지로 수정 가능)
