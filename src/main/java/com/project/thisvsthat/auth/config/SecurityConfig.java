@@ -71,8 +71,8 @@ public class SecurityConfig {
                 // 로그아웃 설정
                 .logout(logout -> logout
                         .logoutUrl("/logout") // 로그아웃 URL 지정
-                        .logoutSuccessUrl("/login") // 로그아웃 후 이동할 URL
-                        .deleteCookies("jwt") // JWT 쿠키 삭제
+                        .logoutSuccessUrl("/") // 로그아웃 후 이동할 URL
+                        .deleteCookies("JSESSIONID", "jwt") // JWT 쿠키 삭제
                 );
 
         return http.build();
