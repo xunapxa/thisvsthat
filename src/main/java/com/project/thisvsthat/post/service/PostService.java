@@ -3,6 +3,7 @@ package com.project.thisvsthat.post.service;
 import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.entity.Post;
 import com.project.thisvsthat.common.entity.User;
+import com.project.thisvsthat.common.enums.Category;
 import com.project.thisvsthat.common.enums.PostStatus;
 import com.project.thisvsthat.common.enums.VoteStatus;
 import com.project.thisvsthat.common.repository.PostRepository;
@@ -20,6 +21,10 @@ public class PostService {
     private final UserRepository userRepository;
 
     public void savePost(Long userId, PostDTO dto) {
+        if (dto.getCategory() == null) {
+            dto.setCategory(Category.자유);
+        }
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. ID: " + userId));
         Post post = PostDTO.fromDto(dto);

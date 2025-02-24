@@ -53,16 +53,16 @@ function validateForm() {
 }
 
 // 삭제 confirm
-document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("postDeleteBtn").addEventListener("click", function (event) {
-        event.preventDefault();
-        let deleteUrl = this.getAttribute("href");
-
-        if (confirm("삭제하시겠습니까?")) {
-            window.location.href = deleteUrl;
-        }
-    });
-});
+//document.addEventListener("DOMContentLoaded", function () {
+//    document.getElementById("postDeleteBtn").addEventListener("click", function (event) {
+//        event.preventDefault();
+//        let deleteUrl = this.getAttribute("href");
+//
+//        if (confirm("삭제하시겠습니까?")) {
+//            window.location.href = deleteUrl;
+//        }
+//    });
+//});
 
 // 투표종료 confirm
 document.addEventListener("DOMContentLoaded", function () {
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (postContent) {
         let text = postContent.innerHTML;
 
-        let formattedText = text.replace(/#([ㄱ-ㅎ|가-힣|a-zA-Z0-9_]+)/g, "<a href='?search_by=hashtags&keyword=$1' class='hashtag'>#$1</a>");
+        let formattedText = text.replace(/#([ㄱ-ㅎ|가-힣|a-zA-Z0-9_]+)/g, "<a href='/?search_by=hashtags&keyword=$1' class='hashtag'>#$1</a>");
 
         postContent.innerHTML = formattedText;
     }
@@ -125,5 +125,3 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
-
-

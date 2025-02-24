@@ -1,12 +1,15 @@
 package com.project.thisvsthat.post.controller;
 
+import com.project.thisvsthat.auth.service.JwtService;
 import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.dto.VoteDTO;
+import com.project.thisvsthat.common.enums.Category;
 import com.project.thisvsthat.image.service.ImageService;
 import com.project.thisvsthat.post.dto.VotePercentageDTO;
 import com.project.thisvsthat.post.service.PostService;
 import com.project.thisvsthat.post.service.VoteService;
 import com.project.thisvsthat.post.util.HashtagExtractor;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,11 +28,33 @@ public class PostController {
     @Autowired
     private VoteService voteService;
 
+    @Autowired
+    private JwtService jwtService;
+
     /* 상세 페이지 */
     @GetMapping("{id}")
-    public String postDetail(@PathVariable("id") Long postId, Model model) {
+    public String postDetail(@PathVariable("id") Long postId, Model model, HttpServletRequest request) {
+
+        //쿠키에서 JWT 토큰 추출
+        String token = jwtService.getJwtFromCookies(request);
+        if (token == null) {
+            return "redirect:/login";  // 토큰이 없으면 로그인 페이지로 리다이렉트
+        }
+
+        Long userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
+        if (userId == null) {
+            return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+        }
+
         PostDTO dto = postService.findOnePost(postId);
         VotePercentageDTO votePercentage = voteService.getVotePercentage(postId);
+
+        // 글쓴이인지 확인
+        if (dto.getUserId() == userId) {
+            model.addAttribute("userId", userId);
+        } else {
+            model.addAttribute("userId", null);
+        }
 
         model.addAttribute("dto", dto);
         model.addAttribute("vote", new VoteDTO());
@@ -57,7 +82,18 @@ public class PostController {
     public String insertPost(@ModelAttribute("dto") PostDTO dto,
                              @RequestParam("imageFile1") MultipartFile imageFile1,
                              @RequestParam("imageFile2") MultipartFile imageFile2,
-                             Model model) {
+                             Model model, HttpServletRequest request) {
+
+        //쿠키에서 JWT 토큰 추출
+        String token = jwtService.getJwtFromCookies(request);
+        if (token == null) {
+            return "redirect:/login";  // 토큰이 없으면 로그인 페이지로 리다이렉트
+        }
+
+        Long userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
+        if (userId == null) {
+            return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+        }
 
         String imageUrl1 = null;
         String imageUrl2 = null;
@@ -71,6 +107,7 @@ public class PostController {
         }
 
         System.out.println("화면단에서 받아온 dto 정보 ========== " + dto);
+
         dto.setOption1ImageUrl(imageUrl1);
         dto.setOption2ImageUrl(imageUrl2);
 
@@ -79,7 +116,7 @@ public class PostController {
         System.out.println("추출한 해시태그 정보 ==========" + extractedHashtags);
         dto.setHashtags(extractedHashtags);
 
-        postService.savePost(100002L, dto);
+        postService.savePost(userId, dto);
         return "redirect:/";
     }
 
@@ -126,9 +163,22 @@ public class PostController {
 
     /* 투표 저장 */
     @PostMapping("{id}/vote")
-    public String saveVote(@PathVariable("id") Long postId, @ModelAttribute("dto") VoteDTO dto) {
+    public String saveVote(@PathVariable("id") Long postId, @ModelAttribute("dto") VoteDTO dto,
+                           HttpServletRequest request) {
+
+        //쿠키에서 JWT 토큰 추출
+        String token = jwtService.getJwtFromCookies(request);
+        if (token == null) {
+            return "redirect:/login";  // 토큰이 없으면 로그인 페이지로 리다이렉트
+        }
+
+        Long userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
+        if (userId == null) {
+            return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+        }
+
         System.out.println("투표한 내용 ==========" + dto.getSelectedOption());
-        voteService.saveVote(100002L,postId, dto.getSelectedOption());
+        voteService.saveVote(userId,postId, dto.getSelectedOption());
         String url = "redirect:/post/" + postId;
         return url;
     }
