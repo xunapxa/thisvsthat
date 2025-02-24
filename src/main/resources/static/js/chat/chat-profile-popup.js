@@ -93,4 +93,75 @@ $(document).ready(function() {
         }
         $('#nickname-length').text(this.value.length);
     });
+
+    // 옵션 선택 시 프로필 이미지 변경
+    $('input[name="selectOne"]').on('change', function() {
+        let selectedOption = $(this).val(); // 선택된 값 가져오기
+        let profileImage = $("#profile-image");
+
+        // 프로필 이미지가 기본 이미지일 경우에만 변경
+        if (profileImage.attr("src").startsWith("/images/common/profile-")) {
+            if (selectedOption === "blue") {
+                // '부먹' 선택 시 블루 로고
+                profileImage.attr("src", "/images/common/profile-blue.png"); // 블루 로고로 변경
+            } else if (selectedOption === "neutral") {
+                // '중립' 선택 시 기본 로고
+                profileImage.attr("src", "/images/common/profile-default.png"); // 기본 로고로 변경
+            } else if (selectedOption === "orange") {
+                // '찍먹' 선택 시 오렌지 로고
+                profileImage.attr("src", "/images/common/profile-orange.png"); // 오렌지 로고로 변경
+            }
+        }
+    });
+
+    // 채팅방 입장하기
+    $('#btn-join-chat').on('click', function(){
+        let postId = $(this).data('post-id'); // 데이터 속성 가져오기
+        console.log("게시글 ID:", postId);
+
+        // 닉네임이 설정 되어있는지 검증
+        if($('#nickname-length').text() != '0'){
+            // 세션 스토리지에 채팅방에서 필요한 정보 저장
+            let nickname = $('#chat-nickname').val();
+            let selectedOption = $('input[name="selectOne"]:checked').val();
+            let profileImage = $('#profile-image').attr('src');
+
+            // 이미지가 Base64로 되어 있으면, S3로 저장
+            if (profileImage.startsWith('data:image')) {
+                fetch('/chat/upload-profile-img', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'text/plain'  // 순수 String으로 보내기
+                    },
+                    body: profileImage // JSON.stringify() 사용하지 않음
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('서버 응답 실패');
+                    }
+                    return response.text(); // 응답이 단순 문자열일 경우 text() 사용
+                })
+                .then(data => {
+                    console.log("업로드 성공:", data);
+
+                    sessionStorage.setItem('nickname', nickname);
+                    sessionStorage.setItem('selectedOption', selectedOption);
+                    sessionStorage.setItem('profileImage', data);
+
+                    // 채팅방으로 이동
+                    window.location.href = "/chat/" + postId;
+                })
+                .catch(error => console.error('이미지 업로드 실패:', error));
+            }else{
+                sessionStorage.setItem('nickname', nickname);
+                sessionStorage.setItem('selectedOption', selectedOption);
+                sessionStorage.setItem('profileImage', profileImage);
+
+                // 채팅방으로 이동
+                window.location.href = "/chat/" + postId;
+            }
+        } else {
+            alert("닉네임을 입력해주세요.");
+        }
+    });
 });
