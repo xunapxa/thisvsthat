@@ -20,6 +20,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @EnableCaching
 public class RedisConfig {
+
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
@@ -39,25 +40,29 @@ public class RedisConfig {
         return new LettuceConnectionFactory(config);
     }
 
+    // 기본 RedisTemplate 설정 (Object 타입 저장)
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
+
+        // 키와 값 직렬화 방식 설정
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());  // 기본적으로 String으로 직렬화
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());  // 값 직렬화 JSON
+
         return template;
     }
 
-    // ChatMessage를 저장할 템플릿
+    // ChatMessage를 저장할 RedisTemplate 설정
     @Bean
     public RedisTemplate<String, ChatMessage> chatMessageRedisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, ChatMessage> template = new RedisTemplate<>();
         template.setConnectionFactory(factory);
 
-        // 문자열 키에 대한 직렬화 설정
+        // 키 직렬화 설정
         template.setKeySerializer(new StringRedisSerializer());
 
-        // 값에 대한 직렬화 설정 (JSON 직렬화)
+        // ChatMessage 객체를 JSON으로 직렬화
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         return template;

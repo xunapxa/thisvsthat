@@ -5,10 +5,10 @@ import lombok.Data;
 @Data
 public class ChatMessage {
     private Long userId;
-    private Long chatRoomId;
+    private Long postId;
     private String profileImage;
     private String nickname;
     private String selectedOption;
-    private String message;
+    private String content;
     private String sentTime;
 }

@@ -13,11 +13,6 @@ $(document).ready(function() {
     // 웹소켓 연결
     connectWebSocket();
 
-    // 채팅방 입장 시 기존의 채팅 50개 리스트로 출력
-    function showMessage(message) {
-        $('#messageList').append('<div>' + message + '</div>');
-    }
-
     // 채팅 메시지 전송
     $('#btn-send').click(function() {
         let message = $('#message-input').val();
@@ -30,7 +25,7 @@ $(document).ready(function() {
             let chatMessage = {
                 userId: userId,
                 postId: postId,
-                profileImg: sessionStorage.getItem('profileImg'),
+                profileImage: sessionStorage.getItem('profileImage'),
                 nickname: sessionStorage.getItem('nickname'),
                 selectedOption: sessionStorage.getItem('selectedOption'),
                 content: message,
@@ -40,14 +35,7 @@ $(document).ready(function() {
             stompClient.send(`/pub/sendMessage/${postId}`, {}, JSON.stringify(chatMessage));
             $('#message-input').val('');  // 메시지 전송 후 입력 필드 초기화
 
-            $('#message-list').append(`
-                <div class="my_message">
-                    <p class="message_box bg_${chatMessage.selectedOption}">${message}</p>
-                    <div class="image_wrapper">
-                        <img class="profile_image" src="${chatMessage.profileImg}">
-                    </div>
-                </div>
-            `);
+
         }
     });
 
@@ -71,17 +59,30 @@ $(document).ready(function() {
     function subscribeToChatRoom() {
         stompClient.subscribe(`/sub/chatroom/${postId}`, function(response) {
             let chatMessage = JSON.parse(response.body);
-            if (chatMessage.userId !== sessionStorage.getItem('userId')) {
+            console.log("받은 메시지 : " + chatMessage)
+            console.log("postId: ", postId);
+            if (chatMessage.userId !== userId) {
                 $('#message-list').append(`
                     <div class="other_message">
                         <div class="image_wrapper">
-                            <img class="profile_image" src="${chatMessage.profileImg}" />
+                            <img class="profile_image" src="${chatMessage.profileImage}"/>
                         </div>
                         <div class="message_wrapper">
                             <p class="chat_nickname">${chatMessage.nickname}</p>
                             <p class="message_box bg_${chatMessage.selectedOption}">
-                                <span th:text="${chatMessage.content}">${chatMessage.content}</span>
+                                <span>${chatMessage.content}</span>
                             </p>
+                        </div>
+                    </div>
+                `);
+            }else{
+                $('#message-list').append(`
+                    <div class="my_message">
+                        <p class="message_box bg_${chatMessage.selectedOption}">
+                            <span>${chatMessage.content}</span>
+                        </p>
+                        <div class="image_wrapper">
+                            <img class="profile_image" src="${chatMessage.profileImage}"/>
                         </div>
                     </div>
                 `);

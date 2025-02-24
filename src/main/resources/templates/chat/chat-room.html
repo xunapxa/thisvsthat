@@ -39,26 +39,28 @@
             </div>
             <!-- 타임리프 반복문으로 이전 메시지 출력 -->
             <div th:each="message : ${previousMessages}">
-                <!-- userId가 일치하는 경우 'my_message' -->
-                <div th:if="${message.userId == session.userId}" class="my_message">
-                    <p class="message_box bg__[[${message.selectedOption}]]">
-                        <span th:text="${message.content}"></span>
-                    </p>
-                    <div class="image_wrapper">
-                        <img class="profile_image" th:src="@{${message.profileImg}}" />
-                    </div>
-                </div>
-
-                <!-- userId가 일치하지 않는 경우 'other_message' -->
-                <div th:if="${message.userId != session.userId}" class="other_message">
-                    <div class="image_wrapper">
-                        <img class="profile_image" th:src="@{${message.profileImg}}" />
-                    </div>
-                    <div class="message_wrapper">
-                        <p class="chat_nickname" th:text="${message.nickname}"></p>
-                        <p class="message_box bg__[[${message.selectedOption}]]">
+                <div th:switch="${message.userId}">
+                    <!-- userId가 일치하는 경우 'my_message' -->
+                    <div th:case="${userId}" class="my_message">
+                        <p th:class="'message_box bg_' + ${message.selectedOption}">
                             <span th:text="${message.content}"></span>
                         </p>
+                        <div class="image_wrapper">
+                            <img class="profile_image" th:src="@{${message.profileImage}}" />
+                        </div>
+                    </div>
+
+                    <!-- userId가 일치하지 않는 경우 'other_message' -->
+                    <div th:case="*{!${userId}}" class="other_message">
+                        <div class="image_wrapper">
+                            <img class="profile_image" th:src="@{${message.profileImage}}" />
+                        </div>
+                        <div class="message_wrapper">
+                            <p class="chat_nickname" th:text="${message.nickname}"></p>
+                            <p th:class="'message_box bg_' + ${message.selectedOption}">
+                                <span th:text="${message.content}"></span>
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -107,12 +107,12 @@ public class ChatController {
         }
     }
 
-    // 메시지 발송 및 채팅방 사용자 수 관리
+    // 메시지 발송
     @MessageMapping("/sendMessage/{postId}")
     @SendTo("/sub/chatroom/{postId}")
-    public ChatMessage sendMessage(ChatMessage message, @DestinationVariable("postId") String Id) {
-        Long postId = Long.parseLong(Id);  // roomId를 postId로 변환 (혹은 다른 방식으로 매핑)
-        chatService.saveMessageToRedis(message, postId);  // 메시지를 레디스에 저장 및 DB로 이전 작업
+    public ChatMessage sendMessage(ChatMessage message, @DestinationVariable("postId") String postId) {
+        System.out.println("클라이언트가 보낸 메시지: " + message);
+        chatService.saveMessageToRedis(message, Long.parseLong(postId));  // 메시지를 레디스에 저장 및 DB로 이전 작업
 
         return message;  // 메시지 반환 (구독자에게 전달)
     }
