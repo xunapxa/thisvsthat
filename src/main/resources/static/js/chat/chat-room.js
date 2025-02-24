@@ -39,6 +39,74 @@ $(document).ready(function() {
         }
     }
 
+    let lastReloadTime = new Date(); // 마지막 투표 데이터 갱신 시간
+
+    function getTimeDifference(startTime) {
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - startTime) / 1000);
+
+        const minutes = Math.floor(diffInSeconds / 60);
+        const seconds = diffInSeconds % 60;
+
+        if (minutes === 0) {
+            return `${seconds}초 전`;
+        } else {
+            return `${minutes}분 전`;
+        }
+    }
+
+    function updateTime() {
+        const timeText = getTimeDifference(lastReloadTime);
+        $('#last-reload-time').text(timeText);
+
+        // 자동 리로드: 마지막 갱신 이후 10분(600초)이 지나면 자동으로 갱신
+        if (Math.floor((new Date() - lastReloadTime) / 1000) >= 600) {
+            reloadVoteData();
+        }
+    }
+
+    // 1초마다 시간 업데이트
+    setInterval(updateTime, 1000);
+
+    // 투표 데이터 갱신 함수
+    function reloadVoteData() {
+        axios.get(`/api/votes/${postId}`)
+            .then(function (response) {
+                const voteResult = response.data;
+                const option1Percentage = voteResult.option1Percentage;
+                const option2Percentage = voteResult.option2Percentage;
+                const totalVotes = voteResult.totalVotes;
+
+                $("#vote-count").text(totalVotes);
+                $("#blue_bar").css("width", option1Percentage + "%");
+                $("#orange-bar").css("width", option2Percentage + "%");
+
+                if (option1Percentage > 6) {
+                    $("#blue_bar").html(`<span>${option1Percentage.toFixed(0)}%</span>`);
+                } else {
+                    $("#blue_bar").html("");
+                }
+
+                if (option2Percentage > 6) {
+                    $("#orange-bar").html(`<span>${option2Percentage.toFixed(0)}%</span>`);
+                } else {
+                    $("#orange-bar").html("");
+                }
+
+                // 리로드 후 마지막 갱신 시간 업데이트
+                lastReloadTime = new Date();
+                $("#last-reload-time").text("방금 전");
+            })
+            .catch(function (error) {
+                console.error("투표율 리로드 실패:", error);
+            });
+    }
+
+    // 리로드 버튼 클릭 시 수동 갱신
+    $("#btn-vote-reload").click(function () {
+        reloadVoteData();
+    });
+
     // 채팅 입력창의 높이 자동 조정
     $('#message-input').on('input', function() {
         $(this).css('height', 'auto');  // 이전 높이 초기화

@@ -1,6 +1,5 @@
 package com.project.thisvsthat.chat.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.thisvsthat.chat.dto.ChatMessage;
 import com.project.thisvsthat.common.dto.UserDTO;
 import com.project.thisvsthat.common.entity.ChatLog;
@@ -25,7 +24,6 @@ import java.util.Optional;
 @Slf4j
 public class ChatService {
     private final RedisTemplate<String, ChatMessage> redisTemplate;
-    private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ChatLogRepository chatLogRepository;

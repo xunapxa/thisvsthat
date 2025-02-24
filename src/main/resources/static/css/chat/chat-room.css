@@ -58,7 +58,7 @@
     font-size: var(--font-size-xlarge);
 }
 
-.message_list {
+.message_container {
     padding: 10px;
     height: calc(100vh - var(--height-header) - var(--height-chat-header) - var(--height-chat-input));
     overflow-y: auto;
@@ -83,24 +83,20 @@
     align-items: center;
 }
 
-.vote_count_wrapper {
-    display: flex;
-    align-items: center;
-}
-
 .vote_label {
     color: #858585;
 }
 
-.vote_count_container {
+.vote_count_wrapper {
     display: flex;
-    background: #787878;
+    background: var(--main-color-brown);
     padding: 3px;
     border-radius: 3px;
     justify-content: center;
     align-items: center;
     font-weight: 600;
     color: var(--color-white);
+    gap: 2px;
 }
 
 .vote_count {
@@ -122,6 +118,12 @@
 }
 
 .reload_btn {
+    background-color: #b3a89f;
+    color: var(--color-white);
+    border-radius: 100%;
+    padding: 3px;
+    margin-left: 2px;
+    font-size: 14px;
 }
 
 .vote_bar {
@@ -132,20 +134,24 @@
     background-color: var(--main-color-gray);
 }
 
-.blue_percentage {
+.blue_bar {
     width: 0%;
     height: var(--height-vote-var);
     background-color: var(--main-color-blue);
     color: var(--color-white);
-    text-align: center;
-    font-size: var(--font-size-small);
     align-content: center;
+    justify-items: center;
+    font-size: var(--font-size-small);
 }
 
-.orange_percentage {
+.orange_bar {
     width: 0%;
     height: var(--height-vote-var);
     background-color: var(--main-color-orange);
+    color: var(--color-white);
+    align-content: center;
+    justify-items: center;
+    font-size: var(--font-size-small);
 }
 
 .other_message, 

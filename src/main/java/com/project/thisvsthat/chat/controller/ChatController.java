@@ -4,6 +4,8 @@ import com.project.thisvsthat.chat.service.ChatService;
 import com.project.thisvsthat.chat.dto.ChatMessage;
 import com.project.thisvsthat.common.dto.UserDTO;
 import com.project.thisvsthat.image.service.S3Service;
+import com.project.thisvsthat.post.dto.VotePercentageDTO;
+import com.project.thisvsthat.post.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +30,8 @@ public class ChatController {
 
     private final ChatService chatService;
     private final S3Service s3Service;
-    private final SimpMessagingTemplate messagingTemplate;  // 메시지 전송을 위한 template
+    private final SimpMessagingTemplate messagingTemplate;
+    private final VoteService voteService;
 
     // 채팅방 별 사용자 수를 관리할 Map
     private final Map<String, AtomicInteger> roomUserCount = new ConcurrentHashMap<>();
@@ -68,9 +71,13 @@ public class ChatController {
         // 게시글 주제 가져오기
         String title = chatService.getTitleByPostId(postId);
 
+        // 투표 현황 가져오기
+        VotePercentageDTO voteResult = voteService.getVotePercentage(postId);
+
         model.addAttribute("postId", postId);
         model.addAttribute("userId", userId);
         model.addAttribute("title", title);
+        model.addAttribute("voteResult", voteResult);
         model.addAttribute("previousMessages", previousMessages);
 
         // 채팅방 페이지로 이동

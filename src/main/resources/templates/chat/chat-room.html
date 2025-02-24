@@ -25,52 +25,62 @@
             </div>
         </div>
 
-        <div id="message-list" class="message_list">
+        <div id="message-container" class="message_container">
             <div class="vote_rate">
                 <div class="vote_rate_header">
                     <div class="vote_rate_info">
                         <div class="vote_count_wrapper">
-                            <span class="vote_label">투표율</span>
-                            <div class="vote_count_container">
-                                <i class="fa-solid fa-chart-simple"></i>
-                                <span class="vote_count">0</span>
-                            </div>
+                            <i class="fa-solid fa-chart-simple"></i>
+                            <span>투표수</span>
+                            <span id="vote-count" class="vote_count" th:text="${voteResult.totalVotes}">0</span>
                         </div>
                         <div class="vote_reload_wrapper">
-                            <span id="last-reload-time" class="last_reload_time">00:00:00</span>
+                            <span id="last-reload-time" class="last_reload_time"></span>
                             <i id="btn-vote-reload" class="reload_btn fa-solid fa-rotate-right"></i>
                         </div>
                     </div>
                     <i class="collapse_btn fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="vote_bar">
-                    <div class="blue_percentage"></div>
-                    <div class="orange_percentage"></div>
+                    <div id="blue_bar" class="blue_bar"
+                         th:style="'width: ' + ${voteResult.option1Percentage} + '%;'">
+                        <span th:if="${voteResult.option1Percentage} > 6">
+                            [[${#numbers.formatInteger(voteResult.option1Percentage, 0)}]]%
+                        </span>
+                    </div>
+                    <div id="orange-bar" class="orange_bar"
+                         th:style="'width: ' + ${voteResult.option2Percentage} + '%;'">
+                        <span th:if="${voteResult.option2Percentage} > 6">
+                            [[${#numbers.formatInteger(voteResult.option2Percentage, 0)}]]%
+                        </span>
+                    </div>
                 </div>
             </div>
             <!-- 타임리프 반복문으로 이전 메시지 출력 -->
-            <div th:each="message : ${previousMessages}">
-                <div th:switch="${message.userId}">
-                    <!-- userId가 일치하는 경우 'my_message' -->
-                    <div th:case="${userId}" class="my_message">
-                        <p th:class="'message_box bg_' + ${message.selectedOption}">
-                            <span th:text="${message.content}"></span>
-                        </p>
-                        <div class="image_wrapper">
-                            <img class="profile_image" th:src="@{${message.profileImage}}" />
-                        </div>
-                    </div>
-
-                    <!-- userId가 일치하지 않는 경우 'other_message' -->
-                    <div th:case="*{!${userId}}" class="other_message">
-                        <div class="image_wrapper">
-                            <img class="profile_image" th:src="@{${message.profileImage}}" />
-                        </div>
-                        <div class="message_wrapper">
-                            <p class="chat_nickname" th:text="${message.nickname}"></p>
+            <div id="message-list" class="message_list">
+                <div th:each="message : ${previousMessages}">
+                    <div th:switch="${message.userId}">
+                        <!-- userId가 일치하는 경우 'my_message' -->
+                        <div th:case="${userId}" class="my_message">
                             <p th:class="'message_box bg_' + ${message.selectedOption}">
                                 <span th:text="${message.content}"></span>
                             </p>
+                            <div class="image_wrapper">
+                                <img class="profile_image" th:src="@{${message.profileImage}}" />
+                            </div>
+                        </div>
+
+                        <!-- userId가 일치하지 않는 경우 'other_message' -->
+                        <div th:case="*{!${userId}}" class="other_message">
+                            <div class="image_wrapper">
+                                <img class="profile_image" th:src="@{${message.profileImage}}" />
+                            </div>
+                            <div class="message_wrapper">
+                                <p class="chat_nickname" th:text="${message.nickname}"></p>
+                                <p th:class="'message_box bg_' + ${message.selectedOption}">
+                                    <span th:text="${message.content}"></span>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
