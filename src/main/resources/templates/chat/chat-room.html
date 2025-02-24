@@ -24,7 +24,6 @@
                 <span id="user-count" class="user_count">0</span>
             </div>
         </div>
-
         <div id="message-container" class="message_container">
             <div class="vote_rate">
                 <div class="vote_rate_header">
@@ -69,7 +68,6 @@
                                 <img class="profile_image" th:src="@{${message.profileImage}}" />
                             </div>
                         </div>
-
                         <!-- userId가 일치하지 않는 경우 'other_message' -->
                         <div th:case="*{!${userId}}" class="other_message">
                             <div class="image_wrapper">
@@ -86,10 +84,9 @@
                 </div>
             </div>
         </div>
-
         <div class="chat_input_box">
             <textarea id="message-input" class="chat_input" placeholder="메시지를 입력해주세요."></textarea>
-            <i id="btn-send" class="send_btn fa-regular fa-paper-plane"
+            <i id="btn-send" class="send_btn fa-solid fa-arrow-up"
                th:data-user-id="${userId}" th:data-post-id="${postId}"></i>
         </div>
     </article>
