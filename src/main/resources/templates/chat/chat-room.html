@@ -16,24 +16,35 @@
     <article class="chat_room">
         <div class="chat_header">
             <i class="fa-solid fa-chevron-left"></i>
-            <span class="chat_topic" th:text="${title}">채팅 주제</span>
-            <span class="user_count_wrapper">
+            <div id="chat-topic-wrapper" class="chat_topic_wrapper" >
+                <span id="chat-topic" class="chat_topic" th:text="${title}"></span>
+            </div>
+            <div class="user_count_wrapper">
                 <i class="fa-solid fa-user-group"></i>
                 <span id="user-count" class="user_count">0</span>
-            </span>
+            </div>
         </div>
 
         <div id="message-list" class="message_list">
             <div class="vote_rate">
                 <div class="vote_rate_header">
-                    <span class="vote_rate_info">
-                        <span class="vote_label">투표율</span>
-                        <span class="vote_count"><i class="fa-solid fa-chart-simple"></i>0</span>
-                    </span>
+                    <div class="vote_rate_info">
+                        <div class="vote_count_wrapper">
+                            <span class="vote_label">투표율</span>
+                            <div class="vote_count_container">
+                                <i class="fa-solid fa-chart-simple"></i>
+                                <span class="vote_count">0</span>
+                            </div>
+                        </div>
+                        <div class="vote_reload_wrapper">
+                            <span id="last-reload-time" class="last_reload_time">00:00:00</span>
+                            <i id="btn-vote-reload" class="reload_btn fa-solid fa-rotate-right"></i>
+                        </div>
+                    </div>
                     <i class="collapse_btn fa-solid fa-chevron-down"></i>
                 </div>
                 <div class="vote_bar">
-                    <div class="blue_percentage">91%</div>
+                    <div class="blue_percentage"></div>
                     <div class="orange_percentage"></div>
                 </div>
             </div>

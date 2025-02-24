@@ -15,13 +15,32 @@
     height: var(--height-chat-header);
 }
 
-.chat_topic {
-    color: var(--main-color-black);
+.chat_topic_wrapper {
+    width: 77%;
     text-align: center;
     position: absolute;
-    left: 50%;
+    left: 47%;
     transform: translateX(-50%);
+    overflow: hidden;  /* 넘치는 부분 숨기기 */
+}
+
+.chat_topic{
+    color: var(--main-color-black);
     font-size: var(--font-size-large);
+    white-space: nowrap;  /* 텍스트가 한 줄로 유지되도록 설정 */
+}
+
+.slide_animation{
+    animation: slide linear infinite;  /* 슬라이드 애니메이션 */
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(0);  /* 처음 위치에서 */
+    }
+    100% {
+        transform: translateX(-100%);  /* 끝까지 왼쪽으로 이동 */
+    }
 }
 
 .user_count_wrapper {
@@ -31,6 +50,12 @@
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    color: var(--color-white);
+    display: flex;
+}
+
+.user_count {
+    font-size: var(--font-size-xlarge);
 }
 
 .message_list {
@@ -54,6 +79,12 @@
 }
 
 .vote_rate_info {
+    display: flex;
+    align-items: center;
+}
+
+.vote_count_wrapper {
+    display: flex;
     align-items: center;
 }
 
@@ -61,7 +92,7 @@
     color: #858585;
 }
 
-.vote_count {
+.vote_count_container {
     display: flex;
     background: #787878;
     padding: 3px;
@@ -69,6 +100,28 @@
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    color: var(--color-white);
+}
+
+.vote_count {
+    margin-left: 3px;
+    font-size: var(--font-size-large);
+}
+
+.vote_reload_wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+    align-items: center;
+}
+
+.last_reload_time {
+    color: var(--font-color-gray);
+    font-size: var(--font-size-medium);
+    font-weight: 100;
+}
+
+.reload_btn {
 }
 
 .vote_bar {

@@ -4,14 +4,46 @@ $(document).ready(function() {
     let postId = $('#btn-send').data('post-id');
     console.log("userId : " + userId);
 
+    // 제목 애니메이션 적용 함수 호출
+    setTitleAnimation();
+
+    // 웹소켓 연결
+    connectWebSocket();
+
+    function setTitleAnimation() {
+        const chatTopic = $('#chat-topic');
+        const wrapper = $('#chat-topic-wrapper');
+
+        const textWidth = chatTopic[0]?.scrollWidth;  // 텍스트의 실제 너비
+        const wrapperWidth = wrapper[0]?.offsetWidth;  // 슬라이드 영역의 너비
+        const hiddenTextWidth = textWidth - wrapperWidth;  // 숨겨진 텍스트 길이
+
+        // 텍스트 길이가 슬라이드 영역을 초과할 경우에만 애니메이션 적용
+        if (textWidth > wrapperWidth) {
+            const duration = (textWidth / 70) + 's';  // 텍스트 길이에 비례한 애니메이션 시간
+            const keyframes = `
+                @keyframes slide {
+                    0% { transform: translateX(0); }
+                    10% { transform: translateX(0); }  /* 시작 시 10% 동안 멈춤 */
+                    90% { transform: translateX(-${hiddenTextWidth}px); }  /* 90% 구간까지 슬라이드 */
+                    100% { transform: translateX(-${hiddenTextWidth}px); }  /* 끝나기 전에 10% 동안 멈춤 */
+                }
+            `;
+            // 동적으로 생성된 keyframes를 head에 추가
+            $('<style>').prop('type', 'text/css').html(keyframes).appendTo('head');
+            // 애니메이션 시간 설정 및 슬라이드 애니메이션 클래스 추가
+            chatTopic.css('animation-duration', duration).addClass('slide_animation');
+        } else {
+            // 텍스트가 영역을 초과하지 않으면 애니메이션 제거
+            chatTopic.removeClass('slide_animation');
+        }
+    }
+
     // 채팅 입력창의 높이 자동 조정
     $('#message-input').on('input', function() {
         $(this).css('height', 'auto');  // 이전 높이 초기화
         $(this).css('height', this.scrollHeight + 'px');  // 내용에 맞게 높이 변경
     });
-
-    // 웹소켓 연결
-    connectWebSocket();
 
     // 채팅 메시지 전송
     $('#btn-send').click(function() {
