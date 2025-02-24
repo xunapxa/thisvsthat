@@ -11,6 +11,7 @@
     <script th:src="@{/js/prefixfree.min.js}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script th:src="@{/js/auth/auth-signup.js}" defer></script>
+    <script th:src="@{/js/common/viewport-fix.js}" defer></script>
     <title>SignUp</title>
 </head>
 <body>
@@ -29,7 +30,11 @@
 
         <!-- 프로필 이미지 -->
         <div class="profile-container">
-            <img id="profileImage" th:src="${profileImageUrl}" alt="Profile Image">
+            <div class="profile-wrapper">
+                <img id="profileImage" th:src="${profileImageUrl}" alt="Profile Image">
+                <i id="editIcon" class="fa-solid fa-pencil image-edit-icon"></i>
+            </div>
+            <input type="file" id="profileImageInput" style="display: none;" accept="image/*">
             <input type="hidden" id="profileImageUrl" name="profileImageUrl" th:value="${profileImageUrl}">
         </div>
 

@@ -1,11 +1,23 @@
 /* auth - 킴가 시작 */
 /* auth 공통 스타일 시작 */
+/* 기본 높이 설정 */
+:root {
+    --vh: 100%; /* 기본 vh 값을 100으로 설정 */
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* 기본적으로 100vh를 설정 */
+    height: calc(var(--vh) * 100); /* JS에서 설정된 --vh 값을 사용하여 높이 적용 */
+}
+
 .auth-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    height: 100vh;
+    height: calc(var(--vh) * 100);
     padding: 30px 10px;
 }
 
@@ -62,6 +74,11 @@
     font-size: var(--font-size-large);
     font-weight: bold;
     color: var(--font-color-gray-light);
+}
+
+/* 위치 조정용 빈 박스 */
+.empty-space {
+    height: var(--height-xlarge);
 }
 /* auth 공통 스타일 끝 */
 
@@ -129,12 +146,33 @@
     align-items: center;
 }
 
+/* 프로필 이미지 감싸는 div */
+.profile-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 /* 프로필 이미지 */
 .profile-container img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
+    cursor: pointer;
+}
+
+/* 이미지 수정 아이콘 */
+.image-edit-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: #C2C2C2;
+    opacity: 0.8;
+    padding: 5px;
+    color: var(--color-white);
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 /* 개별 입력 필드 그룹 */
@@ -271,10 +309,5 @@
     font-size: var(--font-size-xlarge);
     color: var(--font-color-basic);
     display: inline;
-}
-
-/* 위치 조정용 빈 박스 */
-.empty-space {
-    height: var(--height-xlarge);
 }
 /* login-error.html 끝 */

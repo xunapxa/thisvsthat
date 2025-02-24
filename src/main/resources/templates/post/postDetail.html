@@ -65,7 +65,7 @@
                  th:if="${votePercentage.option1Percentage > 0 or votePercentage.option2Percentage > 0}">
             <div class="post_detail_progress_top">
                 <h2>투표율</h2>
-                <a th:style="${dto.voteStatus.toString() == 'FINISHED' ? 'display:none;' : ''}"
+                <a th:if="${userId != null}" th:style="${dto.voteStatus.toString() == 'FINISHED' ? 'display:none;' : ''}"
                    th:href="@{/post/{id}/voteFinished(id=${dto.postId})}" id="voteFinished">투표종료</a>
             </div>
             <div class="post_detail_progress_bottom">
@@ -81,10 +81,10 @@
         </section>
         <section class="post_section_bottom">
             <div>
-                <a th:href="@{/post/{id}/update(id=${dto.postId})}">
+                <a id="postDetailUpdateBtn" th:if="${userId != null}" th:href="@{/post/{id}/update(id=${dto.postId})}">
                     <button class="btn_large bg_gray_light post_detail_btn post_detail_update_btn">수정</button>
                 </a>
-                <a th:href="@{/post/{id}/delete(id=${dto.postId})}" id="postDeleteBtn">
+                <a th:if="${userId != null}" th:href="@{/post/{id}/delete(id=${dto.postId})}" id="postDeleteBtn">
                     <button type="button" class="btn_large bg_gray_light post_detail_btn post_detail_delete_btn">삭제
                     </button>
                 </a>
@@ -163,6 +163,34 @@
             });
 
             window.selectOption = selectOption;
+        });
+
+        // 진행 중인 게시글은 수정, 삭제 불가
+        document.addEventListener("DOMContentLoaded", function () {
+            window.votePercentage = {
+                option1Percentage: [[${votePercentage.option1Percentage}]],
+                option2Percentage: [[${votePercentage.option2Percentage}]]
+            };
+
+            const updateBtn = document.getElementById("postDetailUpdateBtn");
+            const deleteBtn = document.getElementById("postDeleteBtn");
+
+            updateBtn.addEventListener("click", function (event) {
+                if (window.votePercentage.option1Percentage > 0 || window.votePercentage.option2Percentage > 0) {
+                alert("투표가 이미 진행된 게시글은 수정할 수 없습니다.");
+                event.preventDefault();
+                }
+            });
+
+            deleteBtn.addEventListener("click", function (event) {
+                let deleteUrl = this.getAttribute("href");
+                if (window.votePercentage.option1Percentage > 0 || window.votePercentage.option2Percentage > 0) {
+                alert("투표가 이미 진행된 게시글은 삭제할 수 없습니다.");
+                event.preventDefault();
+                } else if (confirm("삭제하시겠습니까?")) {
+                    window.location.href = deleteUrl;
+                }
+            });
         });
     </script>
 </div>

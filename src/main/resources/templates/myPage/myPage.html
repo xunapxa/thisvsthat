@@ -20,9 +20,10 @@
 
 <article>
     <!-- 뒤로가기 -->
-    <section class="post_section_top">
-        <div><i class="fa-solid fa-chevron-left"></i></div>
+    <section class="myPage_section_top">
+        <div class="back_icon" id="backButton"><i class="fa-solid fa-chevron-left"></i></div>
     </section>
+
     <section class="myPage_section">
         <div class="myPage_top">
             <h2> 1. 정보 수정 </h2>
@@ -32,10 +33,10 @@
             <!-- AJAX를 사용하여 비동기적으로 데이터 전송 -->
             <form id="nicknameForm">
                 <input type="text" name="nickname" id="nickname" th:value="${dto != null ? dto.nickname : ''}" />
-                <button type="submit" class="btn_large bg_blue"><span>확인</span></button>
+                <button type="submit" class="btn_large bg_blue">확인</button>
             </form>
             <!-- AJAX 성공 메시지 -->
-            <div id="message"></div>
+            <div id="message" class="message"></div>
         </div>
         <div class="myPage_bottom">
             <h3> 연령대 </h3>
@@ -49,41 +50,47 @@
         <div class="myPage_top">
             <h2> 2. 투표한 글 </h2>
         </div>
-
-        <!-- 가로 스크롤 가능한 컨테이너 -->
         <div class="myPage_bottom">
-            <!-- 투표한 글 목록 -->
-            <section th:each="post : ${votedPosts}" class="myPage_post" style="max-width: 350px;">
-                <div class="choose_top_box">
-                    <!-- 이미지가 없으면 기본 이미지로 대체 -->
-                    <a th:href="@{'/post/' + ${post.postId}}">
-                        <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/images/common/icon-blue.png'}" alt=""/>
-                    </a>
-                    <a th:href="@{'/post/' + ${post.postId}}">
-                        <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/images/common/icon-orange.png'}" alt=""/>
-                    </a>
-                </div>
-                <div class="choose_bottom_box">
-                    <fieldset>
-                        <label>
-                            <input type="radio" name="selectOne" value="customization" />
-                            <span>사용자지정1</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="selectOne" value="customization" />
-                            <span>사용자지정2</span>
-                        </label>
-                    </fieldset>
-                </div>
-                <div class="btn_box">
-                    <button class="btn_large bg_brown"><span>투표하기</span></button>
-                </div>
-            </section>
+            <th:block th:each="post : ${votedPosts}">
+                <form method="POST" th:action="@{/posts/{postId}/vote(postId=${post.postId})}">
+                <section class="myPage_post" style="max-width: 350px;">
+                    <div class="post_header">
+                        <!-- 게시물 제목을 클릭할 수 있게 하며, 각 게시물의 상세 페이지로 이동 -->
+                        <a th:href="@{/post/{postId}(postId=${post.postId})}" th:text="${post.title}">Post Title</a>
+                    </div>
+                    <div class="choose_top_box">
+                        <!-- 이미지가 없으면 기본 이미지로 대체 -->
+                        <a th:href="@{'/post/' + ${post.postId}}">
+                            <img th:src="${post.option1ImageUrl != null ? post.option1ImageUrl : '/images/common/icon-blue.png'}" alt=""/>
+                        </a>
+                        <a th:href="@{'/post/' + ${post.postId}}">
+                            <img th:src="${post.option2ImageUrl != null ? post.option2ImageUrl : '/images/common/icon-orange.png'}" alt=""/>
+                        </a>
+                    </div>
+                    <div class="choose_bottom_box">
+                        <fieldset>
+                            <!--<p>선택한 옵션: <span th:text="${post.userSelectedOption}"></span></p>-->
+                            <!--<p>게시물: <span th:text="${post.postId}"></span></p>-->
+                            <label data-post-id="${post.postId}" data-radio-color="91C1F0">
+                                <input type="radio" name="selectOne" value="OPTION_1"
+                                       th:checked="${post.userSelectedOption == 'OPTION_1'}" disabled />
+                                <span th:text="${post.option1}">사용자지정1</span>
+                            </label>
+                            <label data-post-id="${post.postId}" data-radio-color="F0C091">
+                                <input type="radio" name="selectOne" value="OPTION_2"
+                                       th:checked="${post.userSelectedOption == 'OPTION_2'}" disabled />
+                                <span th:text="${post.option2}">>사용자지정2</span>
+                            </label>
+                        </fieldset>
+                    </div>
+                </section>
+                </form>
+            </th:block>
         </div>
 
         <!-- 투표한 글이 없다면 메시지 출력 -->
         <div th:if="${#lists.isEmpty(votedPosts)}">
-            <p>투표한 게시물이 없습니다</p>
+            <p>투표한 게시물이 없습니다.</p>
         </div>
     </section>
 
@@ -109,7 +116,7 @@
 
             <!-- 내가 올린 글이 없다면 메시지 출력 -->
             <div th:if="${#lists.isEmpty(myPosts)}">
-                <p>올린 게시물이 없습니다</p>
+                <p>올린 게시물이 없습니다.</p>
             </div>
         </div>
     </section>
@@ -119,16 +126,14 @@
             <h2> 4. 참여한 채팅방 </h2>
         </div>
         <div class="myPage_bottom">
-            <p> 참여중인 채팅방이 없습니다</p>
+            <p> 참여 중인 채팅방이 없습니다.</p>
         </div>
     </section>
 
-    <!--    <section class="myPage_section">-->
-    <!--        <div class="myPage_bottom">-->
-    <!--            <p id="withdrawnBtn" class="withdrawn-btn">탈퇴하기</p>-->
-    <!--            <div id="withdrawnMessage"></div>-->
-    <!--        </div>-->
-    <!--    </section>-->
+    <div class="userLogout">
+        <button id="logout" onclick="location.href='/logout'" class="btn_large bg_red">로그아웃</button>
+    </div>
+
     <div class="userWithdrawn">
         <button id="withdrawnBtn" class="withdrawn-btn">탈퇴하기</button>
         <div id="withdrawnMessage"></div>
@@ -136,34 +141,111 @@
 </article>
 
 <script>
-    // AJAX 요청을 처리하는 함수
+    //투표한 게시물 중 선택한 옵션 표시하기
+    const fieldsetLabels = document.querySelectorAll('fieldset label');
+
+    fieldsetLabels.forEach((label) => {
+        const radioColor = label.getAttribute('data-radio-color');
+        label.style.setProperty('--radio-border-color', `#${radioColor}`);
+        label.style.setProperty('--radio-background-color', `#${radioColor}`);
+    });
+
+    // 뒤로 가기 버튼 클릭 시 뒤로 가기
+    document.addEventListener("DOMContentLoaded", function () {
+        const backButton = document.getElementById("backButton");
+
+        if (backButton) {
+            backButton.addEventListener("click", function () {
+                if (window.history.length > 1) {
+                    // 뒤로 갈 페이지가 있으면 뒤로 가기
+                    window.history.back();
+                } else {
+                    // 뒤로 갈 페이지가 없으면 메인 페이지로 이동
+                    window.location.href = "/";
+                }
+            });
+        }
+    });
+
     $(document).ready(function() {
-        $("#nicknameForm").submit(function(event) {
+        const nicknameField = $("#nickname");
+
+        let isNicknameValid = false;
+
+        // 유효성 검사 메시지
+        const validationMessageNickname = "닉네임은 2~20자, 한글/영문/숫자/_/- 만 사용 가능합니다.";
+        const errorMessageNicknameUsed = "이미 사용 중인 닉네임입니다.";
+
+        // 닉네임 유효성 검사 함수
+        function validateNickname(nickname) {
+            const trimmedNickname = nickname.trim(); // 앞뒤 공백 제거
+            const nicknameRegex = /^[a-zA-Z0-9가-힣 _-]+$/;
+            return trimmedNickname.length >= 2 && trimmedNickname.length <= 20 && nicknameRegex.test(trimmedNickname);
+        }
+
+        // 닉네임 중복 검사 (서버에 요청)
+        async function checkNicknameDuplicate(nickname) {
+            try {
+                const encodedNickname = encodeURIComponent(nickname); // 닉네임 인코딩
+                const response = await fetch(`/auth/check-nickname?nickname=${encodedNickname}`);
+                const result = await response.json();
+                return result.duplicate; // 중복이면 true 반환
+            } catch (error) {
+                // console.error("닉네임 중복 검사 실패:", error);
+                return false;
+            }
+        }
+
+        // 닉네임 폼 제출 이벤트
+        $("#nicknameForm").submit(async function(event) {
             event.preventDefault(); // 폼 제출 시 페이지 리로드 방지
 
-            var nickname = $("#nickname").val(); // 사용자 입력값
+            const nickname = nicknameField.val().trim();
 
+            // 닉네임 유효성 검사
+            if (!validateNickname(nickname)) {
+                showMessage(validationMessageNickname, false); // 유효성 실패 메시지 표시
+                nicknameField.focus();
+                return;
+            }
+
+            // 닉네임 중복 검사
+            const isDuplicate = await checkNicknameDuplicate(nickname);
+            if (isDuplicate) {
+                showMessage(errorMessageNicknameUsed, false); // 중복 메시지 표시
+                nicknameField.focus();
+                return;
+            }
+
+            // 닉네임 변경 요청
             $.ajax({
                 url: "/users", // PATCH 매핑에 맞는 URL
                 type: "PATCH", // 요청 방식은 PATCH
-                data: {
-                    nickname: nickname
-                },
+                data: { nickname },
                 success: function(response) {
                     // 요청 성공 시
                     if (response.success) {
-                        $("#message").text("닉네임 변경 성공!").css("color", "green");
-                        $("input[name='nickname']").val(response.updatedNickname); // 수정된 닉네임 반영
+                        showMessage("닉네임 변경이 완료되었습니다.", true); // 성공 메시지 표시
+                        nicknameField.val(response.updatedNickname); // 수정된 닉네임 반영
                     } else {
-                        $("#message").text("닉네임 변경 실패!").css("color", "red");
+                        showMessage("닉네임 변경이 실패하였습니다.", false); // 실패 메시지 표시
                     }
                 },
                 error: function(xhr, status, error) {
                     // 오류 발생 시
-                    $("#message").text("서버 오류가 발생했습니다.").css("color", "red");
+                    showMessage("서버 오류가 발생했습니다.", false); // 서버 오류 메시지 표시
                 }
             });
         });
+
+        // 메시지 표시 함수
+        function showMessage(message, isSuccess) {
+            const messageElement = $("#message");
+            messageElement.text(message); // 메시지 설정
+
+            // 클래스를 초기화하고, success 또는 error 클래스 추가
+            messageElement.removeClass("success error").addClass(isSuccess ? "success" : "error");
+        }
 
         // 탈퇴하기 버튼 클릭 시
         $("#withdrawnBtn").click(function () {
@@ -179,15 +261,15 @@
                     type: "PATCH", // PATCH 요청
                     success: function (response) {
                         if (response.success) {
-                            $message.text("회원 탈퇴가 완료되었습니다.").css("color", "green");
+                            $message.text("회원 탈퇴가 완료되었습니다. 잠시 후 로그아웃됩니다.").css("color", "#858585");
                             $btn.text("탈퇴 완료").prop("disabled", true);
 
                             // 예시: 3초 후 메인 페이지로 이동 (원하는 페이지로 수정 가능)
                             setTimeout(() => {
-                                window.location.href = "/";
+                                window.location.href = "/logout";
                             }, 3000);
                         } else {
-                            $message.text("회원 탈퇴 실패!").css("color", "red");
+                            $message.text("회원 탈퇴가 실패하였습니다.").css("color", "red");
                             $btn.prop("disabled", false).text("탈퇴하기"); // 버튼 복구
                         }
                     },

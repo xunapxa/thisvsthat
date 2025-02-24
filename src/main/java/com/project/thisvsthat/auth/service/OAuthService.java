@@ -193,13 +193,20 @@ public class OAuthService {
      */
     public User registerUser(SignupRequestDTO signupRequest) {
 
+        // 프로필 이미지 처리 (이미지 수정 여부에 따른 처리)
+        String s3ProfileImageUrl = null;
+        if (signupRequest.getProfileImageFile() != null && !signupRequest.getProfileImageFile().isEmpty()) {
+            // 이미지 수정 시: 파일을 S3에 업로드
+            s3ProfileImageUrl = s3Service.uploadProfileImage(signupRequest.getProfileImageFile(), signupRequest.getSocialId());
+        } else {
+            // 이미지 수정 안 할 경우: 소셜에서 제공된 이미지 URL을 S3에 업로드
+            s3ProfileImageUrl = s3Service.uploadProfileImage(signupRequest.getProfileImageUrl(), signupRequest.getSocialId());
+        }
+
         // 닉네임 중복 검사
         if (userRepository.existsByNickname(signupRequest.getNickname())) {
             throw new RuntimeException("이미 사용 중인 닉네임입니다.");
         }
-
-        // S3 프로필 이미지 업로드 후 URL 반환
-        String s3ProfileImageUrl = s3Service.uploadProfileImage(signupRequest.getProfileImageUrl(), signupRequest.getSocialId());
 
         // 성별 변환 (MALE, FEMALE만 허용)
         Gender userGender = Optional.ofNullable(signupRequest.getGender())
