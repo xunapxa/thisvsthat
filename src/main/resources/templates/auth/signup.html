@@ -29,7 +29,11 @@
 
         <!-- 프로필 이미지 -->
         <div class="profile-container">
-            <img id="profileImage" th:src="${profileImageUrl}" alt="Profile Image">
+            <div class="profile-wrapper">
+                <img id="profileImage" th:src="${profileImageUrl}" alt="Profile Image">
+                <i id="editIcon" class="fa-solid fa-pencil image-edit-icon"></i>
+            </div>
+            <input type="file" id="profileImageInput" style="display: none;" accept="image/*">
             <input type="hidden" id="profileImageUrl" name="profileImageUrl" th:value="${profileImageUrl}">
         </div>
 
