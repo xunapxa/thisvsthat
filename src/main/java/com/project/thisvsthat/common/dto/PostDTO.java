@@ -31,8 +31,10 @@ public class PostDTO {
     private PostStatus postStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String userSelectedOption;
 
-    public static PostDTO fromEntity(Post post) {
+    // entity -> dto
+    public static PostDTO fromEntity(Post post, String userSelectedOption) {
         return new PostDTO(
                 post.getPostId(),
                 post.getUser().getUserId(),
@@ -50,7 +52,30 @@ public class PostDTO {
                 post.getReportCount(),
                 post.getPostStatus(),
                 post.getCreatedAt(),
-                post.getUpdatedAt()
+                post.getUpdatedAt(),
+                userSelectedOption
         );
+    }
+
+    // dto -> entity
+    public static Post fromDto(PostDTO dto) {
+        System.out.println("dto -> entity 전 받아온 dto =============== "+dto);
+        Post post = new Post();
+        post.setPostId(dto.getPostId());
+        post.setUser(null); // 로그인 중인 사용자의 아이디로 찾은 User 정보를 저장하기 (DAO 에서)
+        post.setCategory(dto.getCategory());
+        post.setTitle(dto.getTitle());
+        post.setContent(dto.getContent());
+        post.setHashtags(dto.getHashtags());
+        post.setOption1(dto.getOption1());
+        post.setOption2(dto.getOption2());
+        post.setOption1ImageUrl(dto.getOption1ImageUrl());
+        post.setOption2ImageUrl(dto.getOption2ImageUrl());
+        return post;
+    }
+
+    //userSelectedOption 필요 없는 경우 사용하는 fromEntity 메서드
+    public static PostDTO fromEntity(Post post) {
+        return fromEntity(post, null); // userSelectedOption을 null로 설정
     }
 }

@@ -1,9 +1,15 @@
 package com.project.thisvsthat.myPage.controller;
 
+import com.project.thisvsthat.auth.service.JwtService;
 import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.dto.UserDTO;
+import com.project.thisvsthat.common.repository.UserRepository;
 import com.project.thisvsthat.myPage.service.MyPageService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,94 +25,86 @@ public class MyPageController {
     @Autowired
     MyPageService myPageService;
 
-    private static final String TEST_USER_ID = "100001";
+    @Autowired
+    JwtService jwtService; // JwtService를 주입 받아 JWT 처리
 
     //사용자 상세 정보 조회
-//    @GetMapping("")
-//    public String myPageMain(Model model,
-//                              @PathVariable("userId") String userId) {
-//        Long id = myPageService.findUserId(userId);
     @GetMapping("")
-    public String myPageMain(Model model) {
-        Long id = myPageService.findUserId(TEST_USER_ID);
-        UserDTO dto = myPageService.findLoginUser(id);
+    public String myPageMain(Model model, HttpServletRequest request) {
+        //쿠키에서 JWT 토큰 추출
+        String token = jwtService.getJwtFromCookies(request);
+        if (token == null) {
+            return "redirect:/login";  // 토큰이 없으면 로그인 페이지로 리다이렉트
+        }
 
-        String ageGroup = dto.getAgeGroup();
+        Long userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
+        if (userId == null) {
+            return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+        }
 
-        model.addAttribute("dto", dto);
-        model.addAttribute("ageGroup", ageGroup);
-        //System.out.print("---------------" + dto);
+        UserDTO dto = myPageService.findLoginUser(userId);
+        if (dto != null) {
+            // 연령대 계산
+            String ageGroup = dto.getAgeGroup();
+
+            // 내가 올린 게시물과 내가 투표한 게시물 가져오기
+            List<PostDTO> myPosts = myPageService.findMyPosts(userId);
+            List<PostDTO> votedPosts = myPageService.findVotedPosts(userId);
+
+            model.addAttribute("dto", dto);
+            model.addAttribute("ageGroup", ageGroup);
+            model.addAttribute("myPosts", myPosts);
+            model.addAttribute("votedPosts", votedPosts);
+        } else {
+            return "redirect:/login";  // 유저 정보가 없으면 로그인 페이지로 리다이렉트
+        }
+
         return "myPage/myPage";
     }
 
     //정보 수정(닉네임) 처리
-//    @PatchMapping("/{userId}/edit")
-//    public String infoEdit(Model model,
-//                           @PathVariable("userId") String userId,
-//                           @RequestParam("nickname") String nickname) {
-//        Long id = myPageService.findUserId(userId);
     @PatchMapping("")
-    public ResponseEntity<Map<String, Object>> editNickname(@RequestParam String nickname) {
-        Long id = myPageService.findUserId(TEST_USER_ID);
-        boolean editSuccess = myPageService.infoEdit(id, nickname);
+    public ResponseEntity<Map<String, Object>> editNickname(@RequestParam(name = "nickname") String nickname, HttpServletRequest request) {
+        String token = jwtService.getJwtFromCookies(request);
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "Unauthorized"));
+        }
+
+        Long userId = jwtService.getUserIdFromToken(token);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "Unauthorized"));
+        }
+
+        boolean editSuccess = myPageService.infoEdit(userId, nickname);
 
         Map<String, Object> response = new HashMap<>();
+        response.put("success", editSuccess);
         if (editSuccess) {
-            response.put("success", true);
-            response.put("updatedNickname", nickname); // 수정된 닉네임
-        } else {
-            response.put("success", false);
+            response.put("updatedNickname", nickname);
         }
 
         return ResponseEntity.ok(response);
     }
 
-    //내가 올린 게시물 조회
-//    @GetMapping("/{userId}/posted")
-//    public String myPagePosts(Model model,
-//                              @PathVariable("userId") String userId) {
-    @GetMapping("/posts")
-    public String myPagePosts(Model model) {
-        Long id = myPageService.findUserId(TEST_USER_ID);
-        UserDTO dto = myPageService.findLoginUser(id);
-        List<PostDTO> myPosts = myPageService.findMyPosts(id);
-
-        model.addAttribute("dto", dto);
-        model.addAttribute("myPosts", myPosts);
-        return "myPage/myPage";
-    }
-
-    //내가 투표한 글 조회
-//    @GetMapping("/{userId}/voted")
-//    public String myPageVotes(Model model,
-//                              @PathVariable("userId") String userId) {
-    @GetMapping("/votes")
-    public String myPageVotes(Model model) {
-        Long id = myPageService.findUserId(TEST_USER_ID);
-        UserDTO dto = myPageService.findLoginUser(id);
-        List<PostDTO> myPosts = myPageService.findMyPosts(id);
-        List<PostDTO> votedPosts = myPageService.findVotedPosts(id);
-
-        model.addAttribute("dto", dto);
-        model.addAttribute("myPosts", myPosts);
-        model.addAttribute("votedPosts", votedPosts);
-
-        return "myPage/myPage";
-    }
 
     //탈퇴하기 (status = withdrawn)
-//    @PatchMapping("/users/withdrawn")
-//    public ResponseEntity<Map<String, Object>> withdrawnUser() {
-//        Long id = myPageService.findUserId(TEST_USER_ID);
-//        boolean withdrawnSuccess = userService.withdrawnUser(id);  // 실제 탈퇴 처리 메서드 호출
-//
-//        Map<String, Object> response = new HashMap<>();
-//        if (withdrawnSuccess) {
-//            response.put("success", true);
-//        } else {
-//            response.put("success", false);
-//        }
-//
-//        return ResponseEntity.ok(response);
-//    }
+    @PatchMapping("/withdrawn")
+    public ResponseEntity<Map<String, Object>> withdrawnUser(HttpServletRequest request) {
+        String token = jwtService.getJwtFromCookies(request);
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "Unauthorized"));
+        }
+
+        Long userId = jwtService.getUserIdFromToken(token);
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("success", false, "message", "Unauthorized"));
+        }
+
+        boolean withdrawnSuccess = myPageService.withdrawnUser(userId);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", withdrawnSuccess);
+
+        return ResponseEntity.ok(response);
+    }
 }

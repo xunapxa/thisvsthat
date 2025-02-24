@@ -5,12 +5,11 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@4.0.1/reset.min.css"/>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css" integrity="sha512-oHDEc8Xed4hiW6CxD7qjbnI+B07vDdX7hEPTvn9pSZO1bcRqHp8mj9pyr+8RVC2GmtEfI2Bi9Ke9Ass0as+zpg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	<link rel="stylesheet" th:href="@{/css/style.css}">
 	<link rel="stylesheet" th:href="@{/css/admin.css}">
+	<link rel="stylesheet" th:href="@{/css/style.css}">
 	<script src="https://kit.fontawesome.com/695a12fc7e.js" crossorigin="anonymous"></script>
 	<script th:src="@{/js/prefixfree.min.js}"></script>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-	<script th:src="@{/js/admin.js}"></script>
 	<title>관리자 페이지</title>
 </head>
 <body>
@@ -21,16 +20,21 @@
 	<section class="admin_section">
 		<div class="admin_top_box">
 			<h2>금지키워드</h2>
-			<button class="btn_large bg_gray"><span>삭제</span></button>
+			<button class="btn_large bg_pink" id="deleteKeywordBtn"><span>키워드 삭제</span></button>
 		</div>
 		<div class="admin_bottom_box">
 			<div class="keyword_box">
-				<div class="keyword admin_selected">금지키워드</div>
-				<div class="keyword">나쁜</div>
+				<th:block th:each="keyword : ${keywords}">
+<!--					<div class="keyword" th:text="${keyword}" th:attr="data-keyword-id=${keyword.filterId}"></div>-->
+					<div class="keyword" th:text="${keyword.filterValue}" th:attr="data-id=${keyword.filterId}"></div>
+				</th:block>
 			</div>
 			<div class="admin_add_box">
-				<input type="text" />
-				<button class="btn_large bg_pink"><span>추가</span></button>
+				<form method="post" th:action="@{/admin/}">
+					<input type="text" id="keywordInput" name="keyword" placeholder="금지 키워드 입력">
+					<button class="btn_large bg_brown" id="addKeywordBtn"><span>키워드 추가</span></button>
+				</form>
+				<p id="errorMsg" th:if="${error}" th:text="${error}"></p>
 			</div>
 		</div>
 	</section>
@@ -41,25 +45,29 @@
 			<div>
 				<form id="postForm" th:action="@{/admin/updateMultiplePostStatus}" method="post">
 					<div id="postIdsContainer"></div>
-					<input type="hidden" id="actionTypeInput" name="actionType">
-					<button class="btn_large bg_blue" type="button" onclick="submitForm('restore')"><span>복구</span></button>
-					<button class="btn_large bg_orange" type="button" onclick="submitForm('delete')"><span>삭제</span></button>
+					<input type="hidden" id="postActionTypeInput" name="postActionType">
+					<button class="btn_large bg_blue" type="button" onclick="submitPostForm('restore')"><span>신고 글 복구</span></button>
+					<button class="btn_large bg_orange" type="button" onclick="submitPostForm('delete')"><span>신고 글 삭제</span></button>
 				</form>
 			</div>
 		</div>
 		<div class="admin_bottom_box">
-			<section class="choose_section" th:each="post : ${posts}" th:attr="data-post-id=${post.postId}" onclick="toggleSelection(this)">
-				<a href="#1" class="choose_total">
-					<div class="choose_top_box">
-						<img src="https://placehold.co/150X150" th:text="${post.option1ImageUrl}" alt=""/>
-						<img src="https://placehold.co/150X150" th:text="${post.option2ImageUrl}" alt=""/>
+			<section class="choose_section report_post" th:each="post : ${posts}" th:attr="data-post-id=${post.postId}" onclick="toggleSelection(this)">
+				<div class="choose_top_box admin_choose_top_box">
+					<div class="admin_choose_top_img_box">
+						<img th:src="${post.option1ImageUrl}" alt=""/>
+						<img th:src="${post.option2ImageUrl}" alt=""/>
 					</div>
-					<div class="choose_bottom_box">
-						<p class="shorten" th:text="${post.title}">제목이 들어갈 공간 입니다.</p>
-						<p class="shorten" th:text="${post.content}">내용이 들어갈 공간 입니다.</p>
-						<div>신고 수 : <p class="shorten" th:text="${post.reportCount}"></p></div>
-					</div>
-				</a>
+					<p>
+						<span class="shorten" th:text="${post.option1}"></span>
+						<span class="shorten" th:text="${post.option2}"></span>
+					</p>
+				</div>
+				<div class="choose_bottom_box admin_choose_bottom_box">
+					<p th:text="${post.title}">제목이 들어갈 공간 입니다.</p>
+					<p th:text="${post.content}">내용이 들어갈 공간 입니다.</p>
+					<div>신고 수 : <p th:text="${post.reportCount}"></p></div>
+				</div>
 			</section>
 		</div>
 	</section>
@@ -68,17 +76,58 @@
 		<div class="admin_top_box">
 			<h2>회원 관리</h2>
 			<div>
-				<button class="btn_large bg_blue"><span>복구</span></button>
-				<button class="btn_large bg_orange"><span>차단</span></button>
+				<form id="userForm" th:action="@{/admin/updateUserStatus}" method="post">
+					<div id="userIdsContainer"></div>
+					<input type="hidden" id="userActionTypeInput" name="userActionType">
+					<button class="btn_large bg_blue" type="button" onclick="submitUserForm('restoreUsers')"><span>신고 회원 복구</span></button>
+					<button class="btn_large bg_orange" type="button" onclick="submitUserForm('ban')"><span>신고 회원 차단</span></button>
+				</form>
 			</div>
 		</div>
 		<div class="admin_bottom_box">
-			<section class="choose_section bastard_user" th:each="user : ${users}">유저 닉네임:
+			<form id="userReportForm" action="/admin/test" method="get">
+				<input type="hidden" id="reportUserIdInput" name="reportUserId"/>
+			</form>
+			<section class="choose_section bastard_user" th:each="user : ${users}" th:attr="data-user-id=${user.userId}" onclick="toggleSelectionUser(this)">
+				유저 닉네임:
 				<p th:text="${user.nickname}"></p>
 				<p th:text="${user.userId}"></p>
 			</section>
 		</div>
 	</section>
+
+	<section class="popup_section" id="adminPopup">
+		<div class="dim_box"></div>
+		<div class="popup_box">
+			<div class="popup_top">
+				<h2><span th:text="${userId}"></span> 관리 글 목록</h2>
+				<a href="#1" onclick="closePopup()"><i class="fa-solid fa-xmark"></i></a>
+			</div>
+			<div class="popup_bottom">
+				<div id="reportedPostsContainer">
+					<th:block th:each="post : ${reportedPosts}">
+						<section class="report_post" th:data-post-id="${post.postId}" th:data-user-id="${userId}">
+							<div class="choose_top_box">
+								<img th:src="${post.option1ImageUrl}" alt=""/>
+								<img th:src="${post.option2ImageUrl}" alt=""/>
+								<p class="shorten">
+									option1: <span th:text="${post.option1}"></span>
+									option2: <span th:text="${post.option2}"></span>
+								</p>
+							</div>
+							<div class="choose_bottom_box">
+								<p class="shorten" th:text="${post.title}">제목이 들어갈 공간 입니다.</p>
+								<p class="shorten" th:text="${post.content}">내용이 들어갈 공간 입니다.</p>
+								<div>신고 수 : <p class="shorten" th:text="${post.reportCount}"></p></div>
+							</div>
+						</section>
+					</th:block>
+				</div>
+				<button onclick="confirmSelection()">확인</button>
+			</div>
+		</div>
+	</section>
 </article>
+<script th:src="@{/js/admin.js}" defer></script>
 </body>
 </html>

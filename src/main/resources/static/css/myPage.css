@@ -12,12 +12,15 @@
 }
 
 .myPage_bottom {
+    overflow-x: auto;
 	display: flex;
 	gap: 10px;
 	padding-bottom: var(--font-size); /* 14px */
 	font-size: var(--font-size-large); /* 16px */
 	line-height: var(--height-large); /* h3 가운데 정렬1 */
 	text-align: center; /* h3 가운데 정렬2 */
+	align-items: center; /* 세로 중앙 정렬 */
+	flex-wrap: wrap; /* 요소들이 한 줄로 넘칠 경우 다음 줄로 넘어가게 */
 }
 
 .myPage_bottom h3 {
@@ -28,4 +31,142 @@
     display: flex;
     gap: 10px;
 }
-/* history 끝 */
+
+#nickname {
+    padding-left: 5px;  /* input 텍스트 왼쪽 여백 추가 */
+}
+
+.message {
+    font-size: var(--font-size-medium); /* 13px */
+}
+
+.message.success {
+    color: var(--font-color-gray); /* 닉네임 수정 성공 시 메시지 컬러 */
+}
+
+.message.error {
+    color: red; /* 닉네임 수정 실패 시 메시지 컬러 */
+}
+
+.myPage_posts {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;  /* 가로 스크롤 가능 */
+    white-space: nowrap;  /* 요소들이 줄바꿈 없이 가로로 배치됨 */
+    padding-bottom: 10px;  /* 스크롤바와 컨텐츠 간 여백 */
+    scrollbar-width: thin;  /* 스크롤바 크기 조정 (Firefox) */
+}
+
+.myPage_post {
+    flex: 0 0 auto;  /* 크기가 고정된 요소로 설정 */
+    width: 250px;  /* 카드 너비 지정 */
+    background-color: var(--main-color-gray-light);
+    border-radius: var(--border-radius);
+    padding: var(--space-medium);
+    text-align: center;
+}
+
+.myPage_post img {
+    height: 105px;
+    border-radius: var(--border-radius);
+}
+
+.myPage_post p {
+    margin-top: var(--space-small);
+    font-size: var(--font-size);
+    font-weight: bold;
+}
+
+/* 가로 스크롤바 스타일 (크롬, 엣지, 사파리) */
+.myPage_posts::-webkit-scrollbar {
+    height: 6px; /* 스크롤바 높이 */
+}
+
+.myPage_posts::-webkit-scrollbar-thumb {
+    background: var(--main-color-gray);
+    border-radius: 10px;
+}
+
+.myPage_section .empty {
+    color: var(--font-color-gray);
+    text-align: center;
+    margin-top: var(--space-medium);
+}
+
+.userWithdrawn {
+    float: right;
+    margin-top: 150px;
+    margin-bottom: 40px;
+}
+
+#withdrawnBtn {
+    font-style: italic;
+    color: red;
+    border: none;
+    background: none;
+    padding-bottom: 10px;
+    text-decoration: underline;
+}
+
+#logout {
+    background: linear-gradient(90deg, rgba(145, 193, 240, 1) 0%, rgba(240, 192, 145, 1) 64%);
+}
+
+/* 임시 설정 */
+.logo { /* 기본 설정 크기가 마이페이지에서는 크게 보이는 느낌이 있어서 일단 설정 따로 해놧어요 */
+    width: 40px;
+    height: 40px;
+    font-size: 25px;
+}
+
+.back_icon {
+    cursor: pointer;
+    padding-top: 10px;
+}
+
+a {
+    font-size: 14px; /* sylte.css에는 사이즈 설정 안되어 있으나 다른 페이지에서 사용할까봐 일단 여기에 적어용 */
+}
+
+span {
+    font-size: 13px; /* 기본 설정인 14px이 좀 커서 줄였습니당 */
+}
+
+button {
+    cursor: pointer; /* 링크 요소에 커서 포인터 추가했습니당 */
+}
+
+fieldset label input[type='radio'] {
+    width: 20px;
+    height: 20px;
+}
+
+input[type="radio"]:disabled:checked {
+        background-color: #91C1F0; *//* 선택된 버튼 색 *//*
+}
+
+input[type="radio"]:checked {
+    background-color: var(--main-color-blue);  *//* 예시로 선택된 라디오의 배경색 *//*
+    border: 3px solid white;
+    box-shadow: 0 0 0 1.6px var(--main-color-blue);
+}
+
+/* 기본 스타일 */
+fieldset label [type='radio'] {
+    border: 2px solid var(--radio-border-color);
+    border-radius: 50%;
+    width: var(--radio-or-check);
+    height: var(--radio-or-check);
+    outline: none;
+    cursor: pointer;
+}
+
+fieldset label [type='radio']:checked {
+    background-color: var(--radio-background-color);
+    box-shadow: 0 0 0 1.6px var(--radio-border-color);
+}
+
+
+/* 임시 설정 끝 */
+
+/* myPage 끝 */

@@ -2,11 +2,12 @@ package com.project.thisvsthat.myPage.service;
 
 import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.dto.UserDTO;
-import com.project.thisvsthat.common.entity.Post;
-import com.project.thisvsthat.common.entity.User;
+import com.project.thisvsthat.common.enums.UserStatus;
 import com.project.thisvsthat.common.repository.PostRepository;
-import com.project.thisvsthat.myPage.DAO.MyPageDAO;
+import com.project.thisvsthat.common.repository.UserRepository;
+import com.project.thisvsthat.common.repository.VoteRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,54 +17,65 @@ import java.util.stream.Collectors;
 
 @Service
 public class MyPageService {
-
-    // 기본 이미지 URL 설정
-    private static final String DEFAULT_OPTION1_IMAGE = "/static/images.common/icon-question-gradation-blue";
-    private static final String DEFAULT_OPTION2_IMAGE = "/static/images.common/icon-question-gradation-orange";
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    MyPageDAO myPageDAO;
+    private PostRepository postRepository;
+
+    @Autowired
+    private VoteRepository voteRepository;
 
     @Autowired
     EntityManager em; //DB와 상호작용
 
-    @Autowired
-    PostRepository postRepository;
-
-    //사용자 ID 조회
-    public Long findUserId(String userId) {
-        Long id = myPageDAO.findUserId(userId);
-        return id;
-    }
-
     //사용자 정보 조회
-    public UserDTO findLoginUser(Long id) {
-        User user = myPageDAO.getOneUser(id);
-        return UserDTO.fromEntity(user);
+    public UserDTO findLoginUser(Long userId) {
+        return userRepository.findById(userId)
+                .map(UserDTO::fromEntity) // User -> UserDTO 변환
+                .orElse(null);
     }
 
     //닉네임 수정
+    @Transactional
     public boolean infoEdit(Long id, String newNickname) {
-        //DB에서 사용자 조회
-        User user = myPageDAO.getOneUser(id);
-
-        if(user != null) {
-            user.setNickname(newNickname);
-            myPageDAO.save(user);
-            return true;
-        }
-        return false;
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setNickname(newNickname);
+                    userRepository.saveAndFlush(user); // 즉시 반영
+                    return true;
+                })
+                .orElse(false);
     }
 
     //내가 올린 게시물 조회
     public List<PostDTO> findMyPosts(Long userId) {
-        List<Post> posts = myPageDAO.findMyPosts(userId);
-        return posts.stream().map(PostDTO::fromEntity).collect(Collectors.toList());
+        return postRepository.findByUser_UserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .map(PostDTO::fromEntity) // Post -> PostDTO 변환
+                .collect(Collectors.toList());
     }
 
     //내가 투표한 게시물 조회
     public List<PostDTO> findVotedPosts(Long userId) {
-        List<Post> posts = myPageDAO.findVotedPosts(userId);
-        return posts.stream().map(PostDTO::fromEntity).collect(Collectors.toList());
+        return voteRepository.findVotedPostsByUserId(userId)
+                .stream()
+                .map(post -> {
+                    String userSelectedOption = voteRepository.findUserVoteForPost(userId, post.getPostId());
+                    return PostDTO.fromEntity(post, userSelectedOption);
+                })
+                .collect(Collectors.toList());
+    }
+
+    //탈퇴
+    @Transactional
+    public boolean withdrawnUser(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> {
+                    user.setUserStatus(UserStatus.WITHDRAWN); // 유저 상태 변경
+                    userRepository.save(user); // 변경 사항 저장
+                    return true;
+                })
+                .orElse(false); // 유저가 없으면 false 반환
     }
 }

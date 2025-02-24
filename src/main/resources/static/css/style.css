@@ -11,14 +11,17 @@
     --main-color-gray: #AFB1B6;
     --main-color-gray-light: #EFEFF0;
     --main-color-brown: #827467;
+    --main-color-black: #333333;
     --chat-color-blue: #83AED8;
     --chat-color-gray: #929292;
     --chat-color-orange: #D8AD83;
     --color-white: white;
     --font-color-basic: #19191B;
+    --font-color-black-light: #333333;
     --font-color-gray: #858585;
     --font-color-gray-light: #AFB1B6;
     --font-size: 14px;
+    --font-size-xxlarge: 20px;
     --font-size-xlarge: 18px;
     --font-size-large: 16px;
     --font-size-medium: 13px;
@@ -31,6 +34,9 @@
     --space-small: 5px;
     --space-medium: 10px;
     --height-header: 50px;
+    --height-chat-header: 35px;
+    --height-chat-input: 50px;
+    --height-vote-var: 20px;
 }
 
 * {
@@ -68,10 +74,12 @@ span {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 80px;
     height: 80px;
     line-height: 80px;
-    text-align: center;
     font-size: 50px;
     font-weight: bold;
     color: var(--color-white);
@@ -95,15 +103,16 @@ header {
     border-bottom: 1px solid #EFEFF0;
 }
 
-header p.logo {
-    width: 40px;
-    height: 40px;
+.header_logo {
+    width: 35px;
+    height: 35px;
     line-height: 40px;
     font-size: 30px;
 }
 
 header a i {
     color: var(--font-color-basic);
+    font-size: var(--font-size-xxlarge);
 }
 
 /* 공통 부분 - 콘텐츠 레이아웃 */
@@ -112,7 +121,7 @@ article {
     padding: 20px var(--space-medium);
     width: 100%;
     height: auto;
-    min-height: calc(100vh - 40px);
+    min-height: calc(100vh - var(--height-header));
 }
 
 article > section {
@@ -383,6 +392,13 @@ label span {
     height: 35px;
     background-color: var(--main-color-gray-light);
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.post_section_top div:not(:only-child):last-child i {
+    color: var(--font-color-black-light);
 }
 
 .post_section_bottom div {
