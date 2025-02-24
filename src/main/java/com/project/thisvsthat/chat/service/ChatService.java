@@ -14,6 +14,7 @@ import com.project.thisvsthat.common.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -152,6 +153,8 @@ public class ChatService {
     }
 
     public Long getUserIdByToken(String email) {
-        return userRepository.findUserIdByEmail(email);
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일의 유저를 찾을 수 없습니다: " + email))
+                .getUserId();
     }
 }
