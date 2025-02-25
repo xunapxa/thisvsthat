@@ -117,6 +117,11 @@ header {
     margin-bottom: 10px;
 }
 
+.margin_bottom10 input {
+    padding-left: 5px;  /* 변경: input 텍스트 왼쪽 여백 추가 */
+    padding-right: 5px;  /* 변경: input 텍스트 오른쪽 여백 추가 */
+}
+
 .margin_bottom15 {
     margin-bottom: 15px;
 }
