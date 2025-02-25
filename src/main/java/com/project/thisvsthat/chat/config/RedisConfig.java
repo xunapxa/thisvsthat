@@ -69,23 +69,15 @@ public class RedisConfig {
     }
 
     @Bean
-    public ChannelTopic topic() {
-        return new ChannelTopic("chatroom");
-    }
-
-    @Bean
     public MessageListenerAdapter messageListener(RedisSubscriber subscriber) {
         return new MessageListenerAdapter(subscriber, "onMessage");
     }
 
+    // RedisMessageListenerContainer: 초기 설정만 해주고, 구독은 동적으로 처리하도록 설정
     @Bean
-    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory,
-                                                        RedisSubscriber subscriber,
-                                                        MessageListenerAdapter messageListener,
-                                                        ChannelTopic topic) {
+    public RedisMessageListenerContainer redisContainer(RedisConnectionFactory connectionFactory) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(messageListener, topic);
-        return container;
+        return container;  // 동적 구독을 위해 구독은 별도로 처리
     }
 }

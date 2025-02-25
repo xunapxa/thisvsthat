@@ -2,7 +2,10 @@ package com.project.thisvsthat.chat.controller;
 
 import com.project.thisvsthat.chat.service.ChatService;
 import com.project.thisvsthat.chat.dto.ChatMessage;
+import com.project.thisvsthat.chat.service.ChatSubscriptionService;
+import com.project.thisvsthat.chat.util.RedisPublisher;
 import com.project.thisvsthat.common.dto.UserDTO;
+import com.project.thisvsthat.common.entity.ChatRoom;
 import com.project.thisvsthat.image.service.S3Service;
 import com.project.thisvsthat.post.dto.VotePercentageDTO;
 import com.project.thisvsthat.post.service.VoteService;
@@ -12,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,8 @@ public class ChatController {
     private final S3Service s3Service;
     private final SimpMessagingTemplate messagingTemplate;
     private final VoteService voteService;
+    private final RedisPublisher redisPublisher;
+    private final ChatSubscriptionService chatSubscriptionService;
 
     // 채팅방 별 사용자 수를 관리할 Map
     private final Map<String, AtomicInteger> roomUserCount = new ConcurrentHashMap<>();
@@ -86,7 +90,12 @@ public class ChatController {
 
     // 채팅방에 접속할 때마다 호출되는 메서드
     @MessageMapping("/join/{postId}")
-    public void joinChat(@DestinationVariable("postId") String postId) {
+    public void joinChat(@DestinationVariable("postId") String postId, Principal principal) {
+        if (principal == null) {
+            sendErrorMessage(postId, "로그인 정보가 없습니다.\n로그인 후 이용해주세요.");
+            return;
+        }
+
         roomUserCount.putIfAbsent(postId, new AtomicInteger(0));  // 방이 처음이라면 초기화
         int currentCount = roomUserCount.get(postId).incrementAndGet();  // 인원 수 증가
 
@@ -96,11 +105,19 @@ public class ChatController {
 
         // 현재 인원 수를 채팅방에 브로드캐스트
         messagingTemplate.convertAndSend("/sub/chatroom/userCount/" + postId, userCountMessage.toString());
+
+        // 채팅방 구독 처리 (동적 구독)
+        chatSubscriptionService.subscribeToChatRoom(postId);
     }
 
     // 채팅방에서 나갈 때 호출되는 메서드
     @MessageMapping("/leave/{postId}")
-    public void leaveChat(@DestinationVariable("postId") String postId) {
+    public void leaveChat(@DestinationVariable("postId") String postId, Principal principal) {
+        if (principal == null) {
+            sendErrorMessage(postId, "로그인 정보가 없습니다.\n로그인 후 이용해주세요.");
+            return;
+        }
+
         if (roomUserCount.containsKey(postId)) {
             int currentCount = roomUserCount.get(postId).decrementAndGet();  // 인원 수 감소
             if (currentCount > 0) {
@@ -112,15 +129,30 @@ public class ChatController {
                 roomUserCount.remove(postId);  // 채팅방에 더 이상 인원이 없다면 방을 제거
             }
         }
+
+        // 채팅방 구독 해제 (동적 구독 해제)
+        chatSubscriptionService.unsubscribeFromChatRoom(postId);
     }
 
-    // 메시지 발송
+    // 메시지 전송 메서드
     @MessageMapping("/sendMessage/{postId}")
-    @SendTo("/sub/chatroom/{postId}")
-    public ChatMessage sendMessage(ChatMessage message, @DestinationVariable("postId") String postId) {
-        System.out.println("클라이언트가 보낸 메시지: " + message);
-        chatService.saveMessageToRedis(message, Long.parseLong(postId));  // 메시지를 레디스에 저장 및 DB로 이전 작업
+    public void sendMessage(@DestinationVariable("postId") String postId, ChatMessage message, Principal principal) {
+        if (principal == null) {
+            sendErrorMessage(postId, "로그인 정보가 없습니다.\n로그인 후 이용해주세요.");
+            return;
+        }
 
-        return message;  // 메시지 반환 (구독자에게 전달)
+        // 채팅방 존재 여부 확인 및 생성 처리
+        ChatRoom chatRoom = chatService.getOrCreateChatRoom(postId);
+
+        // 레디스로 저장
+        redisPublisher.sendMessage(message, postId);
+    }
+
+    // 에러 메시지 전달
+    private void sendErrorMessage(String postId, String errorMessage) {
+        JSONObject errorMessageJson = new JSONObject();
+        errorMessageJson.put("error", errorMessage);
+        messagingTemplate.convertAndSend("/sub/chatroom/" + postId, errorMessageJson.toString());
     }
 }

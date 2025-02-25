@@ -29,7 +29,6 @@ public class ChatService {
     private final ChatLogRepository chatLogRepository;
     private final ChatRoomRepository chatRoomRepository;
 
-    private static final String MESSAGE_KEY_PREFIX = "chatroom:";
 
     public UserDTO getProfileByUserId(Long userId) {
         return UserDTO.fromEntity(userRepository.findByUserId(userId));
@@ -51,77 +50,51 @@ public class ChatService {
         return post.orElseThrow(() -> new IllegalArgumentException("Post not found")).getTitle();
     }
 
-    // 전송된 메시지를 레디스에 저장
-    public void saveMessageToRedis(ChatMessage message, Long postId) {
-        String key = MESSAGE_KEY_PREFIX + postId;
+    // 채팅방 조회 및 생성
+    public ChatRoom getOrCreateChatRoom(String postId) {
+        // 채팅방이 이미 존재하는지 확인
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findByPost_PostId(Long.parseLong(postId));
 
-        // 채팅방이 존재하는지 확인하고, 없으면 새로 생성
-        ChatRoom chatRoom = chatRoomRepository.findByPost_PostId(postId)
-                .orElseGet(() -> createNewChatRoom(postId)); // 채팅방이 없으면 새로 생성
-
-        try {
-            // 메시지를 Redis에 추가
-            redisTemplate.opsForList().rightPush(key, message);
-
-            // 레디스에서 메시지 수를 확인하고, 60개가 되면 DB로 저장
-            Long size = redisTemplate.opsForList().size(key);
-            if (size >= 60) { // 60개 이상이면 DB로 저장
-                List<ChatMessage> oldMessages = redisTemplate.opsForList().range(key, 50, size - 1);
-                saveMessagesToDB(oldMessages, postId);
-
-                // 오래된 메시지 10개 삭제
-                redisTemplate.opsForList().trim(key, 0, 49);  // Redis 리스트를 50개로 유지
-            }
-        } catch (Exception e) {
-            log.error("Error saving message to Redis for postId: {}", postId, e);
-            throw new RuntimeException("레디스 메시지 저장 중 오류 발생", e);
+        // 채팅방이 없으면 새로 생성
+        if (chatRoom.isEmpty()) {
+            return createNewChatRoom(Long.parseLong(postId));  // 새로운 채팅방 생성 후 반환
         }
+
+        return chatRoom.get();  // 기존 채팅방 반환
     }
 
     // DB에 메시지 저장
-    private void saveMessagesToDB(List<ChatMessage> messages, Long postId) {
-        for (ChatMessage message : messages) {
-            // User 객체 가져오기
-            User user = userRepository.findById(message.getUserId())
-                    .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public boolean saveMessagesToDB(List<ChatMessage> messages, Long postId) {
+        try {
+            for (ChatMessage message : messages) {
+                // User 객체 가져오기
+                User user = userRepository.findById(message.getUserId())
+                        .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-            // ChatRoom 객체 가져오기
-            ChatRoom chatRoom = chatRoomRepository.findByPost_PostId(postId)
-                    .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found"));
+                // ChatRoom 객체 가져오기
+                ChatRoom chatRoom = chatRoomRepository.findByPost_PostId(postId)
+                        .orElseThrow(() -> new IllegalArgumentException("ChatRoom not found"));
 
-            // ChatLog 엔티티 설정
-            ChatLog chatLog = ChatLog.builder()
-                    .chatRoom(chatRoom)
-                    .user(user)
-                    .messageContent(message.getContent())
-                    .build();
+                // ChatLog 엔티티 설정
+                ChatLog chatLog = ChatLog.builder()
+                        .chatRoom(chatRoom)
+                        .user(user)
+                        .messageContent(message.getContent())
+                        .build();
 
-            // 메시지 DB에 저장
-            chatLogRepository.save(chatLog);
-        }
-    }
-
-    // 게시글 삭제시 레디스에 남은 메시지 DB로 저장
-    public void handlePostDeletion(Long postId) {
-        // 레디스에서 채팅방 메시지 조회
-        String key = MESSAGE_KEY_PREFIX + postId;
-        Long size = redisTemplate.opsForList().size(key);
-
-        // 레디스에 메시지가 남아있다면 DB로 저장하고 삭제
-        if (size > 0) {
-            // Redis에서 메시지 가져오기
-            List<ChatMessage> chatMessages = redisTemplate.opsForList().range(key, 0, size - 1);
-
-            // DB에 저장
-            saveMessagesToDB(chatMessages, postId);
-
-            // 레디스에서 메시지 삭제
-            redisTemplate.delete(key);
+                // 메시지 DB에 저장
+                chatLogRepository.save(chatLog);
+            }
+            return true; // 성공 시 true 반환
+        } catch (Exception e) {
+            // DB 저장 실패 시 예외 발생
+            System.err.println("❌ DB 저장 실패: " + e.getMessage());
+            return false; // 실패 시 false 반환
         }
     }
 
     // DB에 채팅방 생성
-    private ChatRoom createNewChatRoom(Long postId) {
+    public ChatRoom createNewChatRoom(Long postId) {
         // ChatRoom 생성 로직
         Optional<Post> post = postRepository.findById(postId);
         if (post.isEmpty()) {
@@ -133,8 +106,6 @@ public class ChatService {
         chatRoomRepository.save(newChatRoom); // 새 채팅방을 DB에 저장
         return newChatRoom;
     }
-
-
 
     public Long getUserIdByToken(String email) {
         return userRepository.findByEmail(email)
