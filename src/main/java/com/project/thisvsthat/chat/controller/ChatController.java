@@ -6,6 +6,7 @@ import com.project.thisvsthat.chat.service.ChatSubscriptionService;
 import com.project.thisvsthat.chat.util.RedisPublisher;
 import com.project.thisvsthat.common.dto.UserDTO;
 import com.project.thisvsthat.common.entity.ChatRoom;
+import com.project.thisvsthat.common.service.SpamFilterService;
 import com.project.thisvsthat.image.service.S3Service;
 import com.project.thisvsthat.post.dto.VotePercentageDTO;
 import com.project.thisvsthat.post.service.VoteService;
@@ -36,6 +37,7 @@ public class ChatController {
     private final VoteService voteService;
     private final RedisPublisher redisPublisher;
     private final ChatSubscriptionService chatSubscriptionService;
+    private final SpamFilterService spamFilterService;
 
     // 채팅방 별 사용자 수를 관리할 Map
     private final Map<String, AtomicInteger> roomUserCount = new ConcurrentHashMap<>();
@@ -139,6 +141,14 @@ public class ChatController {
     public void sendMessage(@DestinationVariable("postId") String postId, ChatMessage message, Principal principal) {
         if (principal == null) {
             sendErrorMessage(postId, "로그인 정보가 없습니다.\n로그인 후 이용해주세요.");
+            return;
+        }
+
+        // 스팸 필터링
+        List<String> spamWords = spamFilterService.findSpamWords(message.getContent());
+        if (!spamWords.isEmpty()) {
+            String errorMessage = "부적절한 단어가 포함되어 있습니다\n[ " + String.join(", ", spamWords) + " ]\n다시 확인 후 전송해주세요.";
+            sendErrorMessage(postId, errorMessage);
             return;
         }
 

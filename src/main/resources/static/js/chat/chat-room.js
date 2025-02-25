@@ -115,7 +115,7 @@ $(document).ready(function() {
     });
 
     // 채팅 메시지 전송
-    $('#btn-send').click(function() {
+    $('#btn-send').click(function(e) {
         let message = $('#message-input').val();
         if (message && stompClient) {
             let now = new Date();
@@ -159,7 +159,23 @@ $(document).ready(function() {
         console.log("postId: ", postId);
         stompClient.subscribe(`/sub/chatroom/${postId}`, function(response) {
             let chatMessage = JSON.parse(response.body);
-            console.log("받은 메시지 : " + chatMessage)
+            console.log("받은 메시지 : ", chatMessage);
+
+            // 에러 메시지가 포함된 경우 처리
+            if (chatMessage.error) {
+                // 로그인 정보가 없을 때
+                if (chatMessage.error.includes("로그인 정보가 없습니다")) {
+                    alert(chatMessage.error);
+                    window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href);
+                }
+                // 스팸 메시지 처리
+                else if (chatMessage.error.includes("부적절한 단어가 포함되어 있습니다")) {
+                    alert(chatMessage.error);
+                }
+                return;  // 에러 처리 후 더 이상 진행하지 않음
+            }
+
+            // 정상 메시지 처리
             if (chatMessage.userId !== userId) {
                 $('#message-list').append(`
                     <div class="other_message">
