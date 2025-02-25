@@ -195,16 +195,16 @@ messageInput.on('input change', function () {
 
     // 입력 필드 초기화 및 높이 복원 함수
     function resetInputField() {
-        $('#message-input').text('');  // 메시지 전송 후 입력 필드 초기화
+        messageInput.text('');  // 메시지 전송 후 입력 필드 초기화
 
         // 전송 후 입력창 높이를 기본값으로 복원
-        $('#message-input').css('height', '30px');
+        messageInput.css('height', '30px');
 
         // 부모 요소 높이 기본값으로 복원
-        $('#message-input-container').css('height', 'var(--height-chat-input)');
+        messageContainer.css('height', `var(--height-chat-input)`);
 
         // message-container 높이 복원
-        $('#message-container').css('height', `calc(100vh - var(--height-header) - var(--height-chat-header) - var(--height-chat-input))`);
+        chatContainer.css('height', `calc(100vh - var(--height-header) - var(--height-chat-header) - var(--height-chat-input))`);
     }
 
     // 채팅 메시지 전송
