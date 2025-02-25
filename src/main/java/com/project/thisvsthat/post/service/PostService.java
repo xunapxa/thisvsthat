@@ -2,12 +2,16 @@ package com.project.thisvsthat.post.service;
 
 import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.entity.Post;
+import com.project.thisvsthat.common.entity.Report;
 import com.project.thisvsthat.common.entity.User;
 import com.project.thisvsthat.common.enums.Category;
 import com.project.thisvsthat.common.enums.PostStatus;
+import com.project.thisvsthat.common.enums.UserStatus;
 import com.project.thisvsthat.common.enums.VoteStatus;
 import com.project.thisvsthat.common.repository.PostRepository;
+import com.project.thisvsthat.common.repository.ReportRepository;
 import com.project.thisvsthat.common.repository.UserRepository;
+import com.project.thisvsthat.common.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,8 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ReportRepository reportRepository;
+    private final ReportService reportService;
 
     public void savePost(Long userId, PostDTO dto) {
         if (dto.getCategory() == null) {
@@ -67,6 +73,22 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. ID: " + postId));
         post.setPostStatus(PostStatus.DELETED);
         post.setVoteStatus(VoteStatus.FINISHED);
+        postRepository.save(post);
+    }
+
+    // 신고 기능 추가
+    public void reportPost(Long postId, Long userId) {
+        // ReportService의 신고 처리 메서드 호출
+        reportService.createReport(postId, userId);
+
+        // 신고 후 게시물 상태 변경
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. ID: " + postId));
+
+        // 포스트 상태를 "신고됨" 상태로 변경 (예시로 'REPORTED'로 변경)
+        post.setPostStatus(PostStatus.BLINDED);
+
+        // 업데이트된 게시물 저장
         postRepository.save(post);
     }
 
