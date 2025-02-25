@@ -106,11 +106,6 @@ html, body {
 /* login.html 끝 */
 
 /* signup.html 시작 */
-/* 회원가입 레이아웃 */
-.signup-container {
-    padding: 60px 10px;
-}
-
 /* 회원가입 상단 텍스트 박스 */
 .signup-message-box {
     display: flex;
