@@ -69,6 +69,16 @@
     margin-bottom: 30px;
 }
 
+.post_img_description a {
+    color: var(--font-color-gray);
+    font-weight: bold;
+    display: inline-block;
+}
+
+.post_img_description a i {
+    margin-left: 5px;
+}
+
 .post_create_popup_box {
     width: 368px;
     height: 350px;
@@ -81,10 +91,8 @@
     gap: 10px;
 }
 
-.popup_top span {
-    color: black;
-    padding-top: 11px;
-    padding-left: 20px;
+.popup_top a {
+    cursor: pointer;
 }
 
 .popup_content label {
