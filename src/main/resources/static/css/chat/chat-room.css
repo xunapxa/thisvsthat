@@ -15,25 +15,50 @@
     height: var(--height-chat-header);
 }
 
-.chat_topic {
-    color: var(--main-color-black);
+.chat_topic_wrapper {
+    width: 77%;
     text-align: center;
     position: absolute;
-    left: 50%;
+    left: 47%;
     transform: translateX(-50%);
-    font-size: var(--font-size-large);
+    overflow: hidden;  /* 넘치는 부분 숨기기 */
 }
 
-.user_count {
+.chat_topic{
+    color: var(--main-color-black);
+    font-size: var(--font-size-large);
+    white-space: nowrap;  /* 텍스트가 한 줄로 유지되도록 설정 */
+}
+
+.slide_animation{
+    animation: slide linear infinite;  /* 슬라이드 애니메이션 */
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(0);  /* 처음 위치에서 */
+    }
+    100% {
+        transform: translateX(-100%);  /* 끝까지 왼쪽으로 이동 */
+    }
+}
+
+.user_count_wrapper {
     background-color: var(--main-color-brown);
     padding: 3px;
     border-radius: 3px;
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    color: var(--color-white);
+    display: flex;
 }
 
-.message_list {
+.user_count {
+    font-size: var(--font-size-xlarge);
+}
+
+.message_container {
     padding: 10px;
     height: calc(100vh - var(--height-header) - var(--height-chat-header) - var(--height-chat-input));
     overflow-y: auto;
@@ -54,6 +79,7 @@
 }
 
 .vote_rate_info {
+    display: flex;
     align-items: center;
 }
 
@@ -61,14 +87,43 @@
     color: #858585;
 }
 
-.vote_count {
+.vote_count_wrapper {
     display: flex;
-    background: #787878;
+    background: var(--main-color-brown);
     padding: 3px;
     border-radius: 3px;
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    color: var(--color-white);
+    gap: 2px;
+}
+
+.vote_count {
+    margin-left: 3px;
+    font-size: var(--font-size-large);
+}
+
+.vote_reload_wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: 5px;
+    align-items: center;
+}
+
+.last_reload_time {
+    color: var(--font-color-gray);
+    font-size: var(--font-size-medium);
+    font-weight: 100;
+}
+
+.reload_btn {
+    background-color: #b3a89f;
+    color: var(--color-white);
+    border-radius: 100%;
+    padding: 3px;
+    margin-left: 2px;
+    font-size: 14px;
 }
 
 .vote_bar {
@@ -79,20 +134,24 @@
     background-color: var(--main-color-gray);
 }
 
-.blue_percentage {
+.blue_bar {
     width: 0%;
     height: var(--height-vote-var);
     background-color: var(--main-color-blue);
     color: var(--color-white);
-    text-align: center;
-    font-size: var(--font-size-small);
     align-content: center;
+    justify-items: center;
+    font-size: var(--font-size-small);
 }
 
-.orange_percentage {
+.orange_bar {
     width: 0%;
     height: var(--height-vote-var);
     background-color: var(--main-color-orange);
+    color: var(--color-white);
+    align-content: center;
+    justify-items: center;
+    font-size: var(--font-size-small);
 }
 
 .other_message, 

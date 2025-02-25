@@ -28,7 +28,7 @@ public class RedisPublisher {
 
     // 채팅 메시지를 Redis에 저장하고, 필요하면 DB로 이동
     public void sendMessage(ChatMessage message) {
-        String chatRoomKey = "chatroom:" + message.getChatRoomId(); // 채팅방별 키 생성
+        String chatRoomKey = "chatroom:" + message.getPostId(); // 채팅방별 키 생성
 
         // Redis List에 메시지 추가 (채팅방별 관리)
         redisTemplate.opsForList().leftPush(chatRoomKey, message);
@@ -62,9 +62,9 @@ public class RedisPublisher {
 
     private ChatLog chatMessageToEntity(ChatMessage message) {
         return ChatLog.builder()
-                .chatRoom(ChatRoom.builder().roomId(message.getChatRoomId()).build())
+                .chatRoom(ChatRoom.builder().roomId(message.getPostId()).build())
                 .user(User.builder().userId(message.getUserId()).build())
-                .messageContent(message.getMessage())
+                .messageContent(message.getContent())
                 .createdAt(parseSentTime(message.getSentTime()))
                 .build();
     }

@@ -14,13 +14,14 @@
 .myPage_bottom {
     overflow-x: auto;
 	display: flex;
+	flex-wrap: nowrap; /* 가로 스크롤 - 줄바꿈 방지 */
 	gap: 10px;
 	padding-bottom: var(--font-size); /* 14px */
 	font-size: var(--font-size-large); /* 16px */
 	line-height: var(--height-large); /* h3 가운데 정렬1 */
 	text-align: center; /* h3 가운데 정렬2 */
 	align-items: center; /* 세로 중앙 정렬 */
-	flex-wrap: wrap; /* 요소들이 한 줄로 넘칠 경우 다음 줄로 넘어가게 */
+	flex-direction: row;
 }
 
 .myPage_bottom h3 {
@@ -67,6 +68,7 @@
 }
 
 .myPage_post img {
+    width: 110px; /* opacity 적용하면서 width 적용해야돼서 적었습니당 opacity 안할거면 빼도 됨 */
     height: 105px;
     border-radius: var(--border-radius);
 }
@@ -112,6 +114,34 @@
     background: linear-gradient(90deg, rgba(145, 193, 240, 1) 0%, rgba(240, 192, 145, 1) 64%);
 }
 
+/*----------------------------------------*/
+.vote-option {
+    transition: all 0.3s ease-in-out;
+}
+
+.vote-option[data-selected="true"] {
+    opacity: 1;
+    width: 190px;
+    height: 217px;
+}
+
+.vote-option:not([data-selected="true"]) {
+    opacity: 0.3;
+    width: 175px;
+    height: 195px;
+}
+
+.selected {
+    opacity: 1;
+}
+
+.dimmed {
+    opacity: 0.5;
+}
+
+/*-------------------------------------------*/
+
+
 /* 임시 설정 */
 .logo { /* 기본 설정 크기가 마이페이지에서는 크게 보이는 느낌이 있어서 일단 설정 따로 해놧어요 */
     width: 40px;
@@ -142,11 +172,11 @@ fieldset label input[type='radio'] {
 }
 
 input[type="radio"]:disabled:checked {
-        background-color: #91C1F0; *//* 선택된 버튼 색 *//*
+        background-color: #91C1F0; /* 선택된 버튼 색 */
 }
 
 input[type="radio"]:checked {
-    background-color: var(--main-color-blue);  *//* 예시로 선택된 라디오의 배경색 *//*
+    background-color: var(--main-color-blue);  /* 예시로 선택된 라디오의 배경색 */
     border: 3px solid white;
     box-shadow: 0 0 0 1.6px var(--main-color-blue);
 }
@@ -166,6 +196,13 @@ fieldset label [type='radio']:checked {
     box-shadow: 0 0 0 1.6px var(--radio-border-color);
 }
 
+a.title {
+    display: inline-block;  /* 블록 요소처럼 동작하도록 설정 */
+    width: 100%;            /* 부모 요소 크기에 맞춤 */
+    white-space: nowrap;    /* 줄바꿈 방지 */
+    overflow: hidden;       /* 넘친 텍스트 숨김 */
+    text-overflow: ellipsis; /* 말줄임표 적용 */
+}
 
 /* 임시 설정 끝 */
 
