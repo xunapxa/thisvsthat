@@ -291,7 +291,7 @@ messageInput.on('input change', function () {
                     </div>
                 `);
             }
-            scrollToBottom();
+            keepScrollAtBottom();
         }, function(error) {
             console.error('구독 오류:', error);
         });
