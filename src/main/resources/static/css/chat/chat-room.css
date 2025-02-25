@@ -21,25 +21,25 @@
     position: absolute;
     left: 47%;
     transform: translateX(-50%);
-    overflow: hidden;  /* 넘치는 부분 숨기기 */
+    overflow: hidden;
 }
 
 .chat_topic{
     color: var(--main-color-black);
     font-size: var(--font-size-large);
-    white-space: nowrap;  /* 텍스트가 한 줄로 유지되도록 설정 */
+    white-space: nowrap;
 }
 
 .slide_animation{
-    animation: slide linear infinite;  /* 슬라이드 애니메이션 */
+    animation: slide linear infinite;
 }
 
 @keyframes slide {
     0% {
-        transform: translateX(0);  /* 처음 위치에서 */
+        transform: translateX(0);
     }
     100% {
-        transform: translateX(-100%);  /* 끝까지 왼쪽으로 이동 */
+        transform: translateX(-100%);
     }
 }
 
@@ -71,6 +71,15 @@
     position: fixed;
     width: calc(100% - 20px);
     border-radius: 5px;
+    box-shadow: 0 1px 9px 0px rgb(0 0 0 / 30%);
+    transition: opacity 0.8s ease;
+    opacity: 1;
+}
+
+.vote_rate.collapsed {
+    width: auto;
+    opacity: 0.9;
+    right: 10px;
 }
 
 .vote_rate_header {
@@ -135,6 +144,33 @@
     font-size: 14px;
 }
 
+.rotate {
+    animation: rotate-animation 1s forwards;
+}
+
+@keyframes rotate-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.collapse_btn {
+    margin-left: 5px;
+    transition: transform 0.5s ease;
+    transform: rotatex(0deg);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.collapse_btn.collapsed {
+    transform: rotatex(-180deg);
+}
+
 .vote_bar {
     display: flex;
     width: 100%;
@@ -163,7 +199,11 @@
     font-size: var(--font-size-small);
 }
 
-.other_message, 
+.message_list {
+    padding-top: 65px;
+}
+
+.other_message,
 .my_message {
     display: flex;
     margin-bottom: 10px;
@@ -192,6 +232,7 @@
     font-size: var(--font-size-large);
     font-weight: bold;
     margin: 4px;
+    color: var(--font-color-black-light);
 }
 
 .message_box {
@@ -240,15 +281,19 @@
     font-size: var(--font-size-large);
     background-color: var(--main-color-gray-light);
     border-radius: 15px;
-    padding: 0px 10px;
-    line-height: 1.9;
+    padding: 7px 10px;
     height: auto;
     color: var(--font-color-black-light);
     overflow-y: auto;
     outline: none;
 }
 
-.message_input:empty {
+.message_input:empty::before {
+    content: attr(data-placeholder);
+    color: var(--font-color-gray);
+}
+
+.message_input.empty::before {
     content: attr(data-placeholder);
     color: var(--font-color-gray);
 }

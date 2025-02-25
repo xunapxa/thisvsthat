@@ -72,6 +72,16 @@ $(document).ready(function() {
     // 1초마다 시간 업데이트
     setInterval(updateTime, 1000);
 
+    // 버튼 회전 애니메이션 함수
+    function rotateButton(button) {
+        $(button).addClass('rotate');  // 버튼에 회전 클래스 추가
+
+        // 회전 애니메이션 끝난 후 클래스 제거 (다시 회전할 수 있도록)
+        setTimeout(() => {
+            $(button).removeClass('rotate');
+        }, 1000);  // 애니메이션 시간이 1초이므로 1초 후에 클래스 제거
+    }
+
     // 투표 데이터 갱신 함수
     function reloadVoteData() {
         axios.get(`/api/votes/${postId}`)
@@ -81,6 +91,7 @@ $(document).ready(function() {
                 const option2Percentage = voteResult.option2Percentage;
                 const totalVotes = voteResult.totalVotes;
 
+                rotateButton($("#btn-vote-reload"));
                 $("#vote-count").text(totalVotes);
                 $("#blue_bar").css("width", option1Percentage + "%");
                 $("#orange-bar").css("width", option2Percentage + "%");
@@ -111,6 +122,24 @@ $(document).ready(function() {
         reloadVoteData();
     });
 
+    // 접어두기 버튼 클릭 시
+    $("#collapse-btn").click(function () {
+        var voteRate = $(this).closest('#vote-rate');
+        var messageList = $('#message-list'); // 메시지 리스트 선택
+
+        // collapsed 클래스 추가/제거
+        $(this).toggleClass('collapsed');
+        voteRate.toggleClass('collapsed');
+
+        if (voteRate.hasClass('collapsed')) {
+            messageList.css('padding-top', '0'); // 접혀 있으면 없애기
+        } else {
+            messageList.css('padding-top', '65px'); // 펼쳐져 있으면 설정
+        }
+
+        // hidden 클래스 추가/제거
+        voteRate.find('#vote-reload-wrapper, #vote-bar').toggleClass('hidden');
+    });
 
     // 가장 최근 메시지가 보이게 스크롤 하단 유지
     function keepScrollAtBottom() {
@@ -122,8 +151,8 @@ $(document).ready(function() {
         let inputHeight = messageInput.height();
 
         if (inputHeight <= 150) {
-            messageContainer.css('height', `${inputHeight + 15}px`);
-            let newChatContainerHeight = `calc(100vh - var(--height-header) - var(--height-chat-header) - ${inputHeight + 15}px)`;
+            messageContainer.css('height', `${inputHeight + 30}px`);
+            let newChatContainerHeight = `calc(100vh - var(--height-header) - var(--height-chat-header) - ${inputHeight + 30}px)`;
             chatContainer.css('height', newChatContainerHeight);
         } else {
             messageInput.css('overflow-y', 'scroll');
@@ -147,17 +176,24 @@ $(document).ready(function() {
         }
     }
 
-    messageInput.on('input change', function () {
-        limitTextLength(); // 500자 제한
-        adjustInputHeight(); // 입력 필드 높이
-    });
+messageInput.on('input change', function () {
+    limitTextLength(); // 500자 제한
+    adjustInputHeight(); // 입력 필드 높이
+
+    // 내용이 비었으면, empty 클래스를 추가
+    if ($(this).text().trim() === "") {
+        $(this).addClass('empty');
+    } else {
+        $(this).removeClass('empty');
+    }
+});
 
     // 입력 필드 초기화 및 높이 복원 함수
     function resetInputField() {
         $('#message-input').text('');  // 메시지 전송 후 입력 필드 초기화
 
         // 전송 후 입력창 높이를 기본값으로 복원
-        $('#message-input').css('height', 'calc(var(--height-chat-input) - 15px)');
+        $('#message-input').css('height', '30px');
 
         // 부모 요소 높이 기본값으로 복원
         $('#message-input-container').css('height', 'var(--height-chat-input)');
