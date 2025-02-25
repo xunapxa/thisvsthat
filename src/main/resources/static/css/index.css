@@ -17,6 +17,7 @@ header {
 
 .search_form input[type='text'] {
     width: calc(100% - 115px);
+    padding-left: 5px;  /* 변경: input 텍스트 왼쪽 여백 추가 */
 }
 
 .admin_top_box {
@@ -31,18 +32,31 @@ header {
 	gap: 12px;
 }
 
-.keyword {
-	padding: 10px;
+.keyword { /* 변경: 글쓰기 내의 버튼과 css 통일 */
+    width: 58px;
+    height: 36px;
+	color: var(--font-color-basic);
+	background: var(--main-color-gray-light);
+	border-radius: var(--border-radius);
+	box-shadow: none;
+	cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+/*	padding: 10px;
 	color: var(--font-color-basic);
 	box-shadow: 0 0 0 2px #555 inset;
-	border-radius: 20px;
+	border-radius: 20px;*/
 }
 
 .keyword.active {
-    color: #fff;
+    color: var(--color-white); /* 변경: 글쓰기 내의 버튼과 css 통일 */
     background: rgb(145,193,240);
     background: linear-gradient(90deg, rgba(145,193,240,1) 0%, rgba(240,192,145,1) 64%);
-    box-shadow : none;
+/*    color: #fff;
+    background: rgb(145,193,240);
+    background: linear-gradient(90deg, rgba(145,193,240,1) 0%, rgba(240,192,145,1) 64%);
+    box-shadow : none;*/
 }
 
 #list_wrap .choose_top_box{
@@ -130,9 +144,17 @@ header {
     display: none;
 }
 
-.font_weight_bold {
+.post_section_bottom a { /* 변경: a 태그 색상 */
+    color: var(--font-color-gray);
+}
+
+.post_section_bottom a.font_weight_bold { /* 변경: a 태그 */
     font-weight : bold;
 }
+
+/*.font_weight_bold {
+    font-weight : bold;
+}*/
 
 .position_relative{
     position: relative;

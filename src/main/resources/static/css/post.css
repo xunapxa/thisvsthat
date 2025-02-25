@@ -19,23 +19,25 @@
 
 .keyword_box {
     display: flex;
-    gap: 10px;
+    gap: 12px; /* 변경: 메인 페이지와 css 통일 */
 }
 
-.keyword {
-    padding-top: 9px;
+.keyword { /* 변경: 메인 페이지와 css 통일 */
     width: 58px;
     height: 36px;
-    background-color: #EFEFF0;
-    border-radius: 8px;
+    color: var(--font-color-basic);
+    background-color: var(--main-color-gray-light);
+    border-radius: var(--border-radius);
     box-shadow: none;
-    text-align: center;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.keyword.selected {
+.keyword.selected { /* 변경: 메인 페이지와 css 통일 */
     background: linear-gradient(90deg, #91C1F0 0%, #F0C091 100%);
-    color: white;
+    color: var(--color-white);
 }
 
 .post_create_input input {
