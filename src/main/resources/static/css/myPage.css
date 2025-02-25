@@ -24,6 +24,11 @@
 	flex-direction: row;
 }
 
+.myPage_bottom_flex_wrap {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .myPage_bottom h3 {
 	font-weight: bold;
 }
