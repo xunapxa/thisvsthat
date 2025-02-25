@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RedisSubscriber implements MessageListener {
     private final ObjectMapper objectMapper;
-    private final SimpMessagingTemplate messagingTemplate; // 웹소켓 메시지 전송
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -24,7 +24,6 @@ public class RedisSubscriber implements MessageListener {
             System.out.println("📩 Received message: " + chatMessage.getContent());
 
             // 웹소켓을 통해 클라이언트에게 메시지 전송
-            // 채팅방 ID에 맞는 구독 경로로 메시지 전송
             messagingTemplate.convertAndSend("/sub/chatroom/" + chatMessage.getPostId(), chatMessage);
         } catch (Exception e) {
             System.err.println("❌ 메시지 처리 중 오류 발생: " + e.getMessage());

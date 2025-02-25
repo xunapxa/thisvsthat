@@ -12,6 +12,7 @@
     --main-color-gray-light: #EFEFF0;
     --main-color-brown: #827467;
     --main-color-black: #333333;
+    --main-color-green: #809474;
     --chat-color-blue: #83AED8;
     --chat-color-gray: #929292;
     --chat-color-orange: #D8AD83;
@@ -39,7 +40,7 @@
     --space-large: 16px;
     --height-header: 50px;
     --height-chat-header: 35px;
-    --height-chat-input: 50px;
+    --height-chat-input: 45px;
     --height-vote-var: 20px;
 }
 

@@ -10,6 +10,7 @@ $(document).ready(function() {
     // 웹소켓 연결
     connectWebSocket();
 
+    // 제목 애니메이션 적용 함수
     function setTitleAnimation() {
         const chatTopic = $('#chat-topic');
         const wrapper = $('#chat-topic-wrapper');
@@ -134,8 +135,6 @@ $(document).ready(function() {
 
             stompClient.send(`/pub/sendMessage/${postId}`, {}, JSON.stringify(chatMessage));
             $('#message-input').val('');  // 메시지 전송 후 입력 필드 초기화
-
-
         }
     });
 
@@ -157,10 +156,10 @@ $(document).ready(function() {
 
     // 채팅방 구독
     function subscribeToChatRoom() {
+        console.log("postId: ", postId);
         stompClient.subscribe(`/sub/chatroom/${postId}`, function(response) {
             let chatMessage = JSON.parse(response.body);
             console.log("받은 메시지 : " + chatMessage)
-            console.log("postId: ", postId);
             if (chatMessage.userId !== userId) {
                 $('#message-list').append(`
                     <div class="other_message">
@@ -175,7 +174,7 @@ $(document).ready(function() {
                         </div>
                     </div>
                 `);
-            }else{
+            } else {
                 $('#message-list').append(`
                     <div class="my_message">
                         <p class="message_box bg_${chatMessage.selectedOption}">
