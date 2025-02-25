@@ -26,7 +26,7 @@ public class Report {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reporter_id", nullable = false)
-    private User reporter;
+    private User user; // 신고자
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

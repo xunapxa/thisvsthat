@@ -20,7 +20,7 @@ public class ReportDTO {
         return new ReportDTO(
                 report.getReportId(),
                 report.getPost().getPostId(),
-                report.getReporter().getUserId(),
+                report.getUser().getUserId(),
                 report.getCreatedAt()
         );
     }
