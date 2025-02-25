@@ -13,6 +13,11 @@ $(document).ready(function() {
     connectWebSocket();
     keepScrollAtBottom();
 
+    // 뒤로가기
+    $("#btn-back").click(function() {
+        window.history.back();
+    });
+
     // 제목 애니메이션 적용 함수
     function setTitleAnimation() {
         const chatTopic = $('#chat-topic');
