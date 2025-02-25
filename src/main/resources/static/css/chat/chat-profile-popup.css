@@ -51,6 +51,7 @@
     width: 210px;
     color: var(--font-color-gray);
     font-size: var(--font-size-large);
+    margin-top: 1px;
 }
 
 .char_count_display {
