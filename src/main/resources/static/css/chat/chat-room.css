@@ -71,7 +71,7 @@
     position: fixed;
     width: calc(100% - 20px);
     border-radius: 5px;
-    box-shadow: 0 1px 9px 0px rgb(0 0 0 / 30%);
+    box-shadow: 0 1px 9px 0px rgb(0 0 0 / 20%);
     transition: opacity 0.8s ease;
     opacity: 1;
 }
@@ -180,6 +180,12 @@
     margin-top: 4px;
     height: var(--height-vote-var);
     background-color: var(--main-color-gray);
+    align-items: center;
+    justify-content: center;
+}
+
+.no_vote_message {
+    font-size: var(--font-size-small);
 }
 
 .blue_bar {
