@@ -15,7 +15,9 @@ $(document).ready(function() {
 
     // 뒤로가기
     $("#btn-back").click(function() {
-        window.history.back();
+        if(window.confirm("채팅방을 떠나시겠습니까?")){
+            window.history.back();
+        }
     });
 
     // 제목 애니메이션 적용 함수
