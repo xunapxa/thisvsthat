@@ -183,7 +183,13 @@ $(document).ready(function() {
         }
     }
 
-    messageInput.on('input change', function () {
+    messageInput.on('focus input change', function () {
+        $(this).css({
+            'overflow': '',
+            'white-space': '',
+            'text-overflow': '',
+            'height': 'auto'
+        });
         limitTextLength(); // 500자 제한
         adjustInputHeight(); // 입력 필드 높이
 
@@ -195,10 +201,18 @@ $(document).ready(function() {
         }
     });
 
-    // 입력 필드 초기화 및 높이 복원 함수
-    function resetInputField() {
-        messageInput.text('');  // 메시지 전송 후 입력 필드 초기화
+    // 입력창 포커스 해제
+    messageInput.on('blur', function () {
+        $(this).css({
+            'overflow': 'hidden',
+            'white-space': 'nowrap',
+            'text-overflow': 'ellipsis'
+        });
+        resetInputField();
+    });
 
+    // 입력 필드 높이 복원 함수
+    function resetInputField() {
         // 전송 후 입력창 높이를 기본값으로 복원
         messageInput.css('height', '30px');
 
@@ -268,7 +282,8 @@ $(document).ready(function() {
                 }
                 return;  // 에러 처리 후 더 이상 진행하지 않음
             }else{
-                resetInputField(); // 입력 필드 초기화
+                messageInput.text('');  // 메시지 전송 후 입력 필드 초기화
+                resetInputField(); // 입력 필드 높이 복원
             }
 
             // 정상 메시지 처리
