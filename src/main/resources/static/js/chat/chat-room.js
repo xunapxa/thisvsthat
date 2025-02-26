@@ -223,28 +223,58 @@ $(document).ready(function() {
         chatContainer.css('height', `calc(100vh - var(--height-header) - var(--height-chat-header) - var(--height-chat-input))`);
     }
 
+    // 스팸 필터
+    function filterSpam(message) {
+        return axios.post(`/chat/spam-filter`, { content: message }) // 메시지를 JSON으로 전송
+            .then(function (response) {
+                let result = response.data;
+
+                // 스팸이 아닌 경우 (정상 메시지)
+                if (result === "검증 완료") {
+                    return true; // 메시지 전송 가능
+                } else {
+                    // 스팸 메시지가 포함된 경우
+                    alert(result); // 서버에서 받은 에러 메시지 출력
+                    return false; // 메시지 전송 차단
+                }
+            })
+            .catch(function (error) {
+                console.error("🚨 스팸 필터링 요청 실패:", error);
+                alert("⚠️ 메시지 검증 중 오류가 발생했습니다. 다시 시도해주세요.");
+                return false; // 오류 발생 시 메시지 전송 차단
+            });
+    }
+
     // 채팅 메시지 전송
-    $('#btn-send').click(function(e) {
-        let message = $('#message-input').text();
-        if (message && stompClient) {
-            let now = new Date();
-            let formattedTime = now.getHours().toString().padStart(2, '0') + ':' +
-                                now.getMinutes().toString().padStart(2, '0') + ':' +
-                                now.getSeconds().toString().padStart(2, '0');  // HH:mm:ss 형식
+    $('#btn-send').click(async function (e) {
+        let message = $('#message-input').text().trim(); // 공백 제거
+        if (!message || !stompClient) return; // 메시지가 없거나 연결되지 않았으면 무시
 
-            let chatMessage = {
-                userId: userId,
-                postId: postId,
-                profileImage: sessionStorage.getItem('profileImage'),
-                nickname: sessionStorage.getItem('nickname'),
-                selectedOption: sessionStorage.getItem('selectedOption'),
-                content: message,
-                sentTime: formattedTime
-            };
+        // 스팸 필터링 API 호출
+        let isValid = await filterSpam(message);
+        if (!isValid) return; // 스팸이거나 오류 발생 시 전송 중단
 
-            stompClient.send(`/pub/sendMessage/${postId}`, {}, JSON.stringify(chatMessage));
-        }
+        // 정상 메시지라면 WebSocket을 통해 전송
+        let now = new Date();
+        let formattedTime = now.getHours().toString().padStart(2, '0') + ':' +
+                            now.getMinutes().toString().padStart(2, '0') + ':' +
+                            now.getSeconds().toString().padStart(2, '0');  // HH:mm:ss 형식
+
+        let chatMessage = {
+            userId: userId,
+            postId: postId,
+            profileImage: sessionStorage.getItem('profileImage'),
+            nickname: sessionStorage.getItem('nickname'),
+            selectedOption: sessionStorage.getItem('selectedOption'),
+            content: message,
+            sentTime: formattedTime
+        };
+
+        stompClient.send(`/pub/sendMessage/${postId}`, {}, JSON.stringify(chatMessage));
+        messageInput.text('');  // 메시지 전송 후 입력 필드 초기화
+        resetInputField(); // 입력 필드 높이 복원
     });
+
 
     // 웹소켓 연결
     function connectWebSocket() {
@@ -276,14 +306,7 @@ $(document).ready(function() {
                     alert(chatMessage.error);
                     window.location.href = "/login?redirect=" + encodeURIComponent(window.location.href);
                 }
-                // 스팸 메시지 처리
-                else if (chatMessage.error.includes("부적절한 단어가 포함되어 있습니다")) {
-                    alert(chatMessage.error);
-                }
                 return;  // 에러 처리 후 더 이상 진행하지 않음
-            }else{
-                messageInput.text('');  // 메시지 전송 후 입력 필드 초기화
-                resetInputField(); // 입력 필드 높이 복원
             }
 
             // 정상 메시지 처리

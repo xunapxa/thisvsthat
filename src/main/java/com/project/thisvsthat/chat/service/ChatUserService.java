@@ -36,22 +36,23 @@ public class ChatUserService {
 
     // 채팅방 입장 처리
     public void userJoin(String postId) {
-        roomUserCount.putIfAbsent(postId, new AtomicInteger(0));  // 방이 처음이라면 초기화
-        int currentCount = roomUserCount.get(postId).incrementAndGet();  // 인원 수 증가
+        roomUserCount.computeIfAbsent(postId, key -> new AtomicInteger(0)).incrementAndGet();
+        int currentCount = roomUserCount.get(postId).get();  // 증가된 인원 확인
 
         broadcastUserCount(postId, currentCount);
     }
 
     // 채팅방 퇴장 처리
     public void userLeave(String postId) {
-        if (roomUserCount.containsKey(postId)) {
-            int currentCount = roomUserCount.get(postId).decrementAndGet();  // 인원 수 감소
+        roomUserCount.computeIfPresent(postId, (key, count) -> {
+            int currentCount = count.decrementAndGet();
             if (currentCount > 0) {
                 broadcastUserCount(postId, currentCount);
+                return count;
             } else {
-                roomUserCount.remove(postId);  // 채팅방에 더 이상 인원이 없다면 방 제거
+                return null; // 인원 0명이면 방 제거
             }
-        }
+        });
     }
 
     // 실시간 인원수

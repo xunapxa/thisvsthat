@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -97,18 +98,25 @@ public class ChatController {
         redisSubscriptionService.unsubscribeFromChatRoom(postId); // 레디스 채팅방 구독 해제
     }
 
+    @PostMapping("/spam-filter")
+    public ResponseEntity<String> checkSpam(@RequestBody Map<String, String> request) {
+        String content = request.get("content");
+        List<String> spamWords = spamFilterService.findSpamWords(content);
+
+        // 스팸 단어가 없으면 "검증 완료" 반환
+        if (spamWords.isEmpty()) {
+            return ResponseEntity.ok("검증 완료");
+        }
+
+        // 스팸 단어가 포함된 경우 에러 메시지 반환
+        String errorMessage = "🚫부적절한 단어가 포함되어 있습니다🚫\n[ '" + String.join("', '", spamWords) + "' ]\n확인 후 전송해주세요.";
+        return ResponseEntity.ok(errorMessage);
+    }
+
     // 메시지 전송 메서드
     @MessageMapping("/sendMessage/{postId}")
     public void sendMessage(@DestinationVariable("postId") String postId, ChatMessage message, Principal principal) {
         if (!isAuthenticated(principal, postId)) return;
-
-        // 스팸 필터링
-        List<String> spamWords = spamFilterService.findSpamWords(message.getContent());
-        if (!spamWords.isEmpty()) {
-            String errorMessage = "부적절한 단어가 포함되어 있습니다\n[ '" + String.join("', '", spamWords) + "' ]\n다시 확인 후 전송해주세요.";
-            chatUtils.sendErrorMessage(postId, errorMessage);
-            return;
-        }
 
         // 채팅방 존재 여부 확인 및 생성 처리
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(postId);
