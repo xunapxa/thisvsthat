@@ -21,12 +21,12 @@ public class RedisSubscriber implements MessageListener {
             String jsonMessage = new String(message.getBody());
             ChatMessage chatMessage = objectMapper.readValue(jsonMessage, ChatMessage.class);
 
-            System.out.println("📩 Received message: " + chatMessage.getContent());
+            System.out.println("📨 [SUCCESS] 레디스에서 메시지 전송 처리: " + "ID(" + chatMessage.getUserId() + ") '" + chatMessage.getContent() + "'");
 
             // 웹소켓을 통해 클라이언트에게 메시지 전송
             messagingTemplate.convertAndSend("/sub/chatroom/" + chatMessage.getPostId(), chatMessage);
         } catch (Exception e) {
-            System.err.println("❌ 메시지 처리 중 오류 발생: " + e.getMessage());
+            System.err.println("🚨 [ERROR] 메시지 처리 중 오류 발생: " + e.getMessage());
         }
     }
 }

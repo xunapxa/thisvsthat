@@ -44,11 +44,13 @@ public class RedisPublisher {
                     if (isSaved) {
                         // Redis에서 오래된 메시지 삭제
                         redisTemplate.opsForList().trim(chatRoomKey, 0, MAX_SIZE - 1);
+                        System.out.println("✅ [SUCCESS] DB 저장 후 Redis 메시지 삭제: 게시글ID(" + postId + ")");
                     }
+
                 }
             }
         } catch (Exception e) {
-            System.err.println("❌ Redis 메시지 저장 중 오류 발생: " + e.getMessage());
+            System.err.println("🚨 [ERROR] Redis 메시지 저장 중 오류 발생: " + e.getMessage());
         }
     }
 }

@@ -31,7 +31,7 @@ public class RedisSubscriptionService {
         redisContainer.addMessageListener(messageListener, topic);  // 동적으로 채널 구독
         subscribedChannels.put(channelKey, topic);
 
-        System.out.println("✅ 채팅방 구독 완료: " + channelKey);
+        System.out.println("✅ [SUCCESS] 채팅방 구독 완료: " + channelKey);
     }
 
     // 채팅방 구독 해제
@@ -41,7 +41,7 @@ public class RedisSubscriptionService {
         ChannelTopic topic = subscribedChannels.remove(channelKey);
         if (topic != null) {
             redisContainer.removeMessageListener(messageListener, topic);  // 동적으로 채널 구독 해제
-            System.out.println("❌ 채팅방 구독 해제: " + channelKey);
+            System.out.println("✅ [SUCCESS] 채팅방 구독 해제: " + channelKey);
         }
     }
 }
