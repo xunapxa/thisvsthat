@@ -58,6 +58,6 @@ public class ChatUserService {
     private void broadcastUserCount(String postId, int currentCount) {
         JSONObject userCountMessage = new JSONObject();
         userCountMessage.put("userCount", "현재 채팅 인원: " + currentCount);
-        messagingTemplate.convertAndSend("/sub/chatroom/userCount/" + postId, userCountMessage.toString());
+        messagingTemplate.convertAndSend("/sub/chatroom/user-count/" + postId, userCountMessage.toString());
     }
 }

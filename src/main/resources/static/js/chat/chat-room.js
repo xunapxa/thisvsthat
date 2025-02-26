@@ -302,7 +302,7 @@ $(document).ready(function() {
         });
 
         // 인원 수 업데이트 메시지 구독
-        stompClient.subscribe(`/sub/chatroom/userCount/${postId}`, function(response) {
+        stompClient.subscribe(`/sub/chatroom/user-count/${postId}`, function(response) {
             let data = JSON.parse(response.body);
             let userCount = data.userCount;  // "현재 채팅 인원: x" 형태
             userCount = userCount.replace(/\D/g, '');  // 숫자만 추출 (숫자 이외의 문자 제거)
