@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -50,6 +52,7 @@ public class ChatMessageService {
                 ChatLog chatLog = ChatLog.builder()
                         .chatRoom(chatRoom)
                         .user(user)
+                        .createdAt(toLocalDateTime(message.getSentAt()))
                         .messageContent(message.getContent())
                         .build();
 
@@ -62,5 +65,10 @@ public class ChatMessageService {
             System.err.println("❌ DB 저장 실패: " + e.getMessage());
             return false; // 실패 시 false 반환
         }
+    }
+
+    private LocalDateTime toLocalDateTime(String dateTime){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(dateTime, formatter);
     }
 }
