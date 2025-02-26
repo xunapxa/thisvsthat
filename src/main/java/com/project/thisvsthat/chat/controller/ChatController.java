@@ -15,7 +15,6 @@ import com.project.thisvsthat.post.dto.VotePercentageDTO;
 import com.project.thisvsthat.post.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
@@ -80,24 +79,7 @@ public class ChatController {
         return "chat/chat-room";
     }
 
-    // 채팅방에 접속할 때마다 호출되는 메서드
-    @MessageMapping("/join/{postId}")
-    public void joinChat(@DestinationVariable("postId") String postId, Principal principal) {
-        if (!isAuthenticated(principal, postId)) return;
-
-        chatUserService.userJoin(postId);
-        redisSubscriptionService.subscribeToChatRoom(postId); // 레디스 채팅방 구독
-    }
-
-    // 채팅방에서 나갈 때 호출되는 메서드
-    @MessageMapping("/leave/{postId}")
-    public void leaveChat(@DestinationVariable("postId") String postId, Principal principal) {
-        if (!isAuthenticated(principal, postId)) return;
-
-        chatUserService.userLeave(postId);
-        redisSubscriptionService.unsubscribeFromChatRoom(postId); // 레디스 채팅방 구독 해제
-    }
-
+    // 메시지 스팸 필터 API
     @PostMapping("/spam-filter")
     public ResponseEntity<String> checkSpam(@RequestBody Map<String, String> request) {
         String content = request.get("content");
@@ -113,7 +95,25 @@ public class ChatController {
         return ResponseEntity.ok(errorMessage);
     }
 
-    // 메시지 전송 메서드
+    // 채팅방에 접속할 때
+    @MessageMapping("/join/{postId}")
+    public void joinChat(@DestinationVariable("postId") String postId, Principal principal) {
+        if (!isAuthenticated(principal, postId)) return;
+
+        chatUserService.userJoin(postId);
+        redisSubscriptionService.subscribeToChatRoom(postId); // 레디스 채팅방 구독
+    }
+
+    // 채팅방에서 나갈 때
+    @MessageMapping("/leave/{postId}")
+    public void leaveChat(@DestinationVariable("postId") String postId, Principal principal) {
+        if (!isAuthenticated(principal, postId)) return;
+
+        chatUserService.userLeave(postId);
+        redisSubscriptionService.unsubscribeFromChatRoom(postId); // 레디스 채팅방 구독 해제
+    }
+
+    // 메시지 전송
     @MessageMapping("/sendMessage/{postId}")
     public void sendMessage(@DestinationVariable("postId") String postId, ChatMessage message, Principal principal) {
         if (!isAuthenticated(principal, postId)) return;

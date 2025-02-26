@@ -35,7 +35,7 @@ public class RedisPublisher {
             // 메시지 수가 DELETE_THRESHOLD 이상이고, BATCH_SIZE 간격으로 저장
             if (chatListSize != null && chatListSize >= DELETE_THRESHOLD && chatListSize % BATCH_SIZE == 0) {
                 // Redis에서 마지막 10개의 메시지를 가져옴
-                List<ChatMessage> messagesToSave = redisTemplate.opsForList().range(chatRoomKey, MAX_SIZE, chatListSize - 1);
+                List<ChatMessage> messagesToSave = redisTemplate.opsForList().range(chatRoomKey, 0,9);
 
                 // 메시지가 존재하면 DB로 저장
                 if (messagesToSave != null && !messagesToSave.isEmpty()) {
@@ -43,7 +43,7 @@ public class RedisPublisher {
 
                     if (isSaved) {
                         // Redis에서 오래된 메시지 삭제
-                        redisTemplate.opsForList().trim(chatRoomKey, 0, MAX_SIZE - 1);
+                        redisTemplate.opsForList().trim(chatRoomKey, 10, - 1);
                         System.out.println("✅ [SUCCESS] DB 저장 후 Redis 메시지 삭제: 게시글ID(" + postId + ")");
                     }
 

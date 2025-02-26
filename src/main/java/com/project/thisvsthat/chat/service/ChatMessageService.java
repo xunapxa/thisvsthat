@@ -30,7 +30,7 @@ public class ChatMessageService {
         String chatRoomKey = "chatroom:" + chatRoomId; // 채팅방 키
 
         // Redis에서 가장 최근 50개의 메시지 조회 (리스트에서 끝에서부터 50개)
-        List<ChatMessage> messages = redisTemplate.opsForList().range(chatRoomKey, 0, 49);
+        List<ChatMessage> messages = redisTemplate.opsForList().range(chatRoomKey, -50, -1);
 
         // 메시지를 ChatMessage 객체로 변환
         return messages;
