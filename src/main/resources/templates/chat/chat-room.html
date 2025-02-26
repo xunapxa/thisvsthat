@@ -62,7 +62,7 @@
                     <!-- userId가 일치하는 경우 'my_message' -->
                     <div th:if="${message.userId == userId}" class="my_message">
                         <p th:class="'message_box bg_' + ${message.selectedOption}">
-                            <span th:text="${message.content}"></span>
+                            <span class="message_content" th:text="${message.content}"></span>
                         </p>
                         <div class="image_wrapper">
                             <img class="profile_image" th:src="@{${message.profileImage}}" />
@@ -76,7 +76,7 @@
                         <div class="message_wrapper">
                             <p class="chat_nickname" th:text="${message.nickname}"></p>
                             <p th:class="'message_box bg_' + ${message.selectedOption}">
-                                <span th:text="${message.content}"></span>
+                                <span class="message_content" th:text="${message.content}"></span>
                             </p>
                         </div>
                     </div>
