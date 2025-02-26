@@ -56,16 +56,11 @@ public class ChatController {
 
     // 채팅 프로필 이미지 업로드
     @PostMapping("/upload-profile-img")
-    public ResponseEntity<?> handleBase64ImageUpload(@RequestBody String profileImage) {
-        try {
-            if (profileImage == null || profileImage.isEmpty()) {
-                return ResponseEntity.badRequest().body("이미지가 없습니다.");
-            }
-            String imageUrl = s3Service.uploadBase64Image(profileImage);
-            return ResponseEntity.ok().body(imageUrl);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("이미지 업로드 실패: " + e.getMessage());
+    public ResponseEntity<String> handleBase64ImageUpload(@RequestBody String profileImage) throws Exception {
+        if (profileImage == null || profileImage.isEmpty()) {
+            return ResponseEntity.badRequest().body("이미지가 없습니다.");
         }
+        return ResponseEntity.ok(s3Service.uploadBase64Image(profileImage));
     }
 
     // 채팅방 입장 및 이전 메시지 조회
