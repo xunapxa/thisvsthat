@@ -1,4 +1,4 @@
-package com.project.thisvsthat.chat.util;
+package com.project.thisvsthat.chat.redis.pubsub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.thisvsthat.chat.dto.ChatMessage;

@@ -4,7 +4,7 @@
     height: 50px;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--main-color-black);
+    border-bottom: 1px solid var(--main-color-gray);
     font-size: var(--font-size-xlarge);
     color: var(--main-color-black);
 }
@@ -72,4 +72,5 @@
     margin: 5px auto 15px auto;
     background-color: var(--font-color-gray);
     font-size: var(--font-size-medium);
+    background-color: var(--main-color-brown);
 }

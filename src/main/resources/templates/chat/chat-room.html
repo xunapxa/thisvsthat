@@ -41,6 +41,7 @@
                     <i id="collapse-btn" class="collapse_btn fa-solid fa-chevron-down"></i>
                 </div>
                 <div id="vote-bar" class="vote_bar visible">
+                    <span class="no_vote_message" th:if="${voteResult.totalVotes == 0}"> 아직 투표가 없습니다. 여러분의 참여를 기다립니다!⏳</span>
                     <div id="blue_bar" class="blue_bar"
                          th:style="'width: ' + ${voteResult.option1Percentage} + '%;'">
                         <span th:if="${voteResult.option1Percentage} > 6">

@@ -1,7 +1,7 @@
-package com.project.thisvsthat.chat.util;
+package com.project.thisvsthat.chat.redis.pubsub;
 
 import com.project.thisvsthat.chat.dto.ChatMessage;
-import com.project.thisvsthat.chat.service.ChatService;
+import com.project.thisvsthat.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RedisPublisher {
     private final RedisTemplate<String, ChatMessage> redisTemplate;
-    private final ChatService chatService;
+    private final ChatMessageService chatMessageService;
 
     private static final int MAX_SIZE = 50; // Redis가 유지할 최대 메시지 개수
     private static final int BATCH_SIZE = 10; // 한 번에 DB로 보낼 개수
@@ -39,7 +39,7 @@ public class RedisPublisher {
 
                 // 메시지가 존재하면 DB로 저장
                 if (messagesToSave != null && !messagesToSave.isEmpty()) {
-                    boolean isSaved = chatService.saveMessagesToDB(messagesToSave, Long.parseLong(postId)); // DB 저장 성공 여부 확인
+                    boolean isSaved = chatMessageService.saveMessagesToDB(messagesToSave, Long.parseLong(postId)); // DB 저장 성공 여부 확인
 
                     if (isSaved) {
                         // Redis에서 오래된 메시지 삭제

@@ -1,4 +1,4 @@
-package com.project.thisvsthat.chat.util;
+package com.project.thisvsthat.chat.redis.logger;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
