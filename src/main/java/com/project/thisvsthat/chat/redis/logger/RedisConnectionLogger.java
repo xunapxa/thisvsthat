@@ -24,13 +24,13 @@ public class RedisConnectionLogger {
 
             // 연결 성공 시 로그 출력
             if ("testValue".equals(value)) {
-                logger.info("🔗Redis 서버에 성공적으로 연결되었습니다.");
+                logger.info("🔗 [SUCCESS] Redis 서버에 성공적으로 연결되었습니다.");
             } else {
-                logger.warn("⚠️Redis 연결 후 예상된 값이 반환되지 않았습니다.");
+                logger.warn("🚨 [ERROR] Redis 연결 후 예상된 값이 반환되지 않았습니다.");
             }
         } catch (Exception e) {
             // Redis 연결 실패 시 로그 출력
-            logger.error("⛓️‍💥Redis 서버에 연결할 수 없습니다.", e);
+            logger.error("⛓️‍💥 [ERROR] Redis 서버에 연결할 수 없습니다.", e);
         }
     }
 }

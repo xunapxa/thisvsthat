@@ -55,7 +55,7 @@ public class ChatUserService {
         });
     }
 
-    // 실시간 인원수
+    // 실시간 인원수 발행
     private void broadcastUserCount(String postId, int currentCount) {
         JSONObject userCountMessage = new JSONObject();
         userCountMessage.put("userCount", "현재 채팅 인원: " + currentCount);

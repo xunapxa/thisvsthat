@@ -10,5 +10,5 @@ public class ChatMessage {
     private String nickname;
     private String selectedOption;
     private String content;
-    private String sentTime;
+    private String sentAt;
 }

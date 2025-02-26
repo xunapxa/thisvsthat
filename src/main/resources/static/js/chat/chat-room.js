@@ -256,9 +256,12 @@ $(document).ready(function() {
 
         // 정상 메시지라면 WebSocket을 통해 전송
         let now = new Date();
-        let formattedTime = now.getHours().toString().padStart(2, '0') + ':' +
+        let formattedTime = now.getFullYear() + '-' +
+                            (now.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                            now.getDate().toString().padStart(2, '0') + ' ' +
+                            now.getHours().toString().padStart(2, '0') + ':' +
                             now.getMinutes().toString().padStart(2, '0') + ':' +
-                            now.getSeconds().toString().padStart(2, '0');  // HH:mm:ss 형식
+                            now.getSeconds().toString().padStart(2, '0');
 
         let chatMessage = {
             userId: userId,
@@ -267,7 +270,7 @@ $(document).ready(function() {
             nickname: sessionStorage.getItem('nickname'),
             selectedOption: sessionStorage.getItem('selectedOption'),
             content: message,
-            sentTime: formattedTime
+            sentAt: formattedTime
         };
 
         stompClient.send(`/pub/sendMessage/${postId}`, {}, JSON.stringify(chatMessage));

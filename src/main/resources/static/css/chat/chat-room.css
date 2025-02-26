@@ -251,6 +251,7 @@
     color: var(--color-white);
     border-radius: 7px;
     line-height: 1.2;
+    display: inline-block;
 }
 
 .other_message .message_box {
@@ -262,6 +263,11 @@
     border-top-right-radius: 0;
     margin-top: 17px;
     margin-left: 20px
+}
+
+.message_content {
+    word-break: break-word;
+    width: auto;
 }
 
 .bg_blue{

@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -28,7 +30,7 @@ public class ChatMessageService {
         String chatRoomKey = "chatroom:" + chatRoomId; // 채팅방 키
 
         // Redis에서 가장 최근 50개의 메시지 조회 (리스트에서 끝에서부터 50개)
-        List<ChatMessage> messages = redisTemplate.opsForList().range(chatRoomKey, 0, 49);
+        List<ChatMessage> messages = redisTemplate.opsForList().range(chatRoomKey, -50, -1);
 
         // 메시지를 ChatMessage 객체로 변환
         return messages;
@@ -50,17 +52,24 @@ public class ChatMessageService {
                 ChatLog chatLog = ChatLog.builder()
                         .chatRoom(chatRoom)
                         .user(user)
+                        .createdAt(toLocalDateTime(message.getSentAt()))
                         .messageContent(message.getContent())
                         .build();
 
                 // 메시지 DB에 저장
                 chatLogRepository.save(chatLog);
             }
+            System.out.println("✅ [SUCCESS] 메시지 DB 저장 성공: 게시글ID(" + postId + ")");
             return true; // 성공 시 true 반환
         } catch (Exception e) {
             // DB 저장 실패 시 예외 발생
-            System.err.println("❌ DB 저장 실패: " + e.getMessage());
+            System.err.println("🚨 [ERROR] 메시지 DB 저장 실패: " + e.getMessage());
             return false; // 실패 시 false 반환
         }
+    }
+
+    private LocalDateTime toLocalDateTime(String dateTime){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.parse(dateTime, formatter);
     }
 }
