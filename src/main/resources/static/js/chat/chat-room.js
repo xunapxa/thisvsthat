@@ -181,17 +181,17 @@ $(document).ready(function() {
         }
     }
 
-messageInput.on('input change', function () {
-    limitTextLength(); // 500자 제한
-    adjustInputHeight(); // 입력 필드 높이
+    messageInput.on('input change', function () {
+        limitTextLength(); // 500자 제한
+        adjustInputHeight(); // 입력 필드 높이
 
-    // 내용이 비었으면, empty 클래스를 추가
-    if ($(this).text().trim() === "") {
-        $(this).addClass('empty');
-    } else {
-        $(this).removeClass('empty');
-    }
-});
+        // 내용이 비었으면, empty 클래스를 추가
+        if ($(this).text().trim() === "") {
+            $(this).addClass('empty');
+        } else {
+            $(this).removeClass('empty');
+        }
+    });
 
     // 입력 필드 초기화 및 높이 복원 함수
     function resetInputField() {

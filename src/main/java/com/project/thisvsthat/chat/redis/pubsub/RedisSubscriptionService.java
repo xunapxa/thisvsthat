@@ -1,4 +1,4 @@
-package com.project.thisvsthat.chat.service;
+package com.project.thisvsthat.chat.redis.pubsub;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
-public class ChatSubscriptionService {
+public class RedisSubscriptionService {
     private final RedisMessageListenerContainer redisContainer;
     private final MessageListenerAdapter messageListener;
 
