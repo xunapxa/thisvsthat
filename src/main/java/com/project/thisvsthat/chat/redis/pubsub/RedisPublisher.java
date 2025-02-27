@@ -3,11 +3,13 @@ package com.project.thisvsthat.chat.redis.pubsub;
 import com.project.thisvsthat.chat.dto.ChatMessage;
 import com.project.thisvsthat.chat.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RedisPublisher {
@@ -44,13 +46,13 @@ public class RedisPublisher {
                     if (isSaved) {
                         // Redis에서 오래된 메시지 삭제
                         redisTemplate.opsForList().trim(chatRoomKey, 10, - 1);
-                        System.out.println("✅ [SUCCESS] DB 저장 후 Redis 메시지 삭제: 게시글ID(" + postId + ")");
+                        log.info("✅ [SUCCESS] DB 저장 후 Redis 메시지 삭제: 게시글ID({})", postId);
                     }
 
                 }
             }
         } catch (Exception e) {
-            System.err.println("🚨 [ERROR] Redis 메시지 저장 중 오류 발생: " + e.getMessage());
+            log.error("🚨 [ERROR] Redis 메시지 저장 중 오류 발생: {}", e.getMessage(), e);
         }
     }
 }

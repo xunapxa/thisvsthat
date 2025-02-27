@@ -1,6 +1,7 @@
 package com.project.thisvsthat.chat.redis.pubsub;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RedisSubscriptionService {
@@ -31,7 +33,7 @@ public class RedisSubscriptionService {
         redisContainer.addMessageListener(messageListener, topic);  // 동적으로 채널 구독
         subscribedChannels.put(channelKey, topic);
 
-        System.out.println("✅ [SUCCESS] 채팅방 구독 완료: " + channelKey);
+        log.info("✅ [SUCCESS] 채팅방 구독 완료 {}", channelKey);
     }
 
     // 채팅방 구독 해제
@@ -41,7 +43,7 @@ public class RedisSubscriptionService {
         ChannelTopic topic = subscribedChannels.remove(channelKey);
         if (topic != null) {
             redisContainer.removeMessageListener(messageListener, topic);  // 동적으로 채널 구독 해제
-            System.out.println("✅ [SUCCESS] 채팅방 구독 해제: " + channelKey);
+            log.info("✅ [SUCCESS] 채팅방 구독 해제 {}", channelKey);
         }
     }
 }
