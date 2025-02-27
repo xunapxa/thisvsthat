@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -97,20 +99,26 @@ public class ChatController {
 
     // 채팅방에 접속할 때
     @MessageMapping("/join/{postId}")
-    public void joinChat(@DestinationVariable("postId") String postId, Principal principal) {
+    public void joinChat(@DestinationVariable("postId") String postId,
+                         @Payload Map<String, Object> payload,
+                         Principal principal) {
         if (!isAuthenticated(principal, postId)) return;
 
-        chatUserService.userJoin(postId);
-        redisSubscriptionService.subscribeToChatRoom(postId); // 레디스 채팅방 구독
+        String userId = String.valueOf(payload.get("userId"));
+        chatUserService.userJoin(postId, userId);
+        redisSubscriptionService.subscribeToChatRoom(postId, userId); // 레디스 채팅방 구독
     }
 
     // 채팅방에서 나갈 때
     @MessageMapping("/leave/{postId}")
-    public void leaveChat(@DestinationVariable("postId") String postId, Principal principal) {
+    public void leaveChat(@DestinationVariable("postId") String postId,
+                          @Payload Map<String, Object> payload,
+                          Principal principal) {
         if (!isAuthenticated(principal, postId)) return;
 
-        chatUserService.userLeave(postId);
-        redisSubscriptionService.unsubscribeFromChatRoom(postId); // 레디스 채팅방 구독 해제
+        String userId = String.valueOf(payload.get("userId"));
+        chatUserService.userLeave(postId, userId);
+        redisSubscriptionService.unsubscribeFromChatRoom(postId, userId); // 레디스 채팅방 구독 해제
     }
 
     // 메시지 전송
@@ -121,7 +129,12 @@ public class ChatController {
         // 채팅방 존재 여부 확인 및 생성 처리
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(postId);
 
-        // 레디스로 저장
-        redisPublisher.sendMessage(message, postId);
+        redisPublisher.saveAndPublishMessage(message, postId); // 레디스 저장 & 발행
+        saveMessageToDBAsync(message); // DB에 저장
+    }
+
+    @Async
+    public void saveMessageToDBAsync(ChatMessage message) {
+        chatMessageService.saveMessageToDB(message);
     }
 }

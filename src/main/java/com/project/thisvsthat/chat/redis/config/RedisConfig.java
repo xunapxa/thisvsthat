@@ -39,16 +39,11 @@ public class RedisConfig {
         return new LettuceConnectionFactory(config);
     }
 
-    // 기본 RedisTemplate 설정 (Object 타입 저장)
+    // 기본 RedisTemplate 설정
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
-
-        // 키와 값 직렬화 방식 설정
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());  // 값 직렬화 JSON
-
         return template;
     }
 
