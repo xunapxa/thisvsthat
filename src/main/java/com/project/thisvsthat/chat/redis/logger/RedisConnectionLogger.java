@@ -13,14 +13,14 @@ public class RedisConnectionLogger {
     private static final Logger logger = LoggerFactory.getLogger(RedisConnectionLogger.class);
 
     @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @PostConstruct
     public void checkRedisConnection() {
         try {
             // Redis 연결 테스트
             redisTemplate.opsForValue().set("testKey", "testValue");
-            String value = (String) redisTemplate.opsForValue().get("testKey");
+            String value = redisTemplate.opsForValue().get("testKey");
 
             // 연결 성공 시 로그 출력
             if ("testValue".equals(value)) {
