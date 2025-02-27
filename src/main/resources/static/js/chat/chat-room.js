@@ -292,10 +292,13 @@ $(document).ready(function() {
 
         stompClient.connect({}, function(frame) {
             console.log('🔗연결 성공: ' + frame);
+            // 채팅방 입장 시 인원 수 알림
+            stompClient.send(`/pub/join/${postId}`, {}, JSON.stringify({ userId }));
+
             // 채팅방 구독
             subscribeToChatRoom();
-            // 채팅방 입장 시 인원 수 알림
-            stompClient.send(`/pub/join/${postId}`);
+            // 인원수 구독
+            subscribeToUserCount();
         }, function(error) {
             console.error('⛓️‍💥서버 연결 실패: ', error);
         });
@@ -303,7 +306,6 @@ $(document).ready(function() {
 
     // 채팅방 구독
     function subscribeToChatRoom() {
-        console.log("postId: ", postId);
         stompClient.subscribe(`/sub/chatroom/${postId}`, function(response) {
             let chatMessage = JSON.parse(response.body);
             console.log("받은 메시지 : ", chatMessage);
@@ -349,19 +351,20 @@ $(document).ready(function() {
         }, function(error) {
             console.error('구독 오류:', error);
         });
+    }
 
-        // 인원 수 업데이트 메시지 구독
+    // 인원수 구독
+    function subscribeToUserCount() {
         stompClient.subscribe(`/sub/chatroom/user-count/${postId}`, function(response) {
             let data = JSON.parse(response.body);
-            let userCount = data.userCount;  // "현재 채팅 인원: x" 형태
-            userCount = userCount.replace(/\D/g, '');  // 숫자만 추출 (숫자 이외의 문자 제거)
-            console.log("인원수: " + userCount);
-            $('#user-count').text(userCount);  // 인원 수 표시
+            let userCount = data.userCount;
+            console.log("👥 현재 인원 수: " + userCount);
+            $('#user-count').text(userCount);
         });
     }
 
     // 퇴장 시 서버에 퇴장 메시지 보내기
     window.onbeforeunload = function() {
-        stompClient.send(`/pub/leave/${postId}`, {}, "");
+        stompClient.send(`/pub/leave/${postId}`, {}, JSON.stringify({ userId }));
     };
 });

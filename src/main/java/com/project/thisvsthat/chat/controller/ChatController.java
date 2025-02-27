@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -97,19 +98,25 @@ public class ChatController {
 
     // 채팅방에 접속할 때
     @MessageMapping("/join/{postId}")
-    public void joinChat(@DestinationVariable("postId") String postId, Principal principal) {
+    public void joinChat(@DestinationVariable("postId") String postId,
+                         @Payload Map<String, Object> payload,
+                         Principal principal) {
         if (!isAuthenticated(principal, postId)) return;
 
-        chatUserService.userJoin(postId);
+        String userId = String.valueOf(payload.get("userId"));
+        chatUserService.userJoin(postId, userId);
         redisSubscriptionService.subscribeToChatRoom(postId); // 레디스 채팅방 구독
     }
 
     // 채팅방에서 나갈 때
     @MessageMapping("/leave/{postId}")
-    public void leaveChat(@DestinationVariable("postId") String postId, Principal principal) {
+    public void leaveChat(@DestinationVariable("postId") String postId,
+                          @Payload Map<String, Object> payload,
+                          Principal principal) {
         if (!isAuthenticated(principal, postId)) return;
 
-        chatUserService.userLeave(postId);
+        String userId = String.valueOf(payload.get("userId"));
+        chatUserService.userLeave(postId, userId);
         redisSubscriptionService.unsubscribeFromChatRoom(postId); // 레디스 채팅방 구독 해제
     }
 
