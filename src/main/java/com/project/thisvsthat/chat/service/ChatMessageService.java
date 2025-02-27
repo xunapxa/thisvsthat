@@ -59,11 +59,11 @@ public class ChatMessageService {
                 // 메시지 DB에 저장
                 chatLogRepository.save(chatLog);
             }
-            System.out.println("✅ [SUCCESS] 메시지 DB 저장 성공: 게시글ID(" + postId + ")");
+            log.info("✅ [SUCCESS] 메시지 DB 저장 성공: 게시글ID({})", postId);
             return true; // 성공 시 true 반환
         } catch (Exception e) {
             // DB 저장 실패 시 예외 발생
-            System.err.println("🚨 [ERROR] 메시지 DB 저장 실패: " + e.getMessage());
+            log.error("🚨 [ERROR] 메시지 DB 저장 실패: {}", e.getMessage(), e);
             return false; // 실패 시 false 반환
         }
     }
