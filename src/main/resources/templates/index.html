@@ -13,32 +13,30 @@
 
     <article class="main_article" id="main_article">
         <div id="scroll_top"></div>
+
         <!--모달 팝업-->
-        <div class="modal">
-            <div class="modal_popup">
-                <h3 class="margin_bottom15 text-center"><b>인기순 정렬 기간 설정</b></h3>
-
-                <div class="margin_bottom10">
-                    <div class="margin_bottom5">시작 날짜</div>
+        <div class="popup_section">
+            <div class="dim_box"></div>
+            <div class="popup_box post_list_popup_box">
+                <div class="popup_top">
+                    <a id="postCreateCloseBtn"><i class="fa-solid fa-xmark"></i></a>
+                </div>
+                <div class="popup_content">
+                    <label for="start_date">시작 날짜</label>
                     <input type="date" id="start_date" class="width100" th:value="${startDate}">
-                </div>
 
-                <div class="margin_bottom10">
-                    <div class="margin_bottom5">종료 날짜</div>
+                    <label for="end_date">종료 날짜</label>
                     <input type="date" id="end_date" class="width100" th:value="${endDate}">
+                    <p class="margin_bottom15 font14">
+                        인기순 정렬 기간 설정을 해주세요.<br>
+                        시작 날짜와 종료날짜 기준으로 작성된 게시글의 투표합산의 글이 보여집니다.
+                    </p>
                 </div>
-                <p class="margin_bottom15 font14">
-                    시작 날짜와 종료날짜 기준으로 작성된 게시글의 투표합산의 글이 보여집니다.
-                </p>
-
-                <div class="btn_box">
+                <div class="btn_ok_box">
                     <button class="btn_medium bg_orange"><a th:href="@{/(search_by=${searchBy}, keyword=${keyword}, list_category=${listCategory}, list_desc='popularity', vote_status=${voteStatus})}" id="date_search_btn">완료</a></button>
-                    <button type="button" class="btn_medium bg_gray" id="modal_close_btn">닫기</button>
                 </div>
-
             </div>
         </div>
-
 
         <section>
             <!-- 검색 폼 -->
@@ -97,33 +95,9 @@
 
         </section>
 
+        <!-- 게시물 목록 출력 -->
         <section>
-            <!-- Thymeleaf로 게시물 목록 출력 -->
-            <div id="list_wrap">
-                <th:block th:each="post : ${posts}">
-                    <div class="choose_section margin_bottom20 position_relative">
-                        <span class="vote_status margin_bottom10"
-                             th:classappend="${#strings.equals(post.voteStatus, 'ACTIVE')} ? 'vote_ing' : (${#strings.equals(post.voteStatus, 'FINISHED')} ? 'vote_finished' : '')"
-                             th:text="${#strings.equals(post.voteStatus, 'ACTIVE')} ? '진행' : (${#strings.equals(post.voteStatus, 'FINISHED')} ? '투표 종료' : '' )">
-                        </span>
-
-                        <a th:href="@{'/post/' + ${post.postId}}" class="choose_total">
-                            <div class="choose_top_box">
-                                <div class="choose_img_wrap" th:classappend="${post.option1ImageUrl != null and #strings.trim(post.option1ImageUrl) != ''} ? 'is_img_wrap' : ''">
-                                    <img class="choose_img is_img" th:src="${post.option1ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-o.png';">
-                                </div>
-                                <div class="choose_img_wrap" th:classappend="${post.option2ImageUrl != null and #strings.trim(post.option2ImageUrl) != ''} ? 'is_img_wrap' : ''">
-                                    <img class="choose_img is_img" th:src="${post.option2ImageUrl}" alt="" onerror="this.classList.remove('is_img');this.onerror=null; this.src='/images/common/icon-letter-x.png';"/>
-                                </div>
-
-                            </div>
-                            <div class="choose_bottom_box">
-                                <p class="shorten" th:text="${post.title}"></p>
-                            </div>
-                        </a>
-                    </div>
-                </th:block>
-            </div>
+            <div id="list_wrap"></div>
         </section>
 
         <p id="end_message" class="margin_bottom10" style="">게시물이 모두 표시되었습니다.</p>

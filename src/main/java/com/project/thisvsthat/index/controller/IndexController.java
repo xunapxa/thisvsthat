@@ -18,7 +18,7 @@ public class IndexController {
     @Autowired
     private IndexService indexService;
 
-    // 메인(전체, 검색 목록 출력)
+    // 메인(검색 조건, 전체 목록 갯수  담아가기)
     @GetMapping({"", "/"})
     public String index(Model model,
                         @RequestParam(value = "page", defaultValue = "0") int page,
@@ -28,9 +28,9 @@ public class IndexController {
                         @RequestParam(value = "list_desc", required = false, defaultValue = "createdAt") String listDesc,
                         @RequestParam(value = "vote_status", required = false, defaultValue = "") String voteStatus,
                         @RequestParam(value = "start_date", required = false, defaultValue = "") String startDate,
-                        @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate) {
-
-        PostListResponseDTO response = indexService.getFilteredPosts(page, searchBy, keyword, listCategory, listDesc, voteStatus,startDate, endDate);
+                        @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate,
+                        @RequestParam(value = "page_cnt", required = false, defaultValue = "1") int pageCnt) {
+        PostListResponseDTO response = indexService.getFilteredPosts(page, searchBy, keyword, listCategory, listDesc, voteStatus,startDate, endDate,pageCnt);
 
         if(listDesc.equals("createdAt")){
             startDate = "";
@@ -44,13 +44,12 @@ public class IndexController {
         model.addAttribute("voteStatus", voteStatus); // 검색 - 투표상태(전체, 진행, 종료)
         model.addAttribute("startDate", startDate); // 검색 - 정렬 인기순 일 때 시작날짜
         model.addAttribute("endDate", endDate); // 검색 - 정렬 인기순 일 때 종료날짜
-        model.addAttribute("posts", response.getPosts()); // 목록 데이터
         model.addAttribute("totalCount", response.getTotalCount()); // 목록 전체 개수
-        
+
         return "index";
     }
 
-    // 메인(전체, 검색 목록 출력) 후 무한스크롤 작동
+    // 메인 목록 무한 스크롤 및 처음에 로드 시 목록 가져오기
     @GetMapping("/posts")
     @ResponseBody
     public PostListResponseDTO getMorePosts(@RequestParam(value = "page", defaultValue = "0") int page,
@@ -60,8 +59,8 @@ public class IndexController {
                                             @RequestParam(value = "list_desc", required = false, defaultValue = "createdAt") String listDesc,
                                             @RequestParam(value = "vote_status", required = false, defaultValue = "") String voteStatus,
                                             @RequestParam(value = "start_date", required = false, defaultValue = "") String startDate,
-                                            @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate) {
-
-        return indexService.getFilteredPosts(page, searchBy, keyword, listCategory, listDesc, voteStatus,startDate, endDate);
+                                            @RequestParam(value = "end_date", required = false, defaultValue = "") String endDate,
+                                            @RequestParam(value = "page_cnt", required = false, defaultValue = "1") int pageCnt) {
+        return indexService.getFilteredPosts(page, searchBy, keyword, listCategory, listDesc, voteStatus,startDate, endDate,pageCnt);
     }
 }
