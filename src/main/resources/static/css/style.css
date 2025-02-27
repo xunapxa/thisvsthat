@@ -300,7 +300,7 @@ label span {
 }
 
 /* 양자택일 ui */
-.choose_section {
+.choose_section, .report_post {
     padding: var(--space-small);
     border: 1px solid #ddd;
     border-radius: var(--border-radius);

@@ -1,3 +1,20 @@
+document.addEventListener("DOMContentLoaded", function () {
+    const keywordInput = document.getElementById("keywordInput");
+
+    keywordInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.keyCode === 13) {
+            event.preventDefault(); // 기본 엔터 키 동작 방지
+
+            if (keywordInput.value.trim() === "") {
+                alert("키워드를 입력하세요!");
+                return;
+            }
+
+            document.querySelector(".admin_add_box form").submit(); // 키워드 추가 폼 제출
+        }
+    });
+});
+
 document.querySelectorAll(".keyword").forEach(item => {
     item.addEventListener("click", function () {
         this.classList.toggle("admin_selected");
@@ -42,8 +59,6 @@ document.getElementById("deleteKeywordBtn").addEventListener("click", function (
     })
     .catch(error => console.error("삭제 오류: ", error));
 });
-
-
 
 document.addEventListener("DOMContentLoaded", function () {
         let errorMsgElement = document.getElementById("errorMsg");
@@ -93,6 +108,18 @@ function toggleSelectionUser(sectionUsers) {
             }
         });
 }
+
+document.addEventListener("keydown", function (event) {
+    const popup = document.getElementById("adminPopup");
+    const confirmButton = document.querySelector(".popup_btn_box button");
+
+    if (popup && popup.style.display === "flex") {
+        if (event.key === "Enter" || event.keyCode === 13) {
+            event.preventDefault(); // 기본 엔터 키 동작 방지
+            confirmButton.click(); // '확인' 버튼 클릭 이벤트 실행
+        }
+    }
+});
 
 function closePopup() {
     const $popup = $("#adminPopup");
