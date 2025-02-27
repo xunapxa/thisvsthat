@@ -21,7 +21,7 @@ public class RedisSubscriptionService {
     private final Map<String, ChannelTopic> subscribedChannels = new ConcurrentHashMap<>();
 
     // 채팅방 구독
-    public void subscribeToChatRoom(String postId) {
+    public void subscribeToChatRoom(String postId, String userId) {
         String channelKey = "chatroom:" + postId;
 
         // 이미 구독 중이면 다시 추가하지 않음
@@ -30,20 +30,20 @@ public class RedisSubscriptionService {
         }
 
         ChannelTopic topic = new ChannelTopic(channelKey);
-        redisContainer.addMessageListener(messageListener, topic);  // 동적으로 채널 구독
+        redisContainer.addMessageListener(messageListener, topic);
         subscribedChannels.put(channelKey, topic);
 
-        log.info("✅ [SUCCESS] 채팅방 구독 완료 {}", channelKey);
+        log.info("✅ [SUCCESS] 채팅방 구독: channelKey={}, userId={}", channelKey, userId);
     }
 
     // 채팅방 구독 해제
-    public void unsubscribeFromChatRoom(String postId) {
+    public void unsubscribeFromChatRoom(String postId, String userId) {
         String channelKey = "chatroom:" + postId;
 
         ChannelTopic topic = subscribedChannels.remove(channelKey);
         if (topic != null) {
-            redisContainer.removeMessageListener(messageListener, topic);  // 동적으로 채널 구독 해제
-            log.info("✅ [SUCCESS] 채팅방 구독 해제 {}", channelKey);
+            redisContainer.removeMessageListener(messageListener, topic);
+            log.info("✅ [SUCCESS] 채팅방 구독 해제: channelKey={}, userId={}", channelKey, userId);
         }
     }
 }

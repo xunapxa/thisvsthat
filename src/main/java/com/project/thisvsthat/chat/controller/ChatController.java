@@ -105,7 +105,7 @@ public class ChatController {
 
         String userId = String.valueOf(payload.get("userId"));
         chatUserService.userJoin(postId, userId);
-        redisSubscriptionService.subscribeToChatRoom(postId); // 레디스 채팅방 구독
+        redisSubscriptionService.subscribeToChatRoom(postId, userId); // 레디스 채팅방 구독
     }
 
     // 채팅방에서 나갈 때
@@ -117,7 +117,7 @@ public class ChatController {
 
         String userId = String.valueOf(payload.get("userId"));
         chatUserService.userLeave(postId, userId);
-        redisSubscriptionService.unsubscribeFromChatRoom(postId); // 레디스 채팅방 구독 해제
+        redisSubscriptionService.unsubscribeFromChatRoom(postId, userId); // 레디스 채팅방 구독 해제
     }
 
     // 메시지 전송
