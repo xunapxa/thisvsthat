@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -128,7 +129,12 @@ public class ChatController {
         // 채팅방 존재 여부 확인 및 생성 처리
         ChatRoom chatRoom = chatRoomService.getOrCreateChatRoom(postId);
 
-        // 레디스로 저장
-        redisPublisher.sendMessage(message, postId);
+        redisPublisher.saveAndPublishMessage(message, postId); // 레디스 저장 & 발행
+        saveMessageToDBAsync(message); // DB에 저장
+    }
+
+    @Async
+    public void saveMessageToDBAsync(ChatMessage message) {
+        chatMessageService.saveMessageToDB(message);
     }
 }

@@ -17,11 +17,9 @@ public class RedisPublisher {
     private final ChatMessageService chatMessageService;
 
     private static final int MAX_SIZE = 50; // Redis가 유지할 최대 메시지 개수
-    private static final int BATCH_SIZE = 10; // 한 번에 DB로 보낼 개수
-    private static final int DELETE_THRESHOLD = MAX_SIZE + BATCH_SIZE; // 60개 이상이면 정리 시작
 
-    // 레디스에 메시지 저장
-    public void sendMessage(ChatMessage message, String postId) {
+    // 레디스에 메시지 저장 & 발행
+    public void saveAndPublishMessage(ChatMessage message, String postId) {
         String chatRoomKey = "chatroom:" + postId;
 
         try {
@@ -34,22 +32,9 @@ public class RedisPublisher {
             // 레디스에서 메시지 수를 확인
             Long chatListSize = redisTemplate.opsForList().size(chatRoomKey);
 
-            // 메시지 수가 DELETE_THRESHOLD 이상이고, BATCH_SIZE 간격으로 저장
-            if (chatListSize != null && chatListSize >= DELETE_THRESHOLD && chatListSize % BATCH_SIZE == 0) {
-                // Redis에서 마지막 10개의 메시지를 가져옴
-                List<ChatMessage> messagesToSave = redisTemplate.opsForList().range(chatRoomKey, 0,9);
-
-                // 메시지가 존재하면 DB로 저장
-                if (messagesToSave != null && !messagesToSave.isEmpty()) {
-                    boolean isSaved = chatMessageService.saveMessagesToDB(messagesToSave, Long.parseLong(postId)); // DB 저장 성공 여부 확인
-
-                    if (isSaved) {
-                        // Redis에서 오래된 메시지 삭제
-                        redisTemplate.opsForList().trim(chatRoomKey, 10, - 1);
-                        log.info("✅ [SUCCESS] DB 저장 후 Redis 메시지 삭제: 게시글ID({})", postId);
-                    }
-
-                }
+            // 메시지 수가 MAX_SIZE 이상이면 오래된 메시지 삭제
+            if (chatListSize != null && chatListSize > MAX_SIZE) {
+                redisTemplate.opsForList().leftPop(chatRoomKey);
             }
         } catch (Exception e) {
             log.error("🚨 [ERROR] Redis 메시지 저장 중 오류 발생: {}", e.getMessage(), e);
