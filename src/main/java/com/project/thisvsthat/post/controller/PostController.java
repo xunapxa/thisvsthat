@@ -43,15 +43,17 @@ public class PostController {
     @GetMapping("{id}")
     public String postDetail(@PathVariable("id") Long postId, Model model, HttpServletRequest request) {
 
+        Long userId = null;
+
         //쿠키에서 JWT 토큰 추출
         String token = jwtService.getJwtFromCookies(request);
         if (token == null) {
-            return "redirect:/login";  // 토큰이 없으면 로그인 페이지로 리다이렉트
-        }
-
-        Long userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
-        if (userId == null) {
-            return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+            userId = null;
+        } else {
+            userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
+            if (userId == null) {
+                return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+            }
         }
 
         PostDTO dto = postService.findOnePost(postId);
