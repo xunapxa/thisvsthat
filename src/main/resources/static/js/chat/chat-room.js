@@ -247,8 +247,14 @@ $(document).ready(function() {
 
     // 채팅 메시지 전송
     $('#btn-send').click(async function (e) {
-        let message = $('#message-input').text().trim(); // 공백 제거
-        if (!message || !stompClient) return; // 메시지가 없거나 연결되지 않았으면 무시
+        let message = $('#message-input').html()
+                                            .replace(/<div>/g, '\n')   // <div>를 줄바꿈으로 변경
+                                            .replace(/<\/div>/g, '')   // </div> 제거
+                                            .replace(/<br\s*\/?>/g, '\n') // <br>을 줄바꿈으로 변경
+                                            .replace(/&nbsp;/g, ' ')   // &nbsp; 제거
+                                            .trim();
+        console.log("입력한 메시지: " + message)
+        if (!message || !stompClient) return; // 메시지가 없거나 연결되지 않았으면 무시a
 
         // 스팸 필터링 API 호출
         let isValid = await filterSpam(message);
@@ -322,7 +328,7 @@ $(document).ready(function() {
                         <div class="message_wrapper">
                             <p class="chat_nickname">${chatMessage.nickname}</p>
                             <p class="message_box bg_${chatMessage.selectedOption}">
-                                <span>${chatMessage.content}</span>
+                                <span class="message_content">${chatMessage.content}</span>
                             </p>
                         </div>
                     </div>
@@ -331,7 +337,7 @@ $(document).ready(function() {
                 $('#message-list').append(`
                     <div class="my_message">
                         <p class="message_box bg_${chatMessage.selectedOption}">
-                            <span>${chatMessage.content}</span>
+                            <span class="message_content">${chatMessage.content}</span>
                         </p>
                         <div class="image_wrapper">
                             <img class="profile_image" src="${chatMessage.profileImage}"/>
