@@ -16,13 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // 사용자 관련 추가 쿼리 메서드가 필요하면 여기에 작성
 
     // 신고된 유저 조회 (신고된 글이 존재하는 유저만)
-    @Query("SELECT u FROM User u " +
-            "WHERE u.userStatus = 'REPORTED' " +
-            "AND EXISTS ( " +
-            "    SELECT 1 FROM Post p " +
-            "    WHERE p.user = u " +
-            "    AND (p.postStatus = 'BLINDED' OR p.postStatus = 'DELETED') " +
-            ")")
+    @Query("SELECT u FROM User u WHERE u.userStatus = 'REPORTED'")
     List<User> findReportedUsers();
 
     // 유저 복구 (REPORTED 상태를 ACTIVE 상태로 변경)
