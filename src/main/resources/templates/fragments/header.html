@@ -4,7 +4,7 @@
 <!-- 공통 헤더 -->
 <div th:fragment="header">
     <header>
-        <a href="/"><img class="header_logo" src="/images/common/logo.png" alt="logo"></img></a>
+        <a href="/" onclick="sessionStorage.clear();location.reload();" ><img class="header_logo" src="/images/common/logo.png" alt="logo"></img></a>
         <a href="/users"><i class="fa-regular fa-user"></i></a>
     </header>
 </div>

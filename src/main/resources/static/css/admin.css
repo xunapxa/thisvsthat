@@ -86,7 +86,7 @@ article .admin_section:nth-child(3) .admin_bottom_box, .keyword_box {
     cursor: pointer;
 }
 
-:is(.admin_selected, .choose_section:hover, .keyword:hover) {
+:is(.admin_selected, .choose_section:hover, .keyword:hover):not(:has(.report_post)) {
     border: 1px solid var(--main-color-orange);
     box-shadow: 0 5px 18px rgba(0, 0, 0, 0.19), 0 5px 5px rgba(0, 0, 0, 0.23);
 }
@@ -104,6 +104,10 @@ article .admin_section:nth-child(3) .admin_bottom_box, .keyword_box {
 .admin_add_box input {
     padding: 3px 5px;
     height: var(--height-xlarge);
+}
+
+#errorMsg {
+    display:none;
 }
 
 .admin_section > div:nth-child(3) form {
@@ -194,7 +198,7 @@ article .admin_section:nth-child(3) .admin_bottom_box {
 }
 
 .admin_table tbody tr {
-    height: 49px;
+    height: 43px;
     border-bottom: 1px solid #E5E7EB;
 }
 
@@ -245,15 +249,30 @@ article .admin_section:nth-child(3) .admin_bottom_box {
     color: var(--font-color-basic);
 }
 
-.admin_choose_bottom_box p {
+.admin_choose_bottom_box > p {
     margin-bottom: 20px;
     height: auto;
     max-height: 50px;
     overflow: auto;
 }
 
-.admin_choose_bottom_box p:first-child {
+.admin_choose_bottom_box p:nth-child(2) {
+    margin: 10px 0;
+    padding: 10px 0;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin_choose_bottom_box > p:first-child {
     max-height: 30px;
+}
+
+.admin_choose_bottom_box div {
+    display: flex;
+}
+
+.admin_choose_bottom_box div p {
+    margin-left: var(--space-small);
 }
 
 #adminPopup {

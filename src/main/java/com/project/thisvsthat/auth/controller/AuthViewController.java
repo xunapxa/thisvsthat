@@ -28,7 +28,9 @@ public class AuthViewController {
      * 로그인 페이지
      */
     @GetMapping("/login")
-    public String loginPage(HttpServletRequest request, Model model) {
+    public String loginPage(HttpServletRequest request,
+                            Model model,
+                            @RequestParam(value = "redirect", required = false) String redirectUrl) {
         Optional<User> loggedInUser = jwtService.getUserFromRequest(request);
 
         if (loggedInUser.isPresent()) {
@@ -41,6 +43,11 @@ public class AuthViewController {
 
             model.addAttribute("userEmail", user.getEmail());
             model.addAttribute("socialType", user.getSocialType().name());
+        }
+
+        // 리디렉션 URL을 세션에 저장
+        if (redirectUrl != null) {
+            request.getSession().setAttribute("redirectUrl", redirectUrl);
         }
 
         return "auth/login";

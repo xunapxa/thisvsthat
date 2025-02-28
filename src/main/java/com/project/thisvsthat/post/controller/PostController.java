@@ -4,6 +4,7 @@ import com.project.thisvsthat.auth.service.JwtService;
 import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.dto.VoteDTO;
 import com.project.thisvsthat.common.enums.Category;
+import com.project.thisvsthat.common.service.ReportService;
 import com.project.thisvsthat.image.service.ImageService;
 import com.project.thisvsthat.post.dto.VotePercentageDTO;
 import com.project.thisvsthat.post.service.PostService;
@@ -11,10 +12,14 @@ import com.project.thisvsthat.post.service.VoteService;
 import com.project.thisvsthat.post.util.HashtagExtractor;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("post")
@@ -31,19 +36,24 @@ public class PostController {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private ReportService reportService;
+
     /* 상세 페이지 */
     @GetMapping("{id}")
     public String postDetail(@PathVariable("id") Long postId, Model model, HttpServletRequest request) {
 
+        Long userId = null;
+
         //쿠키에서 JWT 토큰 추출
         String token = jwtService.getJwtFromCookies(request);
         if (token == null) {
-            return "redirect:/login";  // 토큰이 없으면 로그인 페이지로 리다이렉트
-        }
-
-        Long userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
-        if (userId == null) {
-            return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+            userId = null;
+        } else {
+            userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
+            if (userId == null) {
+                return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
+            }
         }
 
         PostDTO dto = postService.findOnePost(postId);
@@ -189,5 +199,35 @@ public class PostController {
         voteService.voteFinished(postId);
         String url = "redirect:/post/" + postId;
         return url;
+    }
+
+    // 게시물 신고 처리 (AJAX)
+    @PostMapping("{id}/report")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> reportPost(@PathVariable("id") Long postId, HttpServletRequest request) {
+        // 쿠키에서 JWT 토큰 추출
+        String token = jwtService.getJwtFromCookies(request);
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("success", false, "message", "로그인 정보가 없습니다."));
+        }
+
+        Long userId = jwtService.getUserIdFromToken(token);  // JWT에서 사용자 ID 추출
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("success", false, "message", "잘못된 사용자입니다."));
+        }
+
+        try {
+            // 신고 처리 서비스 호출
+            reportService.reportPost(postId, userId);  // 서비스에서 처리
+
+            // 신고 처리 성공
+            return ResponseEntity.ok(Map.of("success", true, "message", "신고하였습니다."));
+        } catch (IllegalArgumentException e) {
+            // 중복 신고 처리
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("success", false, "message", "이미 신고한 게시물입니다."));
+        } catch (Exception e) {
+            // 신고 처리 중 오류
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", e.getMessage()));
+        }
     }
 }

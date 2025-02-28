@@ -56,7 +56,7 @@
 				</thead>
 				<tbody class="admin_tbody">
 					<tr class="admin_tr bastard_user" th:each="user : ${users}" th:attr="data-user-id=${user.userId}" onclick="toggleSelectionUser(this)">
-						<td th:text="${user.userId}" class="admin_td">100001</td>
+						<td th:text="${user.userId}" class="admin_td">111111</td>
 						<td th:text="${user.nickname}" class="admin_td">닉네임</td>
 						<td th:text="${user.email}" class="admin_td">abc123@test.com</td>
 					</tr>
@@ -67,8 +67,8 @@
 			<form id="userForm" th:action="@{/admin/updateUserStatus}" method="post">
 				<div id="userIdsContainer"></div>
 				<input type="hidden" id="userActionTypeInput" name="userActionType">
-				<button class="btn_xlarge bg_blue" type="button" onclick="submitUserForm('restoreUsers')"><span class="orbit_regular">신고 회원 복구</span></button>
-				<button class="btn_xlarge bg_orange" type="button" onclick="submitUserForm('ban')"><span class="orbit_regular">신고 회원 차단</span></button>
+				<button class="btn_xlarge bg_blue" type="button" onclick="submitUserForm('restore')"><span class="orbit_regular">신고 회원 복구</span></button>
+				<button class="btn_xlarge bg_pink" type="button" onclick="submitUserForm('ban')"><span class="orbit_regular">신고 회원 차단</span></button>
 			</form>
 		</div>
 	</section>
@@ -77,11 +77,11 @@
 		<div class="admin_top_box">
 			<h2 class="orbit_regular">신고 글 관리</h2>
 			<div>
-				<form id="postForm" th:action="@{/admin/updateMultiplePostStatus}" method="post">
+				<form id="postForm" th:action="@{/admin/updatePostStatus}" method="post">
 					<div id="postIdsContainer"></div>
 					<input type="hidden" id="postActionTypeInput" name="postActionType">
 					<button class="btn_xlarge bg_blue" type="button" onclick="submitPostForm('restore')"><span class="orbit_regular">신고 글 복구</span></button>
-					<button class="btn_xlarge bg_orange" type="button" onclick="submitPostForm('delete')"><span class="orbit_regular">신고 글 삭제</span></button>
+					<button class="btn_xlarge bg_pink" type="button" onclick="submitPostForm('delete')"><span class="orbit_regular">신고 글 삭제</span></button>
 				</form>
 			</div>
 		</div>

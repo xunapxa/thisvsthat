@@ -66,7 +66,7 @@ public class AdminController {
     }
 
     // 선택된 게시글을 일괄 복구 또는 삭제
-    @PostMapping("/updateMultiplePostStatus")
+    @PostMapping("/updatePostStatus")
     public String updateMultiplePostStatus(@RequestParam(value = "postIds") List<Long> postIds, @RequestParam(value = "postActionType") String postActionType) {
         if ("restore".equals(postActionType)) {
             adminService.restorePosts(postIds);

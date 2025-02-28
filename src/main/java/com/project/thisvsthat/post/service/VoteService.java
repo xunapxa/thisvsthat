@@ -55,23 +55,42 @@ public class VoteService {
 
     public void saveVote(Long userId, Long postId, SelectedOption selectedOption) {
 
+        // 이미 투표를 했는지 확인
+        boolean exists = voteRepository.existsByUserIdAndPostId(userId, postId);
+        
+        // 투표 데이터 존재 여부에 따라 create, update
+        if (exists == false) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. ID: " + userId));
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. ID: " + postId));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다. ID: " + userId));
+            Post post = postRepository.findById(postId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. ID: " + postId));
 
-        Vote vote = new Vote();
-        vote.setPost(post);
-        vote.setUser(user);
-        vote.setSelectedOption(selectedOption);
-        vote.setCreatedAt(LocalDateTime.now());
-        user.getVotes().add(vote);
-        post.getVotes().add(vote);
+            Vote vote = new Vote();
+            vote.setPost(post);
+            vote.setUser(user);
+            vote.setSelectedOption(selectedOption);
+            vote.setCreatedAt(LocalDateTime.now());
+            user.getVotes().add(vote);
+            post.getVotes().add(vote);
 
-        System.out.println("저장 전 vote 결과 (선택옵션) ========== " + vote.getSelectedOption());
+            System.out.println("저장 전 vote 결과 (선택옵션) ========== " + vote.getSelectedOption());
+            voteRepository.save(vote);
+        } else if (exists == true) {
 
-        voteRepository.save(vote);
+            Long voteId = voteRepository.findVoteIdByUserIdAndPostId(userId, postId);
+
+            Vote vote = voteRepository.findById(voteId)
+                    .orElseThrow(() -> new IllegalArgumentException("해당 투표기록이 없습니다. ID: " + voteId));
+
+            vote.setSelectedOption(selectedOption);
+            vote.setCreatedAt(LocalDateTime.now());
+
+            System.out.println("변경 전 vote 결과 (선택옵션) ========== " + vote.getSelectedOption());
+            voteRepository.save(vote);
+        }
+
+
     }
 
     public void voteFinished(Long postId) {

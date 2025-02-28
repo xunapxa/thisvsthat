@@ -1,18 +1,20 @@
-package com.project.thisvsthat.chat.util;
+package com.project.thisvsthat.chat.redis.pubsub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.thisvsthat.chat.dto.ChatMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RedisSubscriber implements MessageListener {
     private final ObjectMapper objectMapper;
-    private final SimpMessagingTemplate messagingTemplate; // 웹소켓 메시지 전송
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public void onMessage(Message message, byte[] pattern) {
@@ -21,13 +23,11 @@ public class RedisSubscriber implements MessageListener {
             String jsonMessage = new String(message.getBody());
             ChatMessage chatMessage = objectMapper.readValue(jsonMessage, ChatMessage.class);
 
-            System.out.println("📩 Received message: " + chatMessage.getContent());
-
+            log.info("📨 [SUCCESS] 레디스에서 메시지 전송 처리: ID({}) '{}'", chatMessage.getUserId(), chatMessage.getContent());
             // 웹소켓을 통해 클라이언트에게 메시지 전송
-            // 채팅방 ID에 맞는 구독 경로로 메시지 전송
             messagingTemplate.convertAndSend("/sub/chatroom/" + chatMessage.getPostId(), chatMessage);
         } catch (Exception e) {
-            System.err.println("❌ 메시지 처리 중 오류 발생: " + e.getMessage());
+            log.error("🚨 [ERROR] 메시지 처리 중 오류 발생: {}", e.getMessage(), e);
         }
     }
 }

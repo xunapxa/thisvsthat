@@ -1,5 +1,5 @@
-// 게시물 무한 스크롤 start
-let page = 1;
+// 게시물 출력 무한 스크롤 start
+let page = 0;
 let loading = false;
 const pageSize = 3;
 
@@ -14,12 +14,15 @@ const listCategory = searchParams.get("list_category") || "";
 const listDesc = searchParams.get("list_desc") || "createdAt";
 const startDate = searchParams.get("start_date");
 const endDate = searchParams.get("end_date");
+const voteStatus = searchParams.get("vote_status");
 
 // 이전에 저장된 쿼리스트링 가져오기
 const savedQueryString = sessionStorage.getItem("savedQueryString");
 
+// 전체 목록 갯수
+const totalCount = parseInt(document.getElementById("total-count").value, 10);
 document.addEventListener("DOMContentLoaded", function () {
-    const totalCount = parseInt(document.getElementById("total-count").value, 10);
+
 
     if (totalCount <= pageSize) {
         document.getElementById("end_message").style.display = "block";
@@ -48,22 +51,38 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// 무한스크롤 이벤트
+// 처음 로드 됐을 때 main에 보여줄 목록 갯수 체크해서 목록 가져오기
+// 세로 높이 여부에 따라 처음에 가져올 갯수를 정함
+document.addEventListener("DOMContentLoaded", function () {
+
+    const listWrap = document.getElementById("list_wrap");
+    const rect = listWrap.getBoundingClientRect();
+    const viewportHeight = window.innerHeight; // 브라우저의 세로 길이(뷰포트 높이)
+    const list_wrap_heght = viewportHeight-rect.top; // 브라우저에서 list_wrap id를 가진 div의 높이
+    const list_page = list_wrap_heght/752; // 처음에 가져와야할 list_page 갯수, 752는 1페이지당 높이
+    const default_page_cnt = Math.floor(list_page)+1; // 1이면 페이지 1개만 가져오고 2이 이상이면 페이지를 여러 개 가져와야함.
+
+    loadMorePosts(default_page_cnt);
+});
+
+// 무한스크롤 이벤트 발생 했을 때 loadMorePosts() 이벤트로 list 가져오기
 $(window).scroll(function() {
     if (loading) return;
 
     if ($(window).scrollTop() + $(window).height() >= $(document).height() - 50) {
-        loadMorePosts();
+        loadMorePosts(1);
     }
 });
 
-function loadMorePosts() {
+// list의 게시글 가져오기
+// pageCnt는 가져와야할 페이지 갯수 (1이면 현재 페이지 한 페이지만 가져오고 2이면 0,1 이렇게 2페이지 목록을 가져와야함)
+function loadMorePosts(pageCnt) {
     loading = true;
 
     $.ajax({
         url: "/posts",
         type: "GET",
-        data: { page, search_by: searchBy, keyword, list_category: listCategory, list_desc: listDesc, start_date: startDate, end_date: endDate },
+        data: { page, search_by: searchBy, keyword, list_category: listCategory, list_desc: listDesc, start_date: startDate, end_date: endDate,  vote_status: voteStatus,page_cnt : pageCnt},
         success: function(data) {
             if (data.posts.length === 0) {
                 $("#end_message").show();
@@ -81,7 +100,7 @@ function loadMorePosts() {
                                 ${post.voteStatus === 'ACTIVE' ? '진행' : (post.voteStatus === 'FINISHED' ? '종료' : '')}
                             </span>
 
-                            <a href="/posts/${post.postId}" class="choose_total">
+                            <a href="/post/${post.postId}" class="choose_total">
                                 <div class="choose_top_box">
                                     <div class="choose_img_wrap ${post.option1ImageUrl?.trim() ? 'is_img_wrap' : ''}">
                                         <img class="${option1Class}" src="${option1ImageUrl}" alt="" onerror="this.classList.remove('is_img'); this.onerror=null; this.src='/images/common/icon-letter-o.png';"/>
@@ -98,7 +117,13 @@ function loadMorePosts() {
                     `);
                 });
 
-                page++;
+                if(pageCnt==1){
+                    page++;
+                }
+                else{
+                    page = pageCnt;
+                }
+
             }
 
             // 저장된 데이터 업데이트 (뒤로 가기 시 복원 가능하도록)
@@ -106,9 +131,13 @@ function loadMorePosts() {
             sessionStorage.setItem("savedPage", page);
             sessionStorage.setItem("scrollPosition", window.scrollY);
 
-            if ((page * pageSize) >= data.totalCount) {
-                $("#end_message").show();
+            if (totalCount === 0 && totalCount <= pageSize) {
+                document.getElementById("no_posts_message").style.display = "block";
+                document.getElementById("end_message").style.display = "none";
+            }else if ((page * pageSize) >= data.totalCount) {
+                document.getElementById("end_message").style.display = "block";
             }
+
         },
         error: function() {
             alert("게시물을 불러오는 중 오류가 발생했습니다.");
@@ -118,28 +147,32 @@ function loadMorePosts() {
         }
     });
 }
-// 게시물 무한 스크롤 end
+// 게시물 출력 무한 스크롤 end
 
+// 팝업 활성화 / 비활성화 start
+document.addEventListener("DOMContentLoaded", function () {
+    var popup = document.querySelector(".popup_section");
+    var openBtn = document.getElementById("modal_btn");
+    var closeBtn = document.getElementById("postCreateCloseBtn");
+    var okBtn = document.getElementById("date_search_btn");
 
-// 모달 start
-const modal = document.querySelector('.modal');
-const modalOpen = document.querySelector('#modal_btn');
-const modalClose = document.querySelector('#modal_close_btn');
-const dateSearchBtn = document.querySelector('.date_search_btn');
+    if (openBtn) {
+        openBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            popup.style.display = "block";
+        });
+    }
 
-//열기 버튼을 눌렀을 때 모달팝업이 열림
-modalOpen.addEventListener('click',function(){
-  	//'on' class 추가
-  	event.preventDefault();
-    modal.classList.add('on');
+    if (closeBtn) {
+        closeBtn.addEventListener("click", function (event) {
+            event.preventDefault();
+            popup.style.display = "none";
+        });
+    }
+
 });
+// 팝업 활성화 / 비활성화 end
 
-//닫기 버튼을 눌렀을 때 모달팝업이 닫힘
-modalClose.addEventListener('click',function(){
-    //'on' class 제거
-    modal.classList.remove('on');
-});
-// 모달 end
 
 // 기간 설정 시 시작날짜, 종료 날짜 입력 후 기간 설정 완료 눌렀을 때 이동 링크 start
 // 링크 이동
@@ -176,3 +209,40 @@ document.querySelector('.top_btn').addEventListener('click', function(e) {
     window.scrollTo({ top: 0, behavior: 'smooth' }); // 부드럽게 맨 위로 이동
 });
 // top 버튼 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -95,6 +95,12 @@
             </div>
         </section>
 
+        <div>
+            <button id="reportBtn" class="btn_large post_report_btn">
+                <i class="fa-solid fa-flag"></i> 신고
+            </button>
+        </div>
+
         <div id="popup-section" class="popup_section">
             <div class="dim_box"></div>
             <div id="toast-popup-box" class="toast_popup_box">
@@ -118,15 +124,15 @@
                         <fieldset>
                             <label>
                                 <input type="radio" name="selectOne" value="blue"/>
-                                <span>부먹</span>
+                                <span>이거?</span>
                             </label>
                             <label>
                                 <input type="radio" name="selectOne" value="neutral" checked/>
-                                <span>중립</span>
+                                <span>미정</span>
                             </label>
                             <label>
                                 <input type="radio" name="selectOne" value="orange"/>
-                                <span>찍먹</span>
+                                <span>저거?</span>
                             </label>
                         </fieldset>
                     </div>
@@ -167,6 +173,35 @@
 
         // 진행 중인 게시글은 수정, 삭제 불가
         document.addEventListener("DOMContentLoaded", function () {
+            const reportBtn = document.getElementById("reportBtn");
+
+            // 신고 버튼 클릭 시 AJAX 요청
+            reportBtn.addEventListener("click", function() {
+                const postId = [[${dto.postId}]];  // 게시물 ID
+
+                // AJAX 요청
+                $.ajax({
+                    type: "POST",
+                    url: "/post/" + postId + "/report",  // ReportController의 신고 처리 URL
+                    data: { postId: postId },
+                    success: function(response) {
+                        if (response.success) {
+                            // 신고 성공
+                            alert(response.message);  // '게시물을 신고하였습니다.'
+                            reportBtn.disabled = true;  // 신고 후 버튼 비활성화
+                        } else {
+                            // 중복 신고
+                            alert(response.message);  // '이미 신고한 게시물입니다.'
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Error 응답을 JSON 파싱 후 message 표시
+                        const errorResponse = JSON.parse(xhr.responseText);
+                        alert(errorResponse.message);  // '중복 신고입니다.' 표시
+                    }
+                });
+            });
+
             window.votePercentage = {
                 option1Percentage: [[${votePercentage.option1Percentage}]],
                 option2Percentage: [[${votePercentage.option2Percentage}]]
