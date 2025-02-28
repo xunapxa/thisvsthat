@@ -85,8 +85,10 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. ID: " + postId));
 
-        // 포스트 상태를 "신고됨" 상태로 변경 (예시로 'REPORTED'로 변경)
-        post.setPostStatus(PostStatus.BLINDED);
+        // 신고수가 3이상일 때 포스트 상태를 "Blinded"로 변경
+        if (post.getReportCount() >= 3) {
+            post.setPostStatus(PostStatus.BLINDED);
+        }
 
         // 업데이트된 게시물 저장
         postRepository.save(post);

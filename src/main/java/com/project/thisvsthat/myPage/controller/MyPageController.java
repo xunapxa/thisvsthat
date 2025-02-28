@@ -42,6 +42,9 @@ public class MyPageController {
             return "redirect:/login";  // 잘못된 토큰인 경우 로그인 페이지로 리다이렉트
         }
 
+        // 참여했던 채팅방의 PostDTO 목록 조회
+        List<PostDTO> participatedPosts = myPageService.getUserParticipatedPosts(userId);
+
         UserDTO dto = myPageService.findLoginUser(userId);
         if (dto != null) {
             // 연령대 계산
@@ -55,6 +58,7 @@ public class MyPageController {
             model.addAttribute("ageGroup", ageGroup);
             model.addAttribute("myPosts", myPosts);
             model.addAttribute("votedPosts", votedPosts);
+            model.addAttribute("participatedPosts", participatedPosts);
         } else {
             return "redirect:/login";  // 유저 정보가 없으면 로그인 페이지로 리다이렉트
         }

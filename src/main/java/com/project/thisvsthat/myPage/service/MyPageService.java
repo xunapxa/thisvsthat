@@ -1,8 +1,11 @@
 package com.project.thisvsthat.myPage.service;
 
+import com.project.thisvsthat.chat.service.ChatRoomService;
+import com.project.thisvsthat.common.dto.ChatLogDTO;
 import com.project.thisvsthat.common.dto.PostDTO;
 import com.project.thisvsthat.common.dto.UserDTO;
 import com.project.thisvsthat.common.enums.UserStatus;
+import com.project.thisvsthat.common.repository.ChatLogRepository;
 import com.project.thisvsthat.common.repository.PostRepository;
 import com.project.thisvsthat.common.repository.UserRepository;
 import com.project.thisvsthat.common.repository.VoteRepository;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +32,12 @@ public class MyPageService {
 
     @Autowired
     EntityManager em; //DB와 상호작용
+
+    @Autowired
+    private ChatLogRepository chatLogRepository;
+
+    @Autowired
+    private ChatRoomService chatRoomService;
 
     //사용자 정보 조회
     public UserDTO findLoginUser(Long userId) {
@@ -78,4 +88,18 @@ public class MyPageService {
                 })
                 .orElse(false); // 유저가 없으면 false 반환
     }
+
+    //참여했던 채팅방 조회
+    public List<PostDTO> getUserParticipatedPosts(Long userId) {
+        List<Long> postIds = chatRoomService.getPostIdsForUser(userId);
+
+        // postId를 이용해 Post 정보를 가져와 PostDTO로 변환
+        return postIds.stream()
+                .map(postRepository::findById) // Optional<Post> 반환
+                .filter(Optional::isPresent)   // 존재하는 경우만 필터링
+                .map(Optional::get)            // Optional<Post> -> Post
+                .map(PostDTO::fromEntity)      // Post -> PostDTO 변환
+                .collect(Collectors.toList());
+    }
+
 }
