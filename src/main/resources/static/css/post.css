@@ -248,3 +248,12 @@ button {
 /* updatePost.html 끝 */
 
 /* post - 작은선아 끝*/
+
+/* 신고카운트 - 서경 시작 */
+.post_report_btn {
+    width: auto;
+    float: right;
+    background: none;
+    color: var(--main-color-orange);
+}
+/* 신고카운트 - 서경 끝 */
